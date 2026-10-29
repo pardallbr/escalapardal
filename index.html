@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -821,10 +821,9 @@
       const dAval = new Date(avalStr + "T00:00:00");
       if (isNaN(dNasc.getTime()) || isNaN(dAval.getTime()) || dAval < dNasc) return null;
 
-      let months = (dAval.getFullYear() - dNasc.getFullYear()) * 12 + (dAval.getMonth() - dNasc.getMonth());
-      if (dAval.getDate() < dNasc.getDate()) {
-        months -= 1;
-      }
+      // Fórmula oficial Rosa Neto: (DataExame - DataNasc em dias) / 30
+      const diffDays = Math.round((dAval.getTime() - dNasc.getTime()) / (1000 * 60 * 60 * 24));
+      const months = Math.round((diffDays / 30) * 10) / 10;
       return Math.max(months, 1);
     }
 
@@ -1086,8 +1085,8 @@
           countIMAnt++;
         }
 
-        const qmAtual = (imAtual !== null && hasIC) ? (imAtual / icAtual) * 100 : null;
-        const qmAnt = (hasIMAnt && icAnt) ? (Number(imAnt) / icAnt) * 100 : null;
+        const qmAtual = (imAtual !== null && hasIC) ? Math.round((imAtual / icAtual) * 100) : null;
+        const qmAnt = (hasIMAnt && icAnt) ? Math.round((Number(imAnt) / icAnt) * 100) : null;
 
         const clAtual = qmAtual ? getClassification(qmAtual) : { label: "Aguardando", color: "text-slate-400" };
         const clAnt = qmAnt ? getClassification(qmAnt) : { label: "-", color: "text-slate-400" };
@@ -1149,8 +1148,8 @@
       if (compCardImg) compCardImg.textContent = imgAtual ? `${imgAtual.toFixed(1)} m` : "-";
 
       // Quociente Motor Geral (QMG)
-      const qmgAtual = (imgAtual && hasIC) ? (imgAtual / icAtual) * 100 : null;
-      const qmgAnt = (imgAnt && icAnt) ? (imgAnt / icAnt) * 100 : null;
+      const qmgAtual = (imgAtual && hasIC) ? Math.round((imgAtual / icAtual) * 100) : null;
+      const qmgAnt = (imgAnt && icAnt) ? Math.round((imgAnt / icAnt) * 100) : null;
 
       document.getElementById("res-qmg-val").textContent = qmgAtual ? qmgAtual.toFixed(1) : "-";
       const compCardQmg = document.getElementById("comp-card-qmg");
