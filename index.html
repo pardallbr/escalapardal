@@ -97,12 +97,13 @@
               <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
               Comparativo de Evolução
             </button>
-            <button id="btn-tab-form" class="px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-blue-950/60 hover:bg-white/10 text-slate-200">
-              Banco de Fórmulas
-            </button>
             <button id="btn-salvar-pdf" class="px-3.5 py-2 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-1.5 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
               Salvar Relatório em PDF
+            </button>
+            <button id="btn-salvar-drive" class="px-3.5 py-2 text-sm font-medium rounded-lg bg-sky-600 hover:bg-sky-500 text-white flex items-center gap-1.5 shadow-sm transition">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 87.3 78" fill="none"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+              Salvar no Google Drive
             </button>
             <button id="btn-imprimir" class="px-3.5 py-2 text-sm font-medium rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
@@ -400,6 +401,10 @@
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   Salvar Relatório em PDF
                 </button>
+                <button id="btn-salvar-drive-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                  <svg class="w-4 h-4 shrink-0" viewBox="0 0 87.3 78" fill="none"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+                  Salvar no Google Drive
+                </button>
                 <button id="btn-imprimir-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                   Imprimir Laudo
@@ -609,86 +614,7 @@
         </div>
       </section>
 
-      <!-- TAB 3: BANCO DE FÓRMULAS -->
-      <section id="section-form" class="space-y-6 hidden">
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <h2 class="text-xl font-bold text-slate-900 mb-2">Banco de Fórmulas Matemáticas — Metodologia EDM</h2>
-          <p class="text-sm text-slate-600 mb-6">
-            Todas as equações do sistema foram extraídas do <em>Manual de Avaliação Motora (EDM)</em> do Prof. Dr. Francisco Rosa Neto e padronizadas para cálculo computacional.
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-blue-600">1. Idade Cronológica (IC)</span>
-              <div class="p-2.5 bg-white rounded border border-slate-200 font-mono text-xs text-slate-800">
-                IC (meses) = (AnoAval - AnoNasc)*12 + (MesAval - MesNasc)
-              </div>
-              <p class="text-xs text-slate-600">
-                Calculada em meses inteiros com ajuste para a data exata da testagem.
-              </p>
-            </div>
-            <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-blue-600">2. Idade Motora Geral (IMG)</span>
-              <div class="p-2.5 bg-white rounded border border-slate-200 font-mono text-xs text-slate-800">
-                IMG = (IMF + IMGlob + IME + IMEC + IMOE + IMOT) / 6
-              </div>
-              <p class="text-xs text-slate-600">
-                Média aritmética das 6 idades motoras específicas obtidas nas tarefas com êxito.
-              </p>
-            </div>
-            <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-blue-600">3. Quociente Motor por Área (QM)</span>
-              <div class="p-2.5 bg-white rounded border border-slate-200 font-mono text-xs text-slate-800">
-                QM = (Idade Motora da Área / Idade Cronológica) * 100
-              </div>
-              <p class="text-xs text-slate-600">
-                Razão percentual entre o desempenho na área e o marco cronológico esperado.
-              </p>
-            </div>
-            <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-blue-600">4. Quociente Motor Geral (QMG)</span>
-              <div class="p-2.5 bg-white rounded border border-slate-200 font-mono text-xs text-slate-800">
-                QMG = (Idade Motora Geral / Idade Cronológica) * 100
-              </div>
-              <p class="text-xs text-slate-600">
-                Índice psicométrico global que sintetiza o perfil psicomotor da criança.
-              </p>
-            </div>
-            <div class="p-4 rounded-lg border border-slate-200 bg-slate-50 space-y-2 md:col-span-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-blue-600">5. Desvio Motor / Idade Positiva ou Negativa</span>
-              <div class="p-2.5 bg-white rounded border border-slate-200 font-mono text-xs text-slate-800">
-                Desvio Motor (meses) = IMG - IC
-              </div>
-              <p class="text-xs text-slate-600">
-                Saldo em meses: se positivo (+), indica avanço em relação aos pares; se negativo (-), indica atraso e necessidade de estimulação ou intervenção.
-              </p>
-            </div>
-          </div>
-
-          <h3 class="text-base font-bold text-slate-900 mt-8 mb-3">Tabela Normativa Oficial de Classificação (Rosa Neto)</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-xs border border-slate-200 rounded-lg overflow-hidden">
-              <thead class="bg-slate-100 text-slate-700 border-b border-slate-200 text-left">
-                <tr>
-                  <th class="p-3">Faixa de QM / QMG</th>
-                  <th class="p-3">Classificação</th>
-                  <th class="p-3">Desvio Padrão</th>
-                  <th class="p-3">Interpretação e Conduta</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100">
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-indigo-700">130 ou mais</td><td class="p-3 font-semibold">Muito Superior</td><td class="p-3">+3 DP ou mais</td><td class="p-3">Aceleração extraordinária. Estimular potencialidades.</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-blue-700">120 a 129</td><td class="p-3 font-semibold">Superior</td><td class="p-3">+2 DP a +3 DP</td><td class="p-3">Desempenho significativamente acima da média cronológica.</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-teal-700">110 a 119</td><td class="p-3 font-semibold">Normal Alto</td><td class="p-3">+1 DP a +2 DP</td><td class="p-3">Bom desenvolvimento motor e coordenação eficiente.</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-emerald-700">90 a 109</td><td class="p-3 font-semibold">Normal Médio</td><td class="p-3">-1 DP a +1 DP</td><td class="p-3">Padrão esperado de normalidade para a idade cronológica.</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-amber-700">80 a 89</td><td class="p-3 font-semibold">Normal Baixo</td><td class="p-3">-1 DP a -2 DP</td><td class="p-3">Alerta leve. Recomendado estímulo lúdico nas áreas deficitárias.</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-orange-700">70 a 79</td><td class="p-3 font-semibold">Inferior</td><td class="p-3">-2 DP a -3 DP</td><td class="p-3">Atraso motor moderado. Indicação de intervenção psicomotora.</td></tr>
-                <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-red-700">69 ou menos</td><td class="p-3 font-semibold">Muito Inferior</td><td class="p-3">-3 DP ou menos</td><td class="p-3">Atraso severo. Recomenda-se investigação médica multidisciplinar.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+      
     </main>
   </div>
 
@@ -1474,6 +1400,34 @@
       });
     }
 
+    function exportarParaDrive() {
+      showToast("Gerando relatório e abrindo seu Google Drive...");
+      const element = document.getElementById("section-calc");
+      const printHdr = document.getElementById("print-header");
+      
+      const nomeLimpo = (state.nome || "Crianca_Avaliada").replace(/\s+/g, "_");
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Relatorio_EDM_${nomeLimpo}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      if (printHdr) printHdr.classList.remove("hidden");
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        if (printHdr) printHdr.classList.add("hidden");
+        showToast("Relatório baixado! Abrindo seu Google Drive para upload...");
+        setTimeout(() => {
+          window.open("https://drive.google.com/drive/my-drive", "_blank");
+        }, 1000);
+      }).catch(err => {
+        if (printHdr) printHdr.classList.add("hidden");
+        window.open("https://drive.google.com/drive/my-drive", "_blank");
+      });
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       const formLogin = document.getElementById("form-login");
       const inputLoginEmail = document.getElementById("input-login-email");
@@ -1594,19 +1548,17 @@
 
       const tabCalc = document.getElementById("btn-tab-calc");
       const tabComp = document.getElementById("btn-tab-comp");
-      const tabForm = document.getElementById("btn-tab-form");
 
       const secCalc = document.getElementById("section-calc");
       const secComp = document.getElementById("section-comp");
-      const secForm = document.getElementById("section-form");
 
       const setTab = (activeTab, activeSec) => {
-        [tabCalc, tabComp, tabForm].forEach(t => {
+        [tabCalc, tabComp].forEach(t => {
           t.className = "px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-blue-950/60 hover:bg-white/10 text-slate-200 flex items-center gap-1.5";
         });
         activeTab.className = "px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-white text-blue-950 font-semibold shadow-sm flex items-center gap-1.5";
 
-        [secCalc, secComp, secForm].forEach(s => s.classList.add("hidden"));
+        [secCalc, secComp].forEach(s => s.classList.add("hidden"));
         activeSec.classList.remove("hidden");
 
         if (activeSec === secComp) {
@@ -1619,7 +1571,6 @@
 
       tabCalc.addEventListener("click", () => setTab(tabCalc, secCalc));
       tabComp.addEventListener("click", () => setTab(tabComp, secComp));
-      tabForm.addEventListener("click", () => setTab(tabForm, secForm));
 
       const btnIrComp = document.getElementById("btn-ir-para-comparativo");
       if (btnIrComp) {
@@ -1689,6 +1640,12 @@
 
       document.getElementById("btn-salvar-pdf").addEventListener("click", exportarParaPDF);
       document.getElementById("btn-salvar-pdf-card").addEventListener("click", exportarParaPDF);
+
+      const btnSalvarDrive = document.getElementById("btn-salvar-drive");
+      if (btnSalvarDrive) btnSalvarDrive.addEventListener("click", exportarParaDrive);
+
+      const btnSalvarDriveCard = document.getElementById("btn-salvar-drive-card");
+      if (btnSalvarDriveCard) btnSalvarDriveCard.addEventListener("click", exportarParaDrive);
 
       document.getElementById("btn-imprimir").addEventListener("click", () => window.print());
       document.getElementById("btn-imprimir-card").addEventListener("click", () => window.print());
