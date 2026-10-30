@@ -1047,7 +1047,7 @@
       const icData = calculateIC(state.nasc, state.aval);
       const hasIC = icData !== null;
       const icAtual = hasIC ? icData.totalMeses : null;
-      const icDivisorAtual = hasIC ? icData.divisorQM : null;
+      
 
       if (hasIC) {
         document.getElementById("badge-ic-meses").textContent = `${icAtual} meses`;
@@ -1084,11 +1084,11 @@
 
       // Cálculo de IC Anterior
       let icAnt = state.ant.ic;
-      let icDivisorAnt = null;
+      
       if (state.ant.data && state.nasc) {
         const icAntData = calculateIC(state.nasc, state.ant.data);
         icAnt = icAntData ? icAntData.totalMeses : null;
-        icDivisorAnt = icAntData ? icAntData.divisorQM : null;
+        
         state.ant.ic = icAnt;
         const compAntIcInp = document.getElementById("comp-ant-ic");
         if (compAntIcInp && document.activeElement !== compAntIcInp) {
@@ -1154,8 +1154,8 @@
           countIMAnt++;
         }
 
-        const qmAtual = (imAtual !== null && hasIC && icDivisorAtual > 0) ? Math.round((imAtual / icDivisorAtual) * 100) : null;
-        const qmAnt = (hasIMAnt && icDivisorAnt && icDivisorAnt > 0) ? Math.round((Number(imAnt) / icDivisorAnt) * 100) : ((hasIMAnt && icAnt) ? Math.round((Number(imAnt) / icAnt) * 100) : null);
+        const qmAtual = (imAtual !== null && hasIC && icAtual > 0) ? Math.round((imAtual / icAtual) * 100) : null;
+        const qmAnt = (hasIMAnt && icAnt && icAnt > 0) ? Math.round((Number(imAnt) / icAnt) * 100) : null;
 
         const clAtual = qmAtual ? getClassification(qmAtual) : { label: "Aguardando", color: "text-slate-400" };
         const clAnt = qmAnt ? getClassification(qmAnt) : { label: "-", color: "text-slate-400" };
@@ -1217,8 +1217,8 @@
       if (compCardImg) compCardImg.textContent = imgAtual ? `${imgAtual.toFixed(1)} m` : "-";
 
       // Quociente Motor Geral (QMG)
-      const qmgAtual = (imgAtual && hasIC && icDivisorAtual > 0) ? Math.round((imgAtual / icDivisorAtual) * 100) : null;
-      const qmgAnt = (imgAnt && icDivisorAnt && icDivisorAnt > 0) ? Math.round((imgAnt / icDivisorAnt) * 100) : ((imgAnt && icAnt) ? Math.round((imgAnt / icAnt) * 100) : null);
+      const qmgAtual = (imgAtual && hasIC && icAtual > 0) ? Math.round((imgAtual / icAtual) * 100) : null;
+      const qmgAnt = (imgAnt && icAnt && icAnt > 0) ? Math.round((imgAnt / icAnt) * 100) : null;
 
       document.getElementById("res-qmg-val").textContent = qmgAtual !== null ? qmgAtual : "-";
       const compCardQmg = document.getElementById("comp-card-qmg");
@@ -1344,7 +1344,7 @@
 
       AREAS_EDM.forEach(a => {
         const im = calculatedAreasAtual[a.key];
-        const qm = (im !== null && hasIC && icDivisorAtual > 0) ? Math.round((im / icDivisorAtual) * 100) : null;
+        const qm = (im !== null && hasIC && icAtual > 0) ? Math.round((im / icAtual) * 100) : null;
         const diff = (im !== null && hasIC) ? (im - icAtual) : null;
 
         if (im !== null && qm !== null) {
@@ -1493,7 +1493,7 @@
       if (clinQuocientesBodyElem) {
         const qRows = AREAS_EDM.map(a => {
           const im = calculatedAreasAtual[a.key];
-          const qm = (im !== null && hasIC && icDivisorAtual > 0) ? Math.round((im / icDivisorAtual) * 100) : null;
+          const qm = (im !== null && hasIC && icAtual > 0) ? Math.round((im / icAtual) * 100) : null;
           let qmColor = "text-slate-400";
           if (qm !== null) {
             if (qm < 80) qmColor = "text-red-600 font-bold";
