@@ -318,8 +318,88 @@
         <!-- ======================================================= -->
         <div id="relatorio-export-area" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          <!-- Left: Gráfico de Perfil Motor -->
+          <!-- Left: Painel Clínico Oficial Motricidade (Resumo, Pontos de Atenção, Ponto Forte/Foco, Siglas, Gráfico e Tabelas) -->
           <div class="lg:col-span-2 space-y-6">
+
+            <!-- Banner Resumo Clínico (Estilo Oficial App Motricidade) -->
+            <div id="clin-banner" class="bg-red-50/80 border-l-4 border-red-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="clin-badge-qmg" class="px-2.5 py-1 rounded-md text-xs font-black bg-red-600 text-white shadow-xs">
+                  QMG - · Aguardando dados
+                </span>
+                <span id="clin-badge-ipin" class="px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-800">
+                  IP/IN -
+                </span>
+              </div>
+              <p id="clin-summary-txt" class="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed">
+                Preencha a data e marque os testes na grade acima para gerar o laudo clínico.
+              </p>
+            </div>
+
+            <!-- Pontos de Atenção (QM abaixo de 80) -->
+            <div class="space-y-2.5">
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                <span>Pontos de atenção</span>
+                <span class="font-normal text-slate-500 lowercase">(QM abaixo de 80)</span>
+              </h3>
+              <div id="clin-atencao-list" class="space-y-2">
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-400 italic text-center">
+                  Preencha a data e marque a grade para identificar os pontos de atenção.
+                </div>
+              </div>
+            </div>
+
+            <!-- Ponto forte e próximo foco -->
+            <div class="space-y-2">
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide">Ponto forte e próximo foco</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Ponto Forte</span>
+                  <div id="clin-ponto-forte" class="text-xs font-bold text-slate-800">Aguardando dados</div>
+                </div>
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Próximo Foco</span>
+                  <div id="clin-proximo-foco" class="text-xs font-bold text-slate-800">Aguardando dados</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Seta de Informações: O que significa cada sigla? -->
+            <details class="group bg-slate-50 rounded-xl border border-slate-200 overflow-hidden transition-all no-print">
+              <summary class="flex items-center gap-2 p-3 text-xs font-bold text-slate-700 cursor-pointer hover:bg-slate-100 transition list-none select-none">
+                <svg class="w-3.5 h-3.5 text-slate-500 transition-transform group-open:rotate-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span>O que significa cada sigla?</span>
+              </summary>
+              <div class="p-4 pt-2 border-t border-slate-200/60 bg-white space-y-2.5 text-xs">
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-blue-100 text-blue-800 text-[11px] shrink-0 min-w-[50px] text-center">IC</span>
+                  <span class="text-slate-600">Idade cronológica, em meses.</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-indigo-100 text-indigo-800 text-[11px] shrink-0 min-w-[50px] text-center">IMG</span>
+                  <span class="text-slate-600">Idade motora geral (média das 6 áreas), em meses.</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-purple-100 text-purple-800 text-[11px] shrink-0 min-w-[50px] text-center">IP/IN</span>
+                  <span class="text-slate-600">Diferença IMG – IC: positiva (acima) ou negativa (abaixo) do esperado.</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-sky-100 text-sky-800 text-[11px] shrink-0 min-w-[50px] text-center">QMG</span>
+                  <span class="text-slate-600">Quociente motor geral (IMG ÷ IC × 100).</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-emerald-100 text-emerald-800 text-[11px] shrink-0 min-w-[50px] text-center">QM</span>
+                  <span class="text-slate-600">Quociente de cada área (IM ÷ IC × 100). Abaixo de 80 = atenção.</span>
+                </div>
+                <div class="pt-2 text-[11px] text-slate-500 italic border-t border-slate-100">
+                  Para esta idade, consideramos até 132 meses nos cálculos (padrão da escala).
+                </div>
+              </div>
+            </details>
+
+            <!-- Gráfico de Perfil Motor -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none page-break-avoid">
               <div class="flex items-center justify-between mb-2">
                 <h2 class="text-base font-bold text-slate-900">Perfil Motor: Idade Cronológica vs Idades Motoras Calculadas</h2>
@@ -331,6 +411,45 @@
                 <canvas id="chart-perfil-motor"></canvas>
               </div>
             </div>
+
+            <!-- Tabelas Perfil Motor e Quocientes (Estilo Oficial App Motricidade) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 page-break-avoid">
+              <!-- Card Perfil Motor -->
+              <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
+                <h3 class="text-sm font-black text-slate-900">Perfil Motor</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-[10px] uppercase font-bold text-slate-400">
+                        <th class="py-1.5">Área</th>
+                        <th class="py-1.5 text-center">IM</th>
+                        <th class="py-1.5 text-right">Diferença vs IC</th>
+                      </tr>
+                    </thead>
+                    <tbody id="clin-perfil-body" class="divide-y divide-slate-100 font-medium text-slate-700">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Card Quocientes -->
+              <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
+                <h3 class="text-sm font-black text-slate-900">Quocientes</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-[10px] uppercase font-bold text-slate-400">
+                        <th class="py-1.5">Área</th>
+                        <th class="py-1.5 text-right">QM</th>
+                      </tr>
+                    </thead>
+                    <tbody id="clin-quocientes-body" class="divide-y divide-slate-100 font-medium text-slate-700">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- Right: Resultados Gerais (QMG, Desvio, Classificação) -->
@@ -623,12 +742,12 @@
 
     // Definição das 6 Áreas da EDM
     const AREAS_EDM = [
-      { key: "mf", name: "Motricidade Fina", sigla: "MF" },
-      { key: "mg", name: "Motricidade Global", sigla: "MG" },
-      { key: "e",  name: "Equilíbrio", sigla: "E" },
-      { key: "ec", name: "Esquema Corporal", sigla: "EC" },
-      { key: "oe", name: "Organização Espacial", sigla: "OE" },
-      { key: "ot", name: "Organização Temporal", sigla: "OT" }
+      { key: "mf", name: "Motricidade Fina", sigla: "MF", num: 1 },
+      { key: "mg", name: "Motricidade Global", sigla: "MG", num: 2 },
+      { key: "e",  name: "Equilíbrio", sigla: "E", num: 3 },
+      { key: "ec", name: "Esquema Corporal", sigla: "EC", num: 4 },
+      { key: "oe", name: "Organização Espacial", sigla: "OE", num: 5 },
+      { key: "ot", name: "Organização Temporal", sigla: "OT", num: 6 }
     ];
 
     const AGES_EDM = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -748,37 +867,27 @@
       return isNaN(dt.getTime()) ? null : dt;
     }
 
-    function calcularIdadeEDM(nasc, exame) {
-      let anos = exame.getFullYear() - nasc.getFullYear();
-      let meses = exame.getMonth() - nasc.getMonth();
-      let dias = exame.getDate() - nasc.getDate();
-
-      if (dias < 0) {
-        meses--;
-        // Dias do mês anterior
-        const ultimoDiaMesAnterior = new Date(exame.getFullYear(), exame.getMonth(), 0).getDate();
-        dias += ultimoDiaMesAnterior;
-      }
-
-      if (meses < 0) {
-        anos--;
-        meses += 12;
-      }
-
-      const totalMesesCompletos = (anos * 12) + meses;
-      // Se faltar menos de metade do mês ou arredondamento clássico:
-      const totalMesesArredondado = dias >= 15 ? totalMesesCompletos + 1 : totalMesesCompletos;
-
-      return { anos, meses, dias, totalMesesCompletos, totalMesesArredondado };
-    }
-
+    // Fórmula oficial do protocolo Rosa Neto extraída diretamente da planilha (Célula S8):
+    // =ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0)&" anos e "&ARRED((((S7-S6)/365)-ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0))*12;0)&" m"
     function calculateIC(nascStr, avalStr) {
       if (!nascStr || !avalStr) return null;
       const dNasc = parseLocalDate(nascStr);
       const dAval = parseLocalDate(avalStr);
       if (!dNasc || !dAval || dAval < dNasc) return null;
 
-      return calcularIdadeEDM(dNasc, dAval);
+      const diffMs = dAval.getTime() - dNasc.getTime();
+      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+      const anosDecimal = diffDays / 365;
+      const anos = Math.floor(anosDecimal);
+      const meses = Math.round((anosDecimal - anos) * 12);
+      const totalMeses = (anos * 12) + meses;
+      const textoFormatado = `${anos} anos e ${meses} m`;
+
+      // Divisor oficial de Quociente Motor (QM) na planilha: (($S$7-$S$6)/30)
+      const divisorQM = diffDays / 30;
+
+      return { diffDays, anos, meses, totalMeses, textoFormatado, divisorQM };
     }
 
     function showToast(msg) {
@@ -805,12 +914,7 @@
         // Coluna do Nome da Área
         const tdName = document.createElement("td");
         tdName.className = "p-2.5 text-left font-bold text-slate-800";
-        tdName.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span>${area.name}</span>
-            <span id="badge-area-${area.key}" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 font-semibold">0/10</span>
-          </div>
-        `;
+        tdName.innerHTML = `<span class="text-xs font-bold text-slate-800">${area.name}</span>`;
         tr.appendChild(tdName);
 
         // 10 Colunas de Idades (2 a 11 anos)
@@ -923,9 +1027,8 @@
         }
       });
 
-      // Atualiza o contador de níveis preenchidos da área
-      const badgeElem = document.getElementById(`badge-area-${areaKey}`);
-      if (badgeElem) badgeElem.textContent = `${countFilled}/10`;
+      // Contador interno de níveis preenchidos
+      // (Removido o badge X/10 que causava confusão com o nível 2 anos)
 
       if (countFilled === 0) return null;
 
@@ -943,17 +1046,15 @@
     function updateCalculations() {
       const icData = calculateIC(state.nasc, state.aval);
       const hasIC = icData !== null;
-      const icAtual = hasIC ? icData.totalMesesArredondado : null;
+      const icAtual = hasIC ? icData.totalMeses : null;
+      const icDivisorAtual = hasIC ? icData.divisorQM : null;
 
       if (hasIC) {
-        const anos = icData.anos;
-        const mesesRestantes = icData.meses;
-        const diasRestantes = icData.dias;
         document.getElementById("badge-ic-meses").textContent = `${icAtual} meses`;
-        document.getElementById("badge-ic-anos").textContent = `(${anos}a ${mesesRestantes}m ${diasRestantes}d)`;
-        document.getElementById("res-ic-txt").textContent = `${icAtual} meses (${anos}a ${mesesRestantes}m ${diasRestantes}d)`;
+        document.getElementById("badge-ic-anos").textContent = `(${icData.textoFormatado})`;
+        document.getElementById("res-ic-txt").textContent = `${icAtual} meses (${icData.textoFormatado})`;
         const compIcTag = document.getElementById("comp-ic-tag");
-        if (compIcTag) compIcTag.textContent = `IC Atual: ${icAtual} m`;
+        if (compIcTag) compIcTag.textContent = `IC Atual: ${icAtual} m (${icData.textoFormatado})`;
         const compCardIc = document.getElementById("comp-card-ic");
         if (compCardIc) compCardIc.textContent = `${icAtual} m`;
       } else {
@@ -983,9 +1084,11 @@
 
       // Cálculo de IC Anterior
       let icAnt = state.ant.ic;
+      let icDivisorAnt = null;
       if (state.ant.data && state.nasc) {
         const icAntData = calculateIC(state.nasc, state.ant.data);
-        icAnt = icAntData ? icAntData.totalMesesArredondado : null;
+        icAnt = icAntData ? icAntData.totalMeses : null;
+        icDivisorAnt = icAntData ? icAntData.divisorQM : null;
         state.ant.ic = icAnt;
         const compAntIcInp = document.getElementById("comp-ant-ic");
         if (compAntIcInp && document.activeElement !== compAntIcInp) {
@@ -1026,9 +1129,18 @@
         const imAtual = calculateAreaIMFromGrid(k);
         calculatedAreasAtual[k] = imAtual;
 
-        // Atualiza a coluna da tabela da grade
+        // Atualiza a coluna da tabela da grade com meses e anos claros
         const gridColIM = document.getElementById(`grid-im-calc-${k}`);
-        if (gridColIM) gridColIM.textContent = imAtual !== null ? `${imAtual} m` : "-";
+        if (gridColIM) {
+          if (imAtual !== null) {
+            const anosCalc = Math.floor(imAtual / 12);
+            const mesesCalc = imAtual % 12;
+            const descAnos = mesesCalc > 0 ? `${anosCalc}a ${mesesCalc}m` : `${anosCalc} anos`;
+            gridColIM.innerHTML = `<div class="font-black text-indigo-700 text-xs">${imAtual} m</div><div class="text-[10px] text-slate-500 font-semibold">${descAnos}</div>`;
+          } else {
+            gridColIM.textContent = "-";
+          }
+        }
 
         if (imAtual !== null) {
           sumIMAtual += imAtual;
@@ -1042,8 +1154,8 @@
           countIMAnt++;
         }
 
-        const qmAtual = (imAtual !== null && hasIC) ? Math.round((imAtual / icAtual) * 100) : null;
-        const qmAnt = (hasIMAnt && icAnt) ? Math.round((Number(imAnt) / icAnt) * 100) : null;
+        const qmAtual = (imAtual !== null && hasIC && icDivisorAtual > 0) ? Math.round((imAtual / icDivisorAtual) * 100) : null;
+        const qmAnt = (hasIMAnt && icDivisorAnt && icDivisorAnt > 0) ? Math.round((Number(imAnt) / icDivisorAnt) * 100) : ((hasIMAnt && icAnt) ? Math.round((Number(imAnt) / icAnt) * 100) : null);
 
         const clAtual = qmAtual ? getClassification(qmAtual) : { label: "Aguardando", color: "text-slate-400" };
         const clAnt = qmAnt ? getClassification(qmAnt) : { label: "-", color: "text-slate-400" };
@@ -1056,7 +1168,7 @@
           <tr class="hover:bg-slate-50">
             <td class="py-1.5 font-medium text-slate-800">${area.name}</td>
             <td class="py-1.5 text-center font-bold text-slate-700">${imAtual !== null ? imAtual + 'm' : '-'}</td>
-            <td class="py-1.5 text-right font-bold text-indigo-700">${qmAtual ? qmAtual.toFixed(1) : '-'}</td>
+            <td class="py-1.5 text-right font-bold text-indigo-700">${qmAtual !== null ? qmAtual : '-'}</td>
           </tr>
         `);
 
@@ -1081,9 +1193,9 @@
             <td class="p-3 text-center font-bold text-blue-900 bg-blue-50/40">${hasIMAnt ? imAnt + ' m' : '-'}</td>
             <td class="p-3 text-center font-black text-emerald-900 bg-emerald-50/40">${imAtual !== null ? imAtual + ' m' : '-'}</td>
             <td class="p-3 text-center font-black ${ganhoIM !== null ? (ganhoIM >= 0 ? 'text-emerald-700' : 'text-red-700') : 'text-slate-400'}">${ganhoIM !== null ? (ganhoIM >= 0 ? '+' : '') + ganhoIM + ' m' : '-'}</td>
-            <td class="p-3 text-center text-slate-600">${qmAnt ? qmAnt.toFixed(1) : '-'}</td>
-            <td class="p-3 text-center font-bold text-indigo-700">${qmAtual ? qmAtual.toFixed(1) : '-'}</td>
-            <td class="p-3 text-center font-bold ${deltaQM !== null ? (deltaQM >= 0 ? 'text-emerald-700' : 'text-amber-700') : 'text-slate-400'}">${deltaQM !== null ? (deltaQM >= 0 ? '+' : '') + deltaQM.toFixed(1) : '-'}</td>
+            <td class="p-3 text-center text-slate-600">${qmAnt !== null ? qmAnt : '-'}</td>
+            <td class="p-3 text-center font-bold text-indigo-700">${qmAtual !== null ? qmAtual : '-'}</td>
+            <td class="p-3 text-center font-bold ${deltaQM !== null ? (deltaQM >= 0 ? 'text-emerald-700' : 'text-amber-700') : 'text-slate-400'}">${deltaQM !== null ? (deltaQM >= 0 ? '+' : '') + deltaQM : '-'}</td>
             <td class="p-3 text-center">${statusTag}</td>
           </tr>
         `);
@@ -1105,10 +1217,10 @@
       if (compCardImg) compCardImg.textContent = imgAtual ? `${imgAtual.toFixed(1)} m` : "-";
 
       // Quociente Motor Geral (QMG)
-      const qmgAtual = (imgAtual && hasIC) ? Math.round((imgAtual / icAtual) * 100) : null;
-      const qmgAnt = (imgAnt && icAnt) ? Math.round((imgAnt / icAnt) * 100) : null;
+      const qmgAtual = (imgAtual && hasIC && icDivisorAtual > 0) ? Math.round((imgAtual / icDivisorAtual) * 100) : null;
+      const qmgAnt = (imgAnt && icDivisorAnt && icDivisorAnt > 0) ? Math.round((imgAnt / icDivisorAnt) * 100) : ((imgAnt && icAnt) ? Math.round((imgAnt / icAnt) * 100) : null);
 
-      document.getElementById("res-qmg-val").textContent = qmgAtual ? qmgAtual.toFixed(1) : "-";
+      document.getElementById("res-qmg-val").textContent = qmgAtual !== null ? qmgAtual : "-";
       const compCardQmg = document.getElementById("comp-card-qmg");
       if (compCardQmg) compCardQmg.textContent = qmgAtual ? qmgAtual.toFixed(1) : "-";
 
@@ -1213,6 +1325,204 @@
 
       const compCardClass = document.getElementById("comp-card-class");
       if (compCardClass) compCardClass.textContent = overallClass.label;
+
+      // =======================================================
+      // ATUALIZAÇÃO DO PAINEL CLÍNICO OFICIAL (ESTILO APP MOTRICIDADE)
+      // =======================================================
+      const clinBannerElem = document.getElementById("clin-banner");
+      const clinBadgeQmgElem = document.getElementById("clin-badge-qmg");
+      const clinBadgeIpinElem = document.getElementById("clin-badge-ipin");
+      const clinSummaryTxtElem = document.getElementById("clin-summary-txt");
+      const clinAtencaoListElem = document.getElementById("clin-atencao-list");
+      const clinPontoForteElem = document.getElementById("clin-ponto-forte");
+      const clinProximoFocoElem = document.getElementById("clin-proximo-foco");
+      const clinPerfilBodyElem = document.getElementById("clin-perfil-body");
+      const clinQuocientesBodyElem = document.getElementById("clin-quocientes-body");
+
+      const evaluatedAreasList = [];
+      const attentionAreasList = [];
+
+      AREAS_EDM.forEach(a => {
+        const im = calculatedAreasAtual[a.key];
+        const qm = (im !== null && hasIC && icDivisorAtual > 0) ? Math.round((im / icDivisorAtual) * 100) : null;
+        const diff = (im !== null && hasIC) ? (im - icAtual) : null;
+
+        if (im !== null && qm !== null) {
+          evaluatedAreasList.push({ area: a, im, qm, diff });
+          if (qm < 80) {
+            attentionAreasList.push({ area: a, im, qm, diff });
+          }
+        }
+      });
+
+      // 1. Top Banner
+      if (clinBannerElem) {
+        if (imgAtual && hasIC) {
+          clinBannerElem.classList.remove("hidden");
+          const imgM = Math.round(imgAtual);
+          const anosImg = Math.floor(imgM / 12);
+          const descImg = anosImg > 0 ? `${anosImg}a` : "";
+          const descIc = icData ? `${icData.anos}a` : "";
+          const difM = Math.round(Math.abs(desvAtual));
+          const sentido = desvAtual < 0 ? `${difM} meses abaixo do esperado` : (desvAtual > 0 ? `${difM} meses acima do esperado` : `compatível com o esperado`);
+
+          // Badge QMG
+          clinBadgeQmgElem.textContent = `QMG ${qmgAtual} · ${overallClass.label}`;
+          if (qmgAtual <= 69) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-red-600 text-white shadow-xs";
+            clinBannerElem.className = "bg-red-50/80 border-l-4 border-red-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else if (qmgAtual <= 79) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-orange-500 text-white shadow-xs";
+            clinBannerElem.className = "bg-orange-50/80 border-l-4 border-orange-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else if (qmgAtual <= 89) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-amber-500 text-white shadow-xs";
+            clinBannerElem.className = "bg-amber-50/80 border-l-4 border-amber-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else if (qmgAtual <= 119) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-emerald-600 text-white shadow-xs";
+            clinBannerElem.className = "bg-emerald-50/80 border-l-4 border-emerald-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-indigo-600 text-white shadow-xs";
+            clinBannerElem.className = "bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          }
+
+          // Badge IP/IN
+          const ipInVal = desvAtual !== null ? Math.round(desvAtual) : 0;
+          clinBadgeIpinElem.textContent = `IP/IN ${ipInVal > 0 ? '+' : ''}${ipInVal}`;
+          if (ipInVal < 0) {
+            clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-red-100 text-red-800";
+          } else if (ipInVal > 0) {
+            clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-emerald-100 text-emerald-800";
+          } else {
+            clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-800";
+          }
+
+          // Narrative Text
+          clinSummaryTxtElem.textContent = `IMG ${imgM} meses (${descImg}) · IC ${icAtual} meses (${descIc}) — ${sentido} (QMG ${qmgAtual}, ${overallClass.label}).`;
+        } else {
+          clinBadgeQmgElem.textContent = "QMG - · Aguardando dados";
+          clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-300 text-slate-700";
+          clinBadgeIpinElem.textContent = "IP/IN -";
+          clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-700";
+          clinBannerElem.className = "bg-slate-50 border-l-4 border-slate-300 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          clinSummaryTxtElem.textContent = "Preencha a data e marque os testes na grade acima para gerar o laudo clínico.";
+        }
+      }
+
+      // 2. Pontos de Atenção (QM abaixo de 80) ordenados do mais crítico para o menor
+      if (clinAtencaoListElem) {
+        attentionAreasList.sort((x, y) => x.qm - y.qm);
+        if (attentionAreasList.length > 0) {
+          clinAtencaoListElem.innerHTML = attentionAreasList.map(item => `
+            <div class="border border-slate-200 bg-white rounded-xl p-2.5 sm:px-4 sm:py-3 flex items-center justify-between text-xs shadow-xs hover:border-slate-300 transition">
+              <span class="font-bold text-slate-800">IM${item.area.num} — ${item.area.name}</span>
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded font-black text-[11px] bg-red-100 text-red-700">QM ${item.qm}</span>
+                <span class="font-bold text-red-600 text-xs">${item.diff !== null ? (item.diff > 0 ? '+' : '') + item.diff + ' meses' : '-'}</span>
+              </div>
+            </div>
+          `).join("");
+        } else if (evaluatedAreasList.length > 0) {
+          clinAtencaoListElem.innerHTML = `
+            <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50 text-xs font-semibold text-emerald-800 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Nenhum ponto de atenção crítico identificado (todos os quocientes avaliados estão normais ou superiores &ge; 80).
+            </div>
+          `;
+        } else {
+          clinAtencaoListElem.innerHTML = `
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-400 italic text-center">
+              Preencha a data e marque a grade para identificar os pontos de atenção.
+            </div>
+          `;
+        }
+      }
+
+      // 3. Ponto Forte e Próximo Foco
+      if (clinPontoForteElem && clinProximoFocoElem) {
+        if (evaluatedAreasList.length > 0) {
+          const sortedByQM = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
+          const forte = sortedByQM[0];
+          const foco = sortedByQM[sortedByQM.length - 1];
+
+          clinPontoForteElem.innerHTML = `
+            <span class="font-bold text-slate-900">${forte.area.name}</span>
+            <span class="text-slate-600 font-semibold ml-1">— IM ${forte.im} meses</span>
+            <span class="${forte.diff >= 0 ? 'text-emerald-700' : 'text-red-600'} font-bold ml-1">(${forte.diff >= 0 ? '+' : ''}${forte.diff} meses)</span>
+          `;
+
+          clinProximoFocoElem.innerHTML = `
+            <span class="font-bold text-slate-900">${foco.area.name}</span>
+            <span class="text-slate-600 font-semibold ml-1">— IM ${foco.im} meses</span>
+            <span class="${foco.diff >= 0 ? 'text-emerald-700' : 'text-red-600'} font-bold ml-1">(${foco.diff >= 0 ? '+' : ''}${foco.diff} meses)</span>
+          `;
+        } else {
+          clinPontoForteElem.textContent = "Aguardando dados";
+          clinProximoFocoElem.textContent = "Aguardando dados";
+        }
+      }
+
+      // 4. Tabelas Perfil Motor e Quocientes
+      if (clinPerfilBodyElem) {
+        const pRows = AREAS_EDM.map(a => {
+          const im = calculatedAreasAtual[a.key];
+          const diff = (im !== null && hasIC) ? (im - icAtual) : null;
+          const diffText = diff !== null ? (diff >= 0 ? `+${diff} meses` : `${diff} meses`) : "-";
+          const diffColor = diff !== null ? (diff >= 0 ? "text-emerald-700" : "text-red-600") : "text-slate-400";
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2 font-medium text-slate-800">IM${a.num} — ${a.name}</td>
+              <td class="py-2 text-center font-bold text-slate-800">${im !== null ? im : "-"}</td>
+              <td class="py-2 text-right font-black ${diffColor}">${diffText}</td>
+            </tr>
+          `;
+        });
+
+        const imgDiff = (imgAtual !== null && hasIC) ? Math.round(imgAtual - icAtual) : null;
+        const imgDiffText = imgDiff !== null ? (imgDiff >= 0 ? `+${imgDiff} meses` : `${imgDiff} meses`) : "-";
+        const imgDiffColor = imgDiff !== null ? (imgDiff >= 0 ? "text-emerald-700" : "text-red-600") : "text-slate-400";
+        pRows.push(`
+          <tr class="border-t-2 border-slate-200 font-black bg-slate-50/70">
+            <td class="py-2 font-black text-slate-900">IMG</td>
+            <td class="py-2 text-center font-black text-slate-900">${imgAtual !== null ? Math.round(imgAtual) : "-"}</td>
+            <td class="py-2 text-right font-black ${imgDiffColor}">${imgDiffText}</td>
+          </tr>
+        `);
+        clinPerfilBodyElem.innerHTML = pRows.join("");
+      }
+
+      if (clinQuocientesBodyElem) {
+        const qRows = AREAS_EDM.map(a => {
+          const im = calculatedAreasAtual[a.key];
+          const qm = (im !== null && hasIC && icDivisorAtual > 0) ? Math.round((im / icDivisorAtual) * 100) : null;
+          let qmColor = "text-slate-400";
+          if (qm !== null) {
+            if (qm < 80) qmColor = "text-red-600 font-bold";
+            else if (qm < 90) qmColor = "text-amber-600 font-bold";
+            else qmColor = "text-emerald-700 font-bold";
+          }
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2 font-medium text-slate-800">QM${a.num} — ${a.name}</td>
+              <td class="py-2 text-right font-black ${qmColor}">${qm !== null ? qm : "-"}</td>
+            </tr>
+          `;
+        });
+
+        let qmgColor = "text-slate-400";
+        if (qmgAtual !== null) {
+          if (qmgAtual < 80) qmgColor = "text-red-600 font-bold";
+          else if (qmgAtual < 90) qmgColor = "text-amber-600 font-bold";
+          else qmgColor = "text-emerald-700 font-bold";
+        }
+        qRows.push(`
+          <tr class="border-t-2 border-slate-200 font-black bg-slate-50/70">
+            <td class="py-2 font-black text-slate-900">QMG</td>
+            <td class="py-2 text-right font-black ${qmgColor}">${qmgAtual !== null ? qmgAtual : "-"}</td>
+          </tr>
+        `);
+        clinQuocientesBodyElem.innerHTML = qRows.join("");
+      }
+
 
       // Lateralidade
       let diagLat = "Destro Completo";
