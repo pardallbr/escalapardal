@@ -167,11 +167,21 @@
               </h2>
               <p class="text-xs text-slate-500 no-print">Preencha o nome e a data de nascimento para calcular a Idade Cronológica.</p>
             </div>
-            <div class="flex items-center gap-2 no-print">
-              <button id="btn-demo" class="px-3 py-1.5 text-xs font-semibold rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition">
+            <div class="flex flex-wrap items-center gap-2 no-print">
+              <button type="button" id="btn-salvar-crianca" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                Salvar Criança
+              </button>
+              <select id="select-criancas-salvas" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none max-w-[190px] truncate">
+                <option value="">📂 Crianças Salvas...</option>
+              </select>
+              <button type="button" id="btn-excluir-crianca" title="Excluir criança selecionada do navegador" class="px-2 py-1.5 text-xs font-bold rounded-lg bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-700 border border-slate-200 transition hidden">
+                🗑️
+              </button>
+              <button type="button" id="btn-demo" class="px-3 py-1.5 text-xs font-semibold rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition">
                 Preencher Exemplo
               </button>
-              <button id="btn-limpar" class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+              <button type="button" id="btn-limpar" class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
                 Limpar
               </button>
             </div>
@@ -512,6 +522,10 @@
 
               <!-- Action Buttons on Right Card (Screen only) -->
               <div class="mt-6 pt-4 border-t border-slate-200 space-y-2 no-print">
+                <button type="button" id="btn-salvar-crianca-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                  Salvar Criança no Navegador
+                </button>
                 <button id="btn-salvar-pdf-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   Salvar Relatório em PDF
@@ -571,10 +585,10 @@
                 </span>
                 <h3 class="text-sm font-extrabold text-indigo-950">Digite a Avaliação Anterior da Criança (Linha de Base)</h3>
               </div>
-              <div class="flex items-center gap-2">
-                <button type="button" id="btn-comp-demo" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">
-                  Preencher Exemplo de Evolução
-                </button>
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="select-comp-carregar-salva" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-indigo-300 bg-white text-indigo-900 focus:ring-2 focus:ring-indigo-500 outline-none max-w-[220px] truncate">
+                  <option value="">📂 Carregar Criança Salva...</option>
+                </select>
                 <button type="button" id="btn-comp-limpar" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition">
                   Limpar Dados Antigos
                 </button>
@@ -1796,6 +1810,170 @@
       });
     }
 
+
+    // =======================================================
+    // GERENCIAMENTO DE CRIANÇAS SALVAS NO NAVEGADOR (LOCALSTORAGE)
+    // =======================================================
+    function getSavedChildren() {
+      try {
+        const raw = localStorage.getItem("edm_criancas_salvas");
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveChildrenList(list) {
+      try {
+        localStorage.setItem("edm_criancas_salvas", JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function salvarCriancaAtual() {
+      const nomeTrim = (state.nome || "").trim();
+      if (!nomeTrim) {
+        showToast("Por favor, digite o nome da criança antes de salvar.");
+        const inNome = document.getElementById("input-nome");
+        if (inNome) inNome.focus();
+        return;
+      }
+
+      const list = getSavedChildren();
+
+      // Guarda o mapa das idades motoras calculadas
+      const ims = {};
+      AREAS_EDM.forEach(a => {
+        ims[a.key] = calculateAreaIMFromGrid(a.key);
+      });
+
+      const record = {
+        id: "child_" + Date.now(),
+        nome: nomeTrim,
+        nasc: state.nasc,
+        aval: state.aval,
+        obs: state.obs,
+        lat: { ...state.lat },
+        grid: JSON.parse(JSON.stringify(state.grid)),
+        areasIM: ims,
+        dataSalva: new Date().toLocaleDateString("pt-BR")
+      };
+
+      // Se já existir com o mesmo nome e mesma data de avaliação, substitui; caso contrário, insere no topo
+      const existingIdx = list.findIndex(c => c.nome.toLowerCase() === nomeTrim.toLowerCase() && c.aval === state.aval);
+      if (existingIdx >= 0) {
+        list[existingIdx] = record;
+      } else {
+        list.unshift(record);
+      }
+
+      saveChildrenList(list);
+      refreshSavedChildrenSelects();
+      showToast(`Criança "${nomeTrim}" salva com sucesso no seu navegador!`);
+    }
+
+    function refreshSavedChildrenSelects() {
+      const list = getSavedChildren();
+      
+      const selMain = document.getElementById("select-criancas-salvas");
+      const btnDel = document.getElementById("btn-excluir-crianca");
+      if (selMain) {
+        selMain.innerHTML = `<option value="">📂 Crianças Salvas (${list.length})...</option>` +
+          list.map(c => `<option value="${c.id}">${c.nome} (${c.aval || c.dataSalva})</option>`).join("");
+        if (btnDel) {
+          btnDel.classList.toggle("hidden", list.length === 0);
+        }
+      }
+
+      const selComp = document.getElementById("select-comp-carregar-salva");
+      if (selComp) {
+        selComp.innerHTML = `<option value="">📂 Carregar Criança Salva (${list.length})...</option>` +
+          list.map(c => `<option value="${c.id}">${c.nome} (${c.aval || c.dataSalva})</option>`).join("");
+      }
+    }
+
+    function carregarCriancaPorId(id) {
+      if (!id) return;
+      const list = getSavedChildren();
+      const c = list.find(item => item.id === id);
+      if (!c) return;
+
+      state.nome = c.nome || "";
+      state.nasc = c.nasc || "";
+      state.aval = c.aval || new Date().toISOString().split("T")[0];
+      state.obs = c.obs || "";
+      state.lat = c.lat ? { ...c.lat } : { mao: "D", olho: "D", pe: "D" };
+      state.grid = c.grid ? JSON.parse(JSON.stringify(c.grid)) : { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
+
+      const inNome = document.getElementById("input-nome");
+      const inNasc = document.getElementById("input-nasc");
+      const inAval = document.getElementById("input-aval");
+      const inObs = document.getElementById("input-obs");
+
+      if (inNome) inNome.value = state.nome;
+      if (inNasc) inNasc.value = state.nasc;
+      if (inAval) inAval.value = state.aval;
+      if (inObs) inObs.value = state.obs;
+
+      setupLatButtons("mao", "mao");
+      setupLatButtons("olho", "olho");
+      setupLatButtons("pe", "pe");
+
+      renderEdmGrid();
+      updateCalculations();
+      showToast(`Avaliação de "${c.nome}" carregada com sucesso!`);
+    }
+
+    function carregarCriancaNoComparativo(id) {
+      if (!id) return;
+      const list = getSavedChildren();
+      const c = list.find(item => item.id === id);
+      if (!c) return;
+
+      state.ant.data = c.aval || "";
+      const icData = calculateIC(state.nasc || c.nasc, c.aval);
+      state.ant.ic = icData ? icData.totalMeses : null;
+
+      const antDataInp = document.getElementById("comp-ant-data");
+      const antIcInp = document.getElementById("comp-ant-ic");
+      if (antDataInp) antDataInp.value = state.ant.data;
+      if (antIcInp) antIcInp.value = state.ant.ic || "";
+
+      const areasIM = c.areasIM || {};
+      AREAS_EDM.forEach(a => {
+        let imVal = areasIM[a.key];
+        if (imVal === undefined && c.grid && c.grid[a.key]) {
+          let sum = 0;
+          AGES_EDM.forEach(age => {
+            if (c.grid[a.key][age]) sum += Number(c.grid[a.key][age]);
+          });
+          imVal = Math.round(12 + sum * 12);
+        }
+        state.ant.areas[a.key] = imVal !== undefined ? imVal : null;
+        const el = document.getElementById(`comp-ant-${a.key}`);
+        if (el) el.value = state.ant.areas[a.key] ?? "";
+      });
+
+      updateCalculations();
+      showToast(`Avaliação anterior de "${c.nome}" carregada na linha de base!`);
+    }
+
+    function excluirCriancaSelecionada() {
+      const selMain = document.getElementById("select-criancas-salvas");
+      if (!selMain || !selMain.value) {
+        showToast("Selecione uma criança na lista para excluir.");
+        return;
+      }
+      const id = selMain.value;
+      let list = getSavedChildren();
+      const c = list.find(item => item.id === id);
+      if (!c) return;
+
+      list = list.filter(item => item.id !== id);
+      saveChildrenList(list);
+      refreshSavedChildrenSelects();
+      showToast(`Registro de "${c.nome}" removido do navegador.`);
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       const formLogin = document.getElementById("form-login");
       const inputLoginEmail = document.getElementById("input-login-email");
@@ -1856,24 +2034,7 @@
         }
       });
 
-      // Botões do Comparativo (Demo e Limpar)
-      const btnCompDemo = document.getElementById("btn-comp-demo");
-      if (btnCompDemo) {
-        btnCompDemo.addEventListener("click", () => {
-          state.ant.data = "2024-04-15";
-          state.ant.ic = 66;
-          state.ant.areas = { mf: 66, mg: 60, e: 66, ec: 66, oe: 60, ot: 66 };
-
-          if (antDataInp) antDataInp.value = state.ant.data;
-          if (antIcInp) antIcInp.value = state.ant.ic;
-          ["mf", "mg", "e", "ec", "oe", "ot"].forEach(k => {
-            const el = document.getElementById(`comp-ant-${k}`);
-            if (el) el.value = state.ant.areas[k];
-          });
-          showToast("Dados de exemplo da avaliação anterior carregados!");
-          updateCalculations();
-        });
-      }
+      // Botões do Comparativo (Carregar Salva e Limpar)
 
       const btnCompLimpar = document.getElementById("btn-comp-limpar");
       if (btnCompLimpar) {
@@ -2015,6 +2176,31 @@
 
       document.getElementById("btn-imprimir").addEventListener("click", () => window.print());
       document.getElementById("btn-imprimir-card").addEventListener("click", () => window.print());
+
+
+      // Eventos de Salvar Criança e Carregar Salvas
+      const btnSalvarCrianca = document.getElementById("btn-salvar-crianca");
+      if (btnSalvarCrianca) btnSalvarCrianca.addEventListener("click", salvarCriancaAtual);
+
+      const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
+      if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
+
+      const selCriancas = document.getElementById("select-criancas-salvas");
+      if (selCriancas) {
+        selCriancas.addEventListener("change", e => carregarCriancaPorId(e.target.value));
+      }
+
+      const btnExcluirCrianca = document.getElementById("btn-excluir-crianca");
+      if (btnExcluirCrianca) {
+        btnExcluirCrianca.addEventListener("click", excluirCriancaSelecionada);
+      }
+
+      const selCompSalva = document.getElementById("select-comp-carregar-salva");
+      if (selCompSalva) {
+        selCompSalva.addEventListener("change", e => carregarCriancaNoComparativo(e.target.value));
+      }
+
+      refreshSavedChildrenSelects();
 
       checkSession();
     });
