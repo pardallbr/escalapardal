@@ -869,6 +869,20 @@
 
     // Fórmula oficial do protocolo Rosa Neto extraída diretamente da planilha (Célula S8):
     // =ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0)&" anos e "&ARRED((((S7-S6)/365)-ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0))*12;0)&" m"
+    function formatarMesesParaAnosEMeses(totalM) {
+      if (totalM === null || totalM === undefined || isNaN(totalM)) return "";
+      const absM = Math.abs(Math.round(totalM));
+      const a = Math.floor(absM / 12);
+      const m = Math.round(absM % 12);
+      if (a > 0 && m > 0) {
+        return `${a} ${a === 1 ? 'ano' : 'anos'} e ${m} m`;
+      } else if (a > 0) {
+        return `${a} ${a === 1 ? 'ano' : 'anos'}`;
+      } else {
+        return `${m} m`;
+      }
+    }
+
     function calculateIC(nascStr, avalStr) {
       if (!nascStr || !avalStr) return null;
       const dNasc = parseLocalDate(nascStr);
@@ -1212,9 +1226,17 @@
       const imgAtual = all6Filled ? (sumIMAtual / 6) : null;
       const imgAnt = all6AntFilled ? (sumIMAnt / 6) : null;
 
-      document.getElementById("res-img-txt").textContent = imgAtual ? `${imgAtual.toFixed(1)} meses` : "-";
+      if (imgAtual !== null) {
+        const imgM = Math.round(imgAtual * 10) / 10;
+        const imgDesc = formatarMesesParaAnosEMeses(imgAtual);
+        const imgMStr = imgM % 1 === 0 ? imgM.toFixed(0) : imgM.toFixed(1);
+        document.getElementById("res-img-txt").textContent = `${imgMStr} meses (${imgDesc})`;
+      } else {
+        document.getElementById("res-img-txt").textContent = "-";
+      }
+
       const compCardImg = document.getElementById("comp-card-img");
-      if (compCardImg) compCardImg.textContent = imgAtual ? `${imgAtual.toFixed(1)} m` : "-";
+      if (compCardImg) compCardImg.textContent = imgAtual ? `${Math.round(imgAtual)} m` : "-";
 
       // Quociente Motor Geral (QMG)
       const qmgAtual = (imgAtual && hasIC && icAtual > 0) ? Math.round((imgAtual / icAtual) * 100) : null;
@@ -1222,29 +1244,33 @@
 
       document.getElementById("res-qmg-val").textContent = qmgAtual !== null ? qmgAtual : "-";
       const compCardQmg = document.getElementById("comp-card-qmg");
-      if (compCardQmg) compCardQmg.textContent = qmgAtual ? qmgAtual.toFixed(1) : "-";
+      if (compCardQmg) compCardQmg.textContent = qmgAtual !== null ? qmgAtual : "-";
 
-      // Desvio Motor
+      // Desvio Motor com idade em anos e meses (solicitado pelo usuário)
       const desvAtual = (imgAtual && hasIC) ? (imgAtual - icAtual) : null;
       const desvElem = document.getElementById("res-desv-txt");
       const compCardDesv = document.getElementById("comp-card-desv");
       const compCardStatus = document.getElementById("comp-card-status");
 
       if (desvAtual !== null) {
-        if (desvAtual > 0) {
-          desvElem.textContent = `+${desvAtual.toFixed(1)} meses (Avanço)`;
+        const desvM = Math.round(desvAtual * 10) / 10;
+        const desvDesc = formatarMesesParaAnosEMeses(desvAtual);
+        const mStr = desvM % 1 === 0 ? Math.round(desvM) : desvM.toFixed(1);
+
+        if (desvM > 0) {
+          desvElem.textContent = `+${mStr} meses (${desvDesc}) (Avanço)`;
           desvElem.className = "font-bold text-emerald-700";
-          if (compCardDesv) compCardDesv.textContent = `+${desvAtual.toFixed(1)} m`;
+          if (compCardDesv) compCardDesv.textContent = `+${mStr} m (${desvDesc})`;
           if (compCardStatus) compCardStatus.textContent = "Desenvolvimento Positivo";
-        } else if (desvAtual === 0) {
-          desvElem.textContent = `0 meses (Equivalente)`;
+        } else if (desvM === 0) {
+          desvElem.textContent = `0 meses (Equivalente à idade)`;
           desvElem.className = "font-bold text-blue-700";
-          if (compCardDesv) compCardDesv.textContent = `0.0 m`;
+          if (compCardDesv) compCardDesv.textContent = `0 m`;
           if (compCardStatus) compCardStatus.textContent = "Desenvolvimento Equivalente";
         } else {
-          desvElem.textContent = `${desvAtual.toFixed(1)} meses (Atraso)`;
+          desvElem.textContent = `${mStr} meses (${desvDesc}) (Atraso)`;
           desvElem.className = "font-bold text-amber-700";
-          if (compCardDesv) compCardDesv.textContent = `${desvAtual.toFixed(1)} m`;
+          if (compCardDesv) compCardDesv.textContent = `${mStr} m (${desvDesc})`;
           if (compCardStatus) compCardStatus.textContent = "Alerta de Atraso";
         }
       } else {
@@ -1364,7 +1390,8 @@
           const descImg = anosImg > 0 ? `${anosImg}a` : "";
           const descIc = icData ? `${icData.anos}a` : "";
           const difM = Math.round(Math.abs(desvAtual));
-          const sentido = desvAtual < 0 ? `${difM} meses abaixo do esperado` : (desvAtual > 0 ? `${difM} meses acima do esperado` : `compatível com o esperado`);
+          const descDif = formatarMesesParaAnosEMeses(desvAtual);
+          const sentido = desvAtual < 0 ? `${difM} meses (${descDif}) abaixo do esperado` : (desvAtual > 0 ? `${difM} meses (${descDif}) acima do esperado` : `compatível com o esperado`);
 
           // Badge QMG
           clinBadgeQmgElem.textContent = `QMG ${qmgAtual} · ${overallClass.label}`;
