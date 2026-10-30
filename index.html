@@ -737,16 +737,48 @@
       return { label: "Muito Inferior", color: "bg-red-100 text-red-800 border-red-300", desc: "Atraso severo. Recomendada avaliação médica multidisciplinar." };
     }
 
+    function parseLocalDate(dateStr) {
+      if (!dateStr) return null;
+      const parts = dateStr.split("-");
+      if (parts.length !== 3) return null;
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const dt = new Date(y, m, d);
+      return isNaN(dt.getTime()) ? null : dt;
+    }
+
+    function calcularIdadeEDM(nasc, exame) {
+      let anos = exame.getFullYear() - nasc.getFullYear();
+      let meses = exame.getMonth() - nasc.getMonth();
+      let dias = exame.getDate() - nasc.getDate();
+
+      if (dias < 0) {
+        meses--;
+        // Dias do mês anterior
+        const ultimoDiaMesAnterior = new Date(exame.getFullYear(), exame.getMonth(), 0).getDate();
+        dias += ultimoDiaMesAnterior;
+      }
+
+      if (meses < 0) {
+        anos--;
+        meses += 12;
+      }
+
+      const totalMesesCompletos = (anos * 12) + meses;
+      // Se faltar menos de metade do mês ou arredondamento clássico:
+      const totalMesesArredondado = dias >= 15 ? totalMesesCompletos + 1 : totalMesesCompletos;
+
+      return { anos, meses, dias, totalMesesCompletos, totalMesesArredondado };
+    }
+
     function calculateIC(nascStr, avalStr) {
       if (!nascStr || !avalStr) return null;
-      const dNasc = new Date(nascStr + "T00:00:00");
-      const dAval = new Date(avalStr + "T00:00:00");
-      if (isNaN(dNasc.getTime()) || isNaN(dAval.getTime()) || dAval < dNasc) return null;
+      const dNasc = parseLocalDate(nascStr);
+      const dAval = parseLocalDate(avalStr);
+      if (!dNasc || !dAval || dAval < dNasc) return null;
 
-      // Fórmula oficial Rosa Neto: (DataExame - DataNasc em dias) / 30
-      const diffDays = Math.round((dAval.getTime() - dNasc.getTime()) / (1000 * 60 * 60 * 24));
-      const months = Math.round((diffDays / 30) * 10) / 10;
-      return Math.max(months, 1);
+      return calcularIdadeEDM(dNasc, dAval);
     }
 
     function showToast(msg) {
@@ -909,15 +941,17 @@
 
     // Atualização Geral
     function updateCalculations() {
-      const icAtual = calculateIC(state.nasc, state.aval);
-      const hasIC = icAtual !== null;
+      const icData = calculateIC(state.nasc, state.aval);
+      const hasIC = icData !== null;
+      const icAtual = hasIC ? icData.totalMesesArredondado : null;
 
       if (hasIC) {
-        const anos = Math.floor(icAtual / 12);
-        const mesesRestantes = icAtual % 12;
+        const anos = icData.anos;
+        const mesesRestantes = icData.meses;
+        const diasRestantes = icData.dias;
         document.getElementById("badge-ic-meses").textContent = `${icAtual} meses`;
-        document.getElementById("badge-ic-anos").textContent = `(${anos} anos e ${mesesRestantes} m)`;
-        document.getElementById("res-ic-txt").textContent = `${icAtual} meses (${anos}a ${mesesRestantes}m)`;
+        document.getElementById("badge-ic-anos").textContent = `(${anos}a ${mesesRestantes}m ${diasRestantes}d)`;
+        document.getElementById("res-ic-txt").textContent = `${icAtual} meses (${anos}a ${mesesRestantes}m ${diasRestantes}d)`;
         const compIcTag = document.getElementById("comp-ic-tag");
         if (compIcTag) compIcTag.textContent = `IC Atual: ${icAtual} m`;
         const compCardIc = document.getElementById("comp-card-ic");
@@ -950,7 +984,8 @@
       // Cálculo de IC Anterior
       let icAnt = state.ant.ic;
       if (state.ant.data && state.nasc) {
-        icAnt = calculateIC(state.nasc, state.ant.data);
+        const icAntData = calculateIC(state.nasc, state.ant.data);
+        icAnt = icAntData ? icAntData.totalMesesArredondado : null;
         state.ant.ic = icAnt;
         const compAntIcInp = document.getElementById("comp-ant-ic");
         if (compAntIcInp && document.activeElement !== compAntIcInp) {
