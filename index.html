@@ -97,14 +97,7 @@
               <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
               Comparativo de Evolução
             </button>
-            <button id="btn-salvar-pdf" class="px-3.5 py-2 text-sm font-medium rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white flex items-center gap-1.5 shadow-sm transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-              Salvar Relatório em PDF
-            </button>
-            <button id="btn-imprimir" class="px-3.5 py-2 text-sm font-medium rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-              Imprimir Relatório
-            </button>
+
           </div>
         </div>
       </div>
@@ -168,10 +161,6 @@
               <p class="text-xs text-slate-500 no-print">Preencha o nome e a data de nascimento para calcular a Idade Cronológica.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 no-print">
-              <button type="button" id="btn-salvar-crianca" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                Salvar Criança
-              </button>
               <select id="select-criancas-salvas" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none max-w-[190px] truncate">
                 <option value="">📂 Crianças Salvas...</option>
               </select>
@@ -2167,21 +2156,14 @@
         updateCalculations();
       });
 
-      document.getElementById("btn-salvar-pdf").addEventListener("click", exportarParaPDF);
       document.getElementById("btn-salvar-pdf-card").addEventListener("click", exportarParaPDF);
-
 
       const btnSalvarDriveCard = document.getElementById("btn-salvar-drive-card");
       if (btnSalvarDriveCard) btnSalvarDriveCard.addEventListener("click", exportarParaDrive);
 
-      document.getElementById("btn-imprimir").addEventListener("click", () => window.print());
       document.getElementById("btn-imprimir-card").addEventListener("click", () => window.print());
 
-
       // Eventos de Salvar Criança e Carregar Salvas
-      const btnSalvarCrianca = document.getElementById("btn-salvar-crianca");
-      if (btnSalvarCrianca) btnSalvarCrianca.addEventListener("click", salvarCriancaAtual);
-
       const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
       if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
 
@@ -2207,4 +2189,3 @@
   </script>
 </body>
 </html>
-
