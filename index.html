@@ -1,1 +1,2194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Desenvolvimento Motor — EDM Rosa Neto</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: #1e293b !important; font-size: 10pt; }
+      .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+      .page-break-avoid { break-inside: avoid; }
+      main { padding: 0 !important; max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen font-sans flex flex-col antialiased">
 
+  <!-- ============================================== -->
+  <!-- TELA DE LOGIN (ACESSO RESTRITO - LIMPA) -->
+  <!-- ============================================== -->
+  <div id="screen-login" class="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 sm:p-8 space-y-6">
+      
+      <div class="text-center space-y-1">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-100 text-blue-700 mb-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Sistema Motricidade</h2>
+        <p class="text-xs text-slate-500 font-medium">Acesso Restrito à Equipe de Avaliação EDM</p>
+      </div>
+
+      <form id="form-login" class="space-y-4">
+        <div>
+          <label for="input-login-email" class="block text-xs font-bold text-slate-700 mb-1">E-mail de Acesso Autorizado</label>
+          <input type="email" id="input-login-email" placeholder="seu-email@dominio.com" required class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+          <p id="login-error-msg" class="text-xs text-red-600 mt-2 hidden flex items-center gap-1 font-medium">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+            E-mail não autorizado. Digite seu e-mail cadastrado.
+          </p>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 px-4 text-sm font-bold rounded-lg bg-blue-700 hover:bg-blue-600 text-white shadow-md transition flex items-center justify-center gap-2">
+          <span>Entrar no Sistema</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- APLICAÇÃO PRINCIPAL (EXIBIDA APÓS O LOGIN) -->
+  <!-- ============================================== -->
+  <div id="app-content" class="hidden flex-1 flex flex-col">
+
+    <!-- Header Banner -->
+    <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-md no-print">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/30 text-blue-200 border border-blue-400/30">
+                Escala EDM • Francisco Rosa Neto
+              </span>
+              <span class="text-xs text-slate-300">Padrão Oficial Sistema Motricidade</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+              Avaliação e Calculadora de Desenvolvimento Motor (EDM)
+            </h1>
+            <p class="text-sm text-slate-300 mt-0.5">
+              Grade oficial de 60 níveis de testagem (idades 2 a 11 anos) com cálculo automático das Idades Motoras.
+            </p>
+          </div>
+
+          <!-- User Info and Action Buttons -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div class="px-3 py-1.5 rounded-lg bg-blue-950/70 border border-blue-400/20 text-xs flex items-center justify-between sm:justify-start gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <div>
+                  <span id="user-display-name" class="font-bold text-white block">Avaliador</span>
+                  <span id="user-display-email" class="text-[10px] text-blue-200 block">email@exemplo.com</span>
+                </div>
+              </div>
+              <button id="btn-logout" title="Sair do sistema" class="ml-2 px-2 py-1 rounded bg-slate-800 hover:bg-red-600 text-[11px] font-semibold text-slate-300 hover:text-white transition">
+                Sair
+              </button>
+            </div>
+
+            <!-- Navegação por Abas (Garantido lado a lado na mesma linha em mobile e desktop) -->
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button id="btn-tab-calc" class="flex-1 sm:flex-initial px-3.5 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors bg-white text-blue-950 shadow-sm flex items-center justify-center gap-1.5 text-center">
+                Nova Avaliação (EDM)
+              </button>
+              <button id="btn-tab-comp" class="flex-1 sm:flex-initial px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors bg-blue-950/60 hover:bg-white/10 text-slate-200 flex items-center justify-center gap-1.5 text-center">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span>Comparativo de Evolução</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
+
+      <!-- Toast Notification Container -->
+      <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 text-sm hidden flex items-center gap-2 transition-all no-print">
+        <span id="toast-msg">Mensagem</span>
+      </div>
+
+      <!-- Print / Export Header (Visible only in Print / PDF export) -->
+      <div id="print-header" class="hidden print:block pb-4 mb-4 border-b-2 border-slate-800">
+        <div class="flex justify-between items-start">
+          <div>
+            <h1 class="text-xl font-black text-slate-900 uppercase tracking-tight">Relatório de Avaliação do Desenvolvimento Motor</h1>
+            <p class="text-xs font-semibold text-slate-600">Protocolo Oficial EDM — Prof. Dr. Francisco Rosa Neto</p>
+          </div>
+          <div class="text-right text-[10px] text-slate-500">
+            <span>Sistema Motricidade</span><br>
+            <span id="print-date">Data: 28/10/2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================= -->
+      <!-- TAB 1: FLUXO DE AVALIAÇÃO EDM (DADOS -> TESTES -> RESULTADOS) -->
+      <!-- ======================================================= -->
+      <section id="section-calc" class="space-y-8">
+
+        <!-- Progress Steps (Igual à tela do App Motricidade) -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 no-print flex items-center justify-center">
+          <div class="flex items-center gap-4 sm:gap-8 text-xs font-bold">
+            <div class="flex items-center gap-2 text-blue-700">
+              <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">1</span>
+              <span>Identificação</span>
+            </div>
+            <div class="w-8 sm:w-16 h-0.5 bg-blue-300"></div>
+            <div class="flex items-center gap-2 text-blue-700">
+              <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">2</span>
+              <span>Testes EDM (60 Níveis)</span>
+            </div>
+            <div class="w-8 sm:w-16 h-0.5 bg-blue-300"></div>
+            <div class="flex items-center gap-2 text-blue-700">
+              <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">3</span>
+              <span>Resultados & Laudo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passo 1: Identificação do Avaliado -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-100 gap-3">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-600 no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                1. Dados do Avaliado
+              </h2>
+              <p class="text-xs text-slate-500 no-print">Preencha o nome e a data de nascimento para calcular a Idade Cronológica.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 no-print">
+              <select id="select-criancas-salvas" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none max-w-[190px] truncate">
+                <option value="">📂 Crianças Salvas...</option>
+              </select>
+              <button type="button" id="btn-excluir-crianca" title="Excluir criança selecionada do navegador" class="px-2 py-1.5 text-xs font-bold rounded-lg bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-700 border border-slate-200 transition hidden">
+                🗑️
+              </button>
+              <button type="button" id="btn-demo" class="px-3 py-1.5 text-xs font-semibold rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition">
+                Preencher Exemplo
+              </button>
+              <button type="button" id="btn-limpar" class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+                Limpar
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div>
+              <label for="input-nome" class="block text-xs font-bold text-slate-700 mb-1">Nome da Criança</label>
+              <input type="text" id="input-nome" placeholder="Digite o nome da criança..." class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            </div>
+            <div>
+              <label for="input-avaliador" class="block text-xs font-bold text-slate-700 mb-1">Avaliador / Profissional</label>
+              <input type="text" id="input-avaliador" placeholder="Nome do avaliador" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            </div>
+            <div>
+              <label for="input-nasc" class="block text-xs font-bold text-slate-700 mb-1">Data de Nascimento</label>
+              <input type="date" id="input-nasc" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            </div>
+            <div>
+              <label for="input-aval" class="block text-xs font-bold text-slate-700 mb-1">Data da Avaliação</label>
+              <input type="date" id="input-aval" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            </div>
+            <div class="bg-blue-50/70 rounded-lg p-3 border border-blue-200/60 flex flex-col justify-center">
+              <span class="text-xs font-bold text-blue-900">Idade Cronológica (IC)</span>
+              <div class="flex items-baseline gap-2 mt-0.5">
+                <span id="badge-ic-meses" class="text-xl font-black text-blue-700">-</span>
+                <span id="badge-ic-anos" class="text-xs text-blue-600">(informe data)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- PASSO 2: GRADE OFICIAL DE TESTES EDM (EXATAMENTE COMO NA FOTO) -->
+        <!-- ======================================================= -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none space-y-5">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-2">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600 no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                2. Testes de Níveis Motores (EDM)
+              </h2>
+              <p class="text-xs text-slate-600 mt-0.5">
+                <strong>1</strong> = fez sozinho • <strong>0,5</strong> = fez com ajuda • <strong>0</strong> = ainda não fez. Ao marcar, os níveis vizinhos se preenchem sozinhos.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200" id="progresso-niveis">
+                0 de 60 níveis
+              </span>
+            </div>
+          </div>
+
+          <!-- Legenda de Cores -->
+          <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 no-print pb-1">
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-emerald-500"></span> 1 = Êxito</span>
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-amber-500"></span> 0,5 = Parcial</span>
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-slate-300"></span> 0 = Zero</span>
+            <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded border border-slate-300 bg-white"></span> — = Não avaliado</span>
+          </div>
+
+          <!-- TABELA DE GRADE 6x10 (RESPONSIVA) -->
+          <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-xs">
+            <table class="w-full text-xs text-center border-collapse min-w-[700px]">
+              <thead class="bg-slate-100 text-slate-800 font-extrabold border-b border-slate-200">
+                <tr>
+                  <th class="p-3 text-left w-52">Teste / Área</th>
+                  <th class="p-2.5">2</th>
+                  <th class="p-2.5">3</th>
+                  <th class="p-2.5">4</th>
+                  <th class="p-2.5">5</th>
+                  <th class="p-2.5">6</th>
+                  <th class="p-2.5">7</th>
+                  <th class="p-2.5">8</th>
+                  <th class="p-2.5">9</th>
+                  <th class="p-2.5">10</th>
+                  <th class="p-2.5">11</th>
+                  <th class="p-2.5 bg-blue-50 text-blue-900 font-black">IM (meses)</th>
+                </tr>
+              </thead>
+              <tbody id="edm-grid-body" class="divide-y divide-slate-100">
+                <!-- Linhas criadas via JavaScript dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Seção de Lateralidade (Mãos, Olhos, Pés - Igual à Imagem) -->
+          <div class="mt-6 pt-5 border-t border-slate-100 page-break-avoid">
+            <div class="mb-3">
+              <h3 class="text-sm font-bold text-slate-900">Lateralidade</h3>
+              <p class="text-xs text-slate-500">Indique o lado que a criança mais usa em cada item.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- Mãos -->
+              <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800">Mãos</span>
+                <div class="flex gap-1" id="group-lat-mao">
+                  <button type="button" data-val="D" class="lat-btn-mao px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs">Direito</button>
+                  <button type="button" data-val="C" class="lat-btn-mao px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700">Esquerdo</button>
+                  <button type="button" data-val="I" class="lat-btn-mao px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700">Indefinido</button>
+                </div>
+              </div>
+
+              <!-- Olhos -->
+              <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800">Olhos</span>
+                <div class="flex gap-1" id="group-lat-olho">
+                  <button type="button" data-val="D" class="lat-btn-olho px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs">Direito</button>
+                  <button type="button" data-val="C" class="lat-btn-olho px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700">Esquerdo</button>
+                  <button type="button" data-val="I" class="lat-btn-olho px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700">Indefinido</button>
+                </div>
+              </div>
+
+              <!-- Pés -->
+              <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800">Pés</span>
+                <div class="flex gap-1" id="group-lat-pe">
+                  <button type="button" data-val="D" class="lat-btn-pe px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs">Direito</button>
+                  <button type="button" data-val="C" class="lat-btn-pe px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700">Esquerdo</button>
+                  <button type="button" data-val="I" class="lat-btn-pe px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700">Indefinido</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2.5 text-xs text-slate-600 font-medium">
+              Diagnóstico de Lateralidade: <span id="diag-lat-txt" class="font-bold text-blue-700">Destro Completo</span>
+            </div>
+          </div>
+
+          <!-- Observações / Parecer do Avaliador -->
+          <div class="mt-4 pt-4 border-t border-slate-100 page-break-avoid">
+            <label for="input-obs" class="block text-xs font-bold text-slate-800 mb-1">
+              Observações e Parecer Técnico do Profissional
+            </label>
+            <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-2.5 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+          </div>
+
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- PASSO 3: RESULTADOS AUTOMÁTICOS & LAUDO CLÍNICO -->
+        <!-- ======================================================= -->
+        <div id="relatorio-export-area" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Left: Painel Clínico Oficial Motricidade (Resumo, Pontos de Atenção, Ponto Forte/Foco, Siglas, Gráfico e Tabelas) -->
+          <div class="lg:col-span-2 space-y-6">
+
+            <!-- Banner Resumo Clínico (Estilo Oficial App Motricidade) -->
+            <div id="clin-banner" class="bg-red-50/80 border-l-4 border-red-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="clin-badge-qmg" class="px-2.5 py-1 rounded-md text-xs font-black bg-red-600 text-white shadow-xs">
+                  QMG - · Aguardando dados
+                </span>
+                <span id="clin-badge-ipin" class="px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-800">
+                  IP/IN -
+                </span>
+              </div>
+              <p id="clin-summary-txt" class="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed">
+                Preencha a data e marque os testes na grade acima para gerar o laudo clínico.
+              </p>
+            </div>
+
+            <!-- Pontos de Atenção (QM abaixo de 80) -->
+            <div class="space-y-2.5">
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
+                <span>Pontos de atenção</span>
+                <span class="font-normal text-slate-500 lowercase">(QM abaixo de 80)</span>
+              </h3>
+              <div id="clin-atencao-list" class="space-y-2">
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-400 italic text-center">
+                  Preencha a data e marque a grade para identificar os pontos de atenção.
+                </div>
+              </div>
+            </div>
+
+            <!-- Ponto forte e próximo foco -->
+            <div class="space-y-2">
+              <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide">Ponto forte e próximo foco</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Ponto Forte</span>
+                  <div id="clin-ponto-forte" class="text-xs font-bold text-slate-800">Aguardando dados</div>
+                </div>
+                <div class="p-3.5 rounded-xl border border-slate-200 bg-white shadow-xs space-y-1">
+                  <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Próximo Foco</span>
+                  <div id="clin-proximo-foco" class="text-xs font-bold text-slate-800">Aguardando dados</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Seta de Informações: O que significa cada sigla? -->
+            <details class="group bg-slate-50 rounded-xl border border-slate-200 overflow-hidden transition-all no-print">
+              <summary class="flex items-center gap-2 p-3 text-xs font-bold text-slate-700 cursor-pointer hover:bg-slate-100 transition list-none select-none">
+                <svg class="w-3.5 h-3.5 text-slate-500 transition-transform group-open:rotate-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+                <span>O que significa cada sigla?</span>
+              </summary>
+              <div class="p-4 pt-2 border-t border-slate-200/60 bg-white space-y-2.5 text-xs">
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-blue-100 text-blue-800 text-[11px] shrink-0 min-w-[50px] text-center">IC</span>
+                  <span class="text-slate-600">Idade cronológica, em meses.</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-indigo-100 text-indigo-800 text-[11px] shrink-0 min-w-[50px] text-center">IMG</span>
+                  <span class="text-slate-600">Idade motora geral (média das 6 áreas), em meses.</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-purple-100 text-purple-800 text-[11px] shrink-0 min-w-[50px] text-center">IP/IN</span>
+                  <span class="text-slate-600">Diferença IMG – IC: positiva (acima) ou negativa (abaixo) do esperado.</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-sky-100 text-sky-800 text-[11px] shrink-0 min-w-[50px] text-center">QMG</span>
+                  <span class="text-slate-600">Quociente motor geral (IMG ÷ IC × 100).</span>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <span class="px-2 py-0.5 rounded font-black bg-emerald-100 text-emerald-800 text-[11px] shrink-0 min-w-[50px] text-center">QM</span>
+                  <span class="text-slate-600">Quociente de cada área (IM ÷ IC × 100). Abaixo de 80 = atenção.</span>
+                </div>
+                <div class="pt-2 text-[11px] text-slate-500 italic border-t border-slate-100">
+                  Para esta idade, consideramos até 132 meses nos cálculos (padrão da escala).
+                </div>
+              </div>
+            </details>
+
+            <!-- Gráfico de Perfil Motor -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none page-break-avoid">
+              <div class="flex items-center justify-between mb-2">
+                <h2 class="text-base font-bold text-slate-900">Perfil Motor: Idade Cronológica vs Idades Motoras Calculadas</h2>
+                <button type="button" id="btn-ir-para-comparativo" class="text-xs font-semibold text-blue-600 hover:text-blue-800 no-print flex items-center gap-1">
+                  Ver Análise Comparativa Completa &rarr;
+                </button>
+              </div>
+              <div class="relative h-72">
+                <canvas id="chart-perfil-motor"></canvas>
+              </div>
+            </div>
+
+            <!-- Tabelas Perfil Motor e Quocientes (Estilo Oficial App Motricidade) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 page-break-avoid">
+              <!-- Card Perfil Motor -->
+              <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
+                <h3 class="text-sm font-black text-slate-900">Perfil Motor</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-[10px] uppercase font-bold text-slate-400">
+                        <th class="py-1.5">Área</th>
+                        <th class="py-1.5 text-center">IM</th>
+                        <th class="py-1.5 text-right">Diferença vs IC</th>
+                      </tr>
+                    </thead>
+                    <tbody id="clin-perfil-body" class="divide-y divide-slate-100 font-medium text-slate-700">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Card Quocientes -->
+              <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
+                <h3 class="text-sm font-black text-slate-900">Quocientes</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-[10px] uppercase font-bold text-slate-400">
+                        <th class="py-1.5">Área</th>
+                        <th class="py-1.5 text-right">QM</th>
+                      </tr>
+                    </thead>
+                    <tbody id="clin-quocientes-body" class="divide-y divide-slate-100 font-medium text-slate-700">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Resultados Gerais (QMG, Desvio, Classificação) -->
+          <div class="space-y-6">
+            <div class="bg-gradient-to-b from-white to-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 sticky top-6 print-shadow-none page-break-avoid">
+              <h2 class="text-lg font-bold text-slate-900 pb-3 border-b border-slate-200 flex items-center justify-between">
+                <span>Resultado Geral</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Rosa Neto</span>
+              </h2>
+
+              <!-- Big Metric: QMG -->
+              <div class="py-5 text-center border-b border-slate-100">
+                <span class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Quociente Motor Geral (QMG)</span>
+                <div id="res-qmg-val" class="text-4xl font-black text-indigo-700 my-1">-</div>
+                <div id="res-class-badge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-600 mt-1">
+                  Aguardando dados
+                </div>
+                <p id="res-class-desc" class="text-xs text-slate-500 mt-2 px-2">
+                  Preencha a data e marque os testes na grade acima.
+                </p>
+              </div>
+
+              <!-- Key Indicators List -->
+              <div class="py-4 space-y-3 text-xs border-b border-slate-100">
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600">Idade Cronológica (IC):</span>
+                  <span id="res-ic-txt" class="font-bold text-slate-800">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600">Idade Motora Geral (IMG):</span>
+                  <span id="res-img-txt" class="font-bold text-slate-800">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600">Desvio Motor (IMG - IC):</span>
+                  <span id="res-desv-txt" class="font-bold text-slate-700">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-600">Dominância Lateral:</span>
+                  <span id="res-lat-badge" class="font-bold text-slate-800">Destro Completo</span>
+                </div>
+              </div>
+
+              <!-- Summary Table for Print / View -->
+              <div class="pt-4">
+                <h3 class="text-xs font-bold text-slate-800 mb-2 uppercase tracking-wide">Quadro Resumo das 6 Áreas</h3>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-slate-500">
+                        <th class="py-1">Área</th>
+                        <th class="py-1 text-center">IM</th>
+                        <th class="py-1 text-right">QM</th>
+                      </tr>
+                    </thead>
+                    <tbody id="res-table-body" class="divide-y divide-slate-100">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Action Buttons on Right Card (Screen only) -->
+              <div class="mt-6 pt-4 border-t border-slate-200 space-y-2 no-print">
+                <button type="button" id="btn-salvar-crianca-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                  Salvar Criança no Navegador
+                </button>
+                <button id="btn-salvar-pdf-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                  Salvar Relatório em PDF
+                </button>
+                <button id="btn-salvar-drive-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                  <svg class="w-4 h-4 shrink-0" viewBox="0 0 87.3 78" fill="none"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+                  Salvar no Google Drive
+                </button>
+                <button id="btn-imprimir-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                  Imprimir Laudo
+                </button>
+              </div>
+
+              <!-- Signature block for Print / PDF -->
+              <div class="mt-8 pt-6 border-t border-slate-300 text-center hidden print:block page-break-avoid">
+                <div class="w-64 mx-auto border-b border-slate-400 pb-1"></div>
+                <p id="print-signature-name" class="text-xs font-bold text-slate-800 mt-1">Assinatura do Avaliador Responsável</p>
+                <p class="text-[10px] text-slate-500">Registro Profissional / Carimbo</p>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ======================================================= -->
+      <!-- TAB 2: COMPARATIVO DE EVOLUÇÃO (DADOS ANTIGOS vs ATUAIS) -->
+      <!-- ======================================================= -->
+      <section id="section-comp" class="space-y-6 hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+          
+          <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                Painel Comparativo de Evolução: Avaliação Anterior vs Atual
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Digite os dados da avaliação anterior para comparar a evolução entre as sessões.
+              </p>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold" id="comp-patient-tag">Avaliado</span>
+              <span class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-bold" id="comp-ic-tag">IC: -</span>
+            </div>
+          </div>
+
+          <!-- ÁREA DESTACADA PARA INSERIR OS DADOS ANTIGOS -->
+          <div class="p-5 rounded-xl border-2 border-indigo-300 bg-indigo-50/50 space-y-4 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-indigo-200">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-md text-xs font-extrabold bg-indigo-600 text-white shadow-sm">
+                  1. Entrada de Dados Antigos
+                </span>
+                <h3 class="text-sm font-extrabold text-indigo-950">Digite a Avaliação Anterior da Criança (Linha de Base)</h3>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="select-comp-carregar-salva" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-indigo-300 bg-white text-indigo-900 focus:ring-2 focus:ring-indigo-500 outline-none max-w-[220px] truncate">
+                  <option value="">📂 Carregar Criança Salva...</option>
+                </select>
+                <button type="button" id="btn-comp-limpar" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition">
+                  Limpar Dados Antigos
+                </button>
+              </div>
+            </div>
+
+            <!-- Formulário dos Dados Antigos (Data e IC) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label for="comp-ant-data" class="block text-xs font-bold text-slate-700 mb-1">Data da Avaliação Anterior</label>
+                <input type="date" id="comp-ant-data" class="w-full px-3 py-2 text-xs font-semibold rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+              </div>
+              <div>
+                <label for="comp-ant-ic" class="block text-xs font-bold text-slate-700 mb-1">Idade Cronol. na época (IC em meses)</label>
+                <input type="number" id="comp-ant-ic" min="12" max="144" placeholder="Ex: 66" class="w-full px-3 py-2 text-xs font-black text-indigo-900 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 outline-none">
+              </div>
+              <div class="sm:col-span-2 flex items-center gap-3 p-3 rounded-lg bg-white border border-indigo-200 text-xs shadow-xs">
+                <span class="font-bold text-slate-700">Intervalo de Intervenção:</span>
+                <span id="comp-tempo-intervalo" class="font-black text-indigo-700 text-sm">-</span>
+              </div>
+            </div>
+
+            <!-- Inserção das 6 Idades Motoras Antigas -->
+            <div class="pt-2">
+              <p class="text-xs font-bold text-slate-800 mb-2">Digite as 6 Idades Motoras obtidas na Avaliação Anterior (meses):</p>
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div class="p-2.5 rounded-lg bg-white border border-slate-300 text-center shadow-xs">
+                  <label for="comp-ant-mf" class="block text-[11px] font-bold text-slate-800">1. MF Fina</label>
+                  <input type="number" id="comp-ant-mf" min="24" max="132" step="6" placeholder="Ex: 66" class="w-full mt-1 text-center text-xs font-black text-blue-900 rounded border border-slate-300 p-1.5 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-slate-300 text-center shadow-xs">
+                  <label for="comp-ant-mg" class="block text-[11px] font-bold text-slate-800">2. MG Global</label>
+                  <input type="number" id="comp-ant-mg" min="24" max="132" step="6" placeholder="Ex: 60" class="w-full mt-1 text-center text-xs font-black text-blue-900 rounded border border-slate-300 p-1.5 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-slate-300 text-center shadow-xs">
+                  <label for="comp-ant-e" class="block text-[11px] font-bold text-slate-800">3. Equilíbrio</label>
+                  <input type="number" id="comp-ant-e" min="24" max="132" step="6" placeholder="Ex: 66" class="w-full mt-1 text-center text-xs font-black text-blue-900 rounded border border-slate-300 p-1.5 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-slate-300 text-center shadow-xs">
+                  <label for="comp-ant-ec" class="block text-[11px] font-bold text-slate-800">4. Esquema C.</label>
+                  <input type="number" id="comp-ant-ec" min="24" max="132" step="6" placeholder="Ex: 66" class="w-full mt-1 text-center text-xs font-black text-blue-900 rounded border border-slate-300 p-1.5 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-slate-300 text-center shadow-xs">
+                  <label for="comp-ant-oe" class="block text-[11px] font-bold text-slate-800">5. Org. Espacial</label>
+                  <input type="number" id="comp-ant-oe" min="24" max="132" step="6" placeholder="Ex: 60" class="w-full mt-1 text-center text-xs font-black text-blue-900 rounded border border-slate-300 p-1.5 focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-slate-300 text-center shadow-xs">
+                  <label for="comp-ant-ot" class="block text-[11px] font-bold text-slate-800">6. Org. Temporal</label>
+                  <input type="number" id="comp-ant-ot" min="24" max="132" step="6" placeholder="Ex: 66" class="w-full mt-1 text-center text-xs font-black text-blue-900 rounded border border-slate-300 p-1.5 focus:ring-2 focus:ring-indigo-500">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Resumo da Avaliação Atual -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <span class="text-[10px] font-bold text-slate-500 uppercase">Idade Cronológica Atual</span>
+              <div class="text-xl font-black text-slate-800" id="comp-card-ic">-</div>
+              <span class="text-[10px] text-slate-500">Referência atual</span>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <span class="text-[10px] font-bold text-slate-500 uppercase">Idade Motora Atual (IMG)</span>
+              <div class="text-xl font-black text-indigo-700" id="comp-card-img">-</div>
+              <span class="text-[10px] text-slate-500">Média 6 áreas</span>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <span class="text-[10px] font-bold text-slate-500 uppercase">Quociente Motor Atual (QMG)</span>
+              <div class="text-xl font-black text-blue-700" id="comp-card-qmg">-</div>
+              <span class="text-[10px] font-bold text-blue-600" id="comp-card-class">-</span>
+            </div>
+            <div class="p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <span class="text-[10px] font-bold text-slate-500 uppercase">Desvio Motor Atual</span>
+              <div class="text-xl font-black text-emerald-700" id="comp-card-desv">-</div>
+              <span class="text-[10px] text-slate-500" id="comp-card-status">-</span>
+            </div>
+          </div>
+
+          <!-- KPI Cards Comparativos de Evolução -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Tempo de Intervenção</span>
+              <div class="text-2xl font-black text-slate-800 mt-1" id="comp-card-tempo">-</div>
+              <span class="text-[11px] text-slate-500" id="comp-card-tempo-sub">Período entre testes</span>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Ganho Motor Geral (IMG)</span>
+              <div class="text-2xl font-black text-emerald-700 mt-1" id="comp-card-ganho-img">-</div>
+              <span class="text-[11px] font-bold text-emerald-800" id="comp-card-ganho-sub">Aguardando dados</span>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Evolução do QMG</span>
+              <div class="text-2xl font-black text-indigo-700 mt-1" id="comp-card-delta-qmg">-</div>
+              <span class="text-[11px] font-semibold text-indigo-900" id="comp-card-delta-qmg-sub">-</span>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Diagnóstico da Evolução</span>
+              <div class="text-lg font-black text-blue-700 mt-1 leading-tight" id="comp-card-diag">Aguardando Dados</div>
+              <span class="text-[11px] text-slate-600" id="comp-card-diag-sub">Preencha ambas avaliações</span>
+            </div>
+          </div>
+
+          <!-- Charts Grid (Comparative Bar Chart + Radar Chart) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm space-y-2">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center justify-between">
+                <span>1. Comparativo: Avaliação Anterior vs Atual (Idades Motoras)</span>
+                <span class="text-[10px] text-slate-400 font-normal">Meses</span>
+              </h3>
+              <div class="relative h-72">
+                <canvas id="chart-comp-bar"></canvas>
+              </div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm space-y-2">
+              <h3 class="text-sm font-bold text-slate-800 flex items-center justify-between">
+                <span>2. Perfil Psicomotor de Evolução (Radar Comparativo)</span>
+                <span class="text-[10px] text-slate-400 font-normal">Radar</span>
+              </h3>
+              <div class="relative h-72">
+                <canvas id="chart-comp-radar"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabela Comparativa Lado a Lado Detalhada -->
+          <div class="pt-2">
+            <h3 class="text-sm font-bold text-slate-800 mb-3 uppercase tracking-wide">
+              Quadro Comparativo de Evolução por Área (Rosa Neto)
+            </h3>
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                  <tr>
+                    <th class="p-3">Área Psicomotora</th>
+                    <th class="p-3 text-center">Sigla</th>
+                    <th class="p-3 text-center bg-blue-50/60 text-blue-950">IM Anterior</th>
+                    <th class="p-3 text-center bg-emerald-50/60 text-emerald-950">IM Atual</th>
+                    <th class="p-3 text-center">Ganho Motor (ΔIM)</th>
+                    <th class="p-3 text-center">QM Anterior</th>
+                    <th class="p-3 text-center">QM Atual</th>
+                    <th class="p-3 text-center">Evolução do QM</th>
+                    <th class="p-3 text-center">Status da Evolução</th>
+                  </tr>
+                </thead>
+                <tbody id="comp-table-body" class="divide-y divide-slate-100">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      
+    </main>
+  </div>
+
+  <script>
+    const AUTHORIZED_USERS = {
+      "v.tafarelo@gmail.com": { name: "Vinicius Tafarelo (Tio Pardal)", role: "Avaliador Psicomotor" },
+      "gabriellasantucci9@gmail.com": { name: "Gabriella Santucci", role: "Avaliadora Psicomotora" },
+      "carol_porcari@hotmail.com": { name: "Carol Porcari", role: "Avaliadora Psicomotora" }
+    };
+
+    // Definição das 6 Áreas da EDM
+    const AREAS_EDM = [
+      { key: "mf", name: "Motricidade Fina", sigla: "MF", num: 1 },
+      { key: "mg", name: "Motricidade Global", sigla: "MG", num: 2 },
+      { key: "e",  name: "Equilíbrio", sigla: "E", num: 3 },
+      { key: "ec", name: "Esquema Corporal", sigla: "EC", num: 4 },
+      { key: "oe", name: "Organização Espacial", sigla: "OE", num: 5 },
+      { key: "ot", name: "Organização Temporal", sigla: "OT", num: 6 }
+    ];
+
+    const AGES_EDM = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+    // Estado da Aplicação (100% LIMPO INICIALMENTE)
+    const state = {
+      user: null,
+      nome: "",
+      avaliador: "Vinicius Tafarelo (Tio Pardal)",
+      nasc: "",
+      aval: new Date().toISOString().split("T")[0],
+      obs: "",
+      // Matriz de Testes da Avaliação Atual: 6 áreas x 10 idades
+      grid: {
+        mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {}
+      },
+      lat: {
+        mao: "D",
+        olho: "D",
+        pe: "D"
+      },
+      ant: {
+        data: "",
+        ic: null,
+        areas: {
+          mf: null, mg: null, e: null, ec: null, oe: null, ot: null
+        }
+      }
+    };
+
+    let chartCalcInstance = null;
+    let chartCompBarInstance = null;
+    let chartCompRadarInstance = null;
+
+    function checkSession() {
+      try {
+        const savedEmail = localStorage.getItem("edm_auth_email");
+        if (savedEmail && AUTHORIZED_USERS[savedEmail.toLowerCase()]) {
+          loginUser(savedEmail.toLowerCase());
+          return;
+        }
+      } catch (e) {
+        console.warn("Storage not available:", e);
+      }
+      showLoginScreen();
+    }
+
+    function showLoginScreen() {
+      document.getElementById("screen-login").classList.remove("hidden");
+      document.getElementById("app-content").classList.add("hidden");
+    }
+
+    function loginUser(email) {
+      const normalizedEmail = email.trim().toLowerCase();
+      const userData = AUTHORIZED_USERS[normalizedEmail];
+      if (!userData) {
+        const err = document.getElementById("login-error-msg");
+        if (err) err.classList.remove("hidden");
+        return;
+      }
+
+      state.user = { email: normalizedEmail, ...userData };
+      state.avaliador = userData.name;
+
+      try {
+        localStorage.setItem("edm_auth_email", normalizedEmail);
+      } catch (e) {}
+
+      document.getElementById("user-display-name").textContent = userData.name;
+      document.getElementById("user-display-email").textContent = normalizedEmail;
+      
+      const inAvaliar = document.getElementById("input-avaliador");
+      if (inAvaliar) inAvaliar.value = userData.name;
+
+      const pSign = document.getElementById("print-signature-name");
+      if (pSign) pSign.textContent = `${userData.name} — Avaliador(a) Responsável`;
+
+      document.getElementById("screen-login").classList.add("hidden");
+      document.getElementById("app-content").classList.remove("hidden");
+
+      renderEdmGrid();
+      updateCalculations();
+      showToast(`Bem-vindo(a), ${userData.name}!`);
+    }
+
+    function logoutUser() {
+      try {
+        localStorage.removeItem("edm_auth_email");
+      } catch (e) {}
+      state.user = null;
+      document.getElementById("input-login-email").value = "";
+      const err = document.getElementById("login-error-msg");
+      if (err) err.classList.add("hidden");
+      showLoginScreen();
+      showToast("Sessão encerrada com sucesso.");
+    }
+
+    function getClassification(qm) {
+      if (!qm && qm !== 0) return { label: "-", color: "bg-slate-100 text-slate-600", desc: "" };
+      if (qm >= 130) return { label: "Muito Superior", color: "bg-indigo-100 text-indigo-800 border-indigo-300", desc: "Desenvolvimento extraordinário com potencial psicomotor elevado." };
+      if (qm >= 120) return { label: "Superior", color: "bg-blue-100 text-blue-800 border-blue-300", desc: "Desenvolvimento significativamente acima da média cronológica." };
+      if (qm >= 110) return { label: "Normal Alto", color: "bg-teal-100 text-teal-800 border-teal-300", desc: "Bom desenvolvimento motor e coordenação eficiente." };
+      if (qm >= 90)  return { label: "Normal Médio", color: "bg-emerald-100 text-emerald-800 border-emerald-300", desc: "Desenvolvimento perfeitamente compatível com a faixa etária." };
+      if (qm >= 80)  return { label: "Normal Baixo", color: "bg-amber-100 text-amber-800 border-amber-300", desc: "Alerta leve. Recomendado estímulo e acompanhamento de tarefas motoras." };
+      if (qm >= 70)  return { label: "Inferior", color: "bg-orange-100 text-orange-800 border-orange-300", desc: "Atraso motor moderado. Indicação de intervenção psicomotora." };
+      return { label: "Muito Inferior", color: "bg-red-100 text-red-800 border-red-300", desc: "Atraso severo. Recomendada avaliação médica multidisciplinar." };
+    }
+
+    function parseLocalDate(dateStr) {
+      if (!dateStr) return null;
+      const parts = dateStr.split("-");
+      if (parts.length !== 3) return null;
+      const y = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      const dt = new Date(y, m, d);
+      return isNaN(dt.getTime()) ? null : dt;
+    }
+
+    // Fórmula oficial do protocolo Rosa Neto extraída diretamente da planilha (Célula S8):
+    // =ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0)&" anos e "&ARRED((((S7-S6)/365)-ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0))*12;0)&" m"
+    function formatarMesesParaAnosEMeses(totalM) {
+      if (totalM === null || totalM === undefined || isNaN(totalM)) return "";
+      const absM = Math.abs(Math.round(totalM));
+      const a = Math.floor(absM / 12);
+      const m = Math.round(absM % 12);
+      if (a > 0 && m > 0) {
+        return `${a} ${a === 1 ? 'ano' : 'anos'} e ${m} m`;
+      } else if (a > 0) {
+        return `${a} ${a === 1 ? 'ano' : 'anos'}`;
+      } else {
+        return `${m} m`;
+      }
+    }
+
+    function calculateIC(nascStr, avalStr) {
+      if (!nascStr || !avalStr) return null;
+      const dNasc = parseLocalDate(nascStr);
+      const dAval = parseLocalDate(avalStr);
+      if (!dNasc || !dAval || dAval < dNasc) return null;
+
+      const diffMs = dAval.getTime() - dNasc.getTime();
+      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+      const anosDecimal = diffDays / 365;
+      const anos = Math.floor(anosDecimal);
+      const meses = Math.round((anosDecimal - anos) * 12);
+      const totalMeses = (anos * 12) + meses;
+      const textoFormatado = `${anos} anos e ${meses} m`;
+
+      // Divisor oficial de Quociente Motor (QM) na planilha: (($S$7-$S$6)/30)
+      const divisorQM = diffDays / 30;
+
+      return { diffDays, anos, meses, totalMeses, textoFormatado, divisorQM };
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      const tm = document.getElementById("toast-msg");
+      tm.textContent = msg;
+      t.classList.remove("hidden");
+      setTimeout(() => t.classList.add("hidden"), 3000);
+    }
+
+    // =======================================================
+    // RENDERIZAÇÃO DA GRADE OFICIAL DE TESTES EDM (6x10)
+    // =======================================================
+    function renderEdmGrid() {
+      const tbody = document.getElementById("edm-grid-body");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+
+      AREAS_EDM.forEach(area => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-50 transition";
+
+        // Coluna do Nome da Área
+        const tdName = document.createElement("td");
+        tdName.className = "p-2.5 text-left font-bold text-slate-800";
+        tdName.innerHTML = `<span class="text-xs font-bold text-slate-800">${area.name}</span>`;
+        tr.appendChild(tdName);
+
+        // 10 Colunas de Idades (2 a 11 anos)
+        AGES_EDM.forEach(age => {
+          const tdAge = document.createElement("td");
+          tdAge.className = "p-1.5";
+
+          const currentVal = state.grid[area.key][age] ?? "";
+
+          const select = document.createElement("select");
+          select.id = `grid-${area.key}-${age}`;
+          select.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition";
+          
+          // Estilo condicional de cor
+          updateSelectColor(select, currentVal);
+
+          select.innerHTML = `
+            <option value="" ${currentVal === "" ? "selected" : ""}>—</option>
+            <option value="1" ${currentVal === "1" ? "selected" : ""}>1</option>
+            <option value="0.5" ${currentVal === "0.5" ? "selected" : ""}>0,5</option>
+            <option value="0" ${currentVal === "0" ? "selected" : ""}>0</option>
+          `;
+
+          // Evento de alteração com preenchimento inteligente dos vizinhos
+          select.addEventListener("change", (e) => {
+            const val = e.target.value;
+            handleGridCellChange(area.key, age, val);
+          });
+
+          tdAge.appendChild(select);
+          tr.appendChild(tdAge);
+        });
+
+        // Coluna da Idade Motora Calculada (meses)
+        const tdIM = document.createElement("td");
+        tdIM.id = `grid-im-calc-${area.key}`;
+        tdIM.className = "p-2.5 text-center font-black text-indigo-700 bg-blue-50/50 text-xs";
+        tdIM.textContent = "-";
+        tr.appendChild(tdIM);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateSelectColor(selectElem, val) {
+      if (val === "1") {
+        selectElem.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-emerald-400 bg-emerald-100 text-emerald-900 focus:ring-2 focus:ring-emerald-500 outline-none";
+      } else if (val === "0.5") {
+        selectElem.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-amber-400 bg-amber-100 text-amber-900 focus:ring-2 focus:ring-amber-500 outline-none";
+      } else if (val === "0") {
+        selectElem.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-slate-300 bg-slate-200 text-slate-800 focus:ring-2 focus:ring-slate-500 outline-none";
+      } else {
+        selectElem.className = "w-14 sm:w-16 p-1 text-center font-semibold text-xs rounded border border-slate-300 bg-white text-slate-500 focus:ring-2 focus:ring-blue-500 outline-none";
+      }
+    }
+
+    // Regra Inteligente: "Ao marcar, os níveis vizinhos se preenchem sozinhos"
+    function handleGridCellChange(areaKey, changedAge, val) {
+      state.grid[areaKey][changedAge] = val;
+
+      if (val === "1") {
+        // Se acertou (1), todos os níveis anteriores são preenchidos com 1 (caso vazios ou sem teste)
+        AGES_EDM.forEach(a => {
+          if (a < changedAge) {
+            if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "0") {
+              state.grid[areaKey][a] = "1";
+              const el = document.getElementById(`grid-${areaKey}-${a}`);
+              if (el) {
+                el.value = "1";
+                updateSelectColor(el, "1");
+              }
+            }
+          }
+        });
+      } else if (val === "0") {
+        // Se errou (0), todos os níveis posteriores são preenchidos com 0 (caso vazios)
+        AGES_EDM.forEach(a => {
+          if (a > changedAge) {
+            if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "1") {
+              state.grid[areaKey][a] = "0";
+              const el = document.getElementById(`grid-${areaKey}-${a}`);
+              if (el) {
+                el.value = "0";
+                updateSelectColor(el, "0");
+              }
+            }
+          }
+        });
+      }
+
+      const curSelect = document.getElementById(`grid-${areaKey}-${changedAge}`);
+      if (curSelect) updateSelectColor(curSelect, val);
+
+      updateCalculations();
+    }
+
+    // CÁLCULO DA IDADE MOTORA A PARTIR DA GRADE EDM
+    // Fórmula oficial Rosa Neto:
+    // Idade Motora = 12 + (Soma dos pontos obtidos nas idades de 2 a 11 anos) * 12 meses
+    function calculateAreaIMFromGrid(areaKey) {
+      const areaScores = state.grid[areaKey];
+      let sumPoints = 0;
+      let countFilled = 0;
+
+      AGES_EDM.forEach(age => {
+        const v = areaScores[age];
+        if (v !== undefined && v !== "") {
+          countFilled++;
+          sumPoints += Number(v);
+        }
+      });
+
+      // Contador interno de níveis preenchidos
+      // (Removido o badge X/10 que causava confusão com o nível 2 anos)
+
+      if (countFilled === 0) return null;
+
+      // Se todas forem 0
+      if (sumPoints === 0) return 12; // Abaixo da base de 24 meses
+
+      // Cálculo em meses: Base 12 meses + pontos * 12 meses
+      // Ex: Nível 2 = 1 ponto -> 12 + 12 = 24 meses (2 anos)
+      // Ex: Nível 2=1, 3=1, 4=1, 5=1, 6=0.5 -> 12 + 4.5*12 = 66 meses (5 anos e 6 meses)
+      const imCalculada = Math.round(12 + (sumPoints * 12));
+      return imCalculada;
+    }
+
+    // Atualização Geral
+    function updateCalculations() {
+      const icData = calculateIC(state.nasc, state.aval);
+      const hasIC = icData !== null;
+      const icAtual = hasIC ? icData.totalMeses : null;
+      
+
+      if (hasIC) {
+        document.getElementById("badge-ic-meses").textContent = `${icAtual} meses`;
+        document.getElementById("badge-ic-anos").textContent = `(${icData.textoFormatado})`;
+        document.getElementById("res-ic-txt").textContent = `${icAtual} meses (${icData.textoFormatado})`;
+        const compIcTag = document.getElementById("comp-ic-tag");
+        if (compIcTag) compIcTag.textContent = `IC Atual: ${icAtual} m (${icData.textoFormatado})`;
+        const compCardIc = document.getElementById("comp-card-ic");
+        if (compCardIc) compCardIc.textContent = `${icAtual} m`;
+      } else {
+        document.getElementById("badge-ic-meses").textContent = "-";
+        document.getElementById("badge-ic-anos").textContent = "(informe data)";
+        document.getElementById("res-ic-txt").textContent = "-";
+        const compIcTag = document.getElementById("comp-ic-tag");
+        if (compIcTag) compIcTag.textContent = "IC: -";
+        const compCardIc = document.getElementById("comp-card-ic");
+        if (compCardIc) compCardIc.textContent = "-";
+      }
+
+      const compPatientTag = document.getElementById("comp-patient-tag");
+      if (compPatientTag) compPatientTag.textContent = state.nome || "Novo Avaliado";
+
+      // Contador geral de progresso de níveis (0 de 60)
+      let totalNiveisPreenchidos = 0;
+      AREAS_EDM.forEach(a => {
+        AGES_EDM.forEach(age => {
+          if (state.grid[a.key][age] !== undefined && state.grid[a.key][age] !== "") {
+            totalNiveisPreenchidos++;
+          }
+        });
+      });
+      const progressoElem = document.getElementById("progresso-niveis");
+      if (progressoElem) progressoElem.textContent = `${totalNiveisPreenchidos} de 60 níveis`;
+
+      // Cálculo de IC Anterior
+      let icAnt = state.ant.ic;
+      
+      if (state.ant.data && state.nasc) {
+        const icAntData = calculateIC(state.nasc, state.ant.data);
+        icAnt = icAntData ? icAntData.totalMeses : null;
+        
+        state.ant.ic = icAnt;
+        const compAntIcInp = document.getElementById("comp-ant-ic");
+        if (compAntIcInp && document.activeElement !== compAntIcInp) {
+          compAntIcInp.value = icAnt || "";
+        }
+      }
+
+      const tempoIntervalo = (hasIC && icAnt) ? Math.max(icAtual - icAnt, 0) : null;
+      const intervaloElem = document.getElementById("comp-tempo-intervalo");
+      if (intervaloElem) {
+        intervaloElem.textContent = tempoIntervalo !== null ? `${tempoIntervalo} meses decorridos (${(tempoIntervalo/12).toFixed(1)} anos)` : "Informe as datas para calcular";
+      }
+      const tempoCard = document.getElementById("comp-card-tempo");
+      if (tempoCard) tempoCard.textContent = tempoIntervalo !== null ? `${tempoIntervalo} meses` : "-";
+
+      const printDateElem = document.getElementById("print-date");
+      if (printDateElem) {
+        printDateElem.textContent = `Data: ${state.aval}`;
+      }
+      const printSignElem = document.getElementById("print-signature-name");
+      if (printSignElem) {
+        printSignElem.textContent = state.avaliador ? `${state.avaliador} — Avaliador(a) Responsável` : "Assinatura do Avaliador Responsável";
+      }
+
+      let sumIMAtual = 0;
+      let countAreasCalculadas = 0;
+      let sumIMAnt = 0;
+      let countIMAnt = 0;
+
+      const tableRowsCalc = [];
+      const tableRowsComp = [];
+
+      const calculatedAreasAtual = {};
+
+      AREAS_EDM.forEach(area => {
+        const k = area.key;
+        // Idade Motora calculada a partir da Grade de Testes
+        const imAtual = calculateAreaIMFromGrid(k);
+        calculatedAreasAtual[k] = imAtual;
+
+        // Atualiza a coluna da tabela da grade com meses e anos claros
+        const gridColIM = document.getElementById(`grid-im-calc-${k}`);
+        if (gridColIM) {
+          if (imAtual !== null) {
+            const anosCalc = Math.floor(imAtual / 12);
+            const mesesCalc = imAtual % 12;
+            const descAnos = mesesCalc > 0 ? `${anosCalc}a ${mesesCalc}m` : `${anosCalc} anos`;
+            gridColIM.innerHTML = `<div class="font-black text-indigo-700 text-xs">${imAtual} m</div><div class="text-[10px] text-slate-500 font-semibold">${descAnos}</div>`;
+          } else {
+            gridColIM.textContent = "-";
+          }
+        }
+
+        if (imAtual !== null) {
+          sumIMAtual += imAtual;
+          countAreasCalculadas++;
+        }
+
+        const imAnt = state.ant.areas[k];
+        const hasIMAnt = (imAnt !== null && imAnt !== "");
+        if (hasIMAnt) {
+          sumIMAnt += Number(imAnt);
+          countIMAnt++;
+        }
+
+        const qmAtual = (imAtual !== null && hasIC && icAtual > 0) ? Math.round((imAtual / icAtual) * 100) : null;
+        const qmAnt = (hasIMAnt && icAnt && icAnt > 0) ? Math.round((Number(imAnt) / icAnt) * 100) : null;
+
+        const clAtual = qmAtual ? getClassification(qmAtual) : { label: "Aguardando", color: "text-slate-400" };
+        const clAnt = qmAnt ? getClassification(qmAnt) : { label: "-", color: "text-slate-400" };
+
+        const ganhoIM = (imAtual !== null && hasIMAnt) ? (imAtual - Number(imAnt)) : null;
+        const deltaQM = (qmAtual !== null && qmAnt !== null) ? (qmAtual - qmAnt) : null;
+
+        // Tabela Calculadora Resumo
+        tableRowsCalc.push(`
+          <tr class="hover:bg-slate-50">
+            <td class="py-1.5 font-medium text-slate-800">${area.name}</td>
+            <td class="py-1.5 text-center font-bold text-slate-700">${imAtual !== null ? imAtual + 'm' : '-'}</td>
+            <td class="py-1.5 text-right font-bold text-indigo-700">${qmAtual !== null ? qmAtual : '-'}</td>
+          </tr>
+        `);
+
+        // Tabela Comparativa (Anterior vs Atual)
+        let statusTag = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-500">-</span>`;
+        if (ganhoIM !== null && tempoIntervalo !== null) {
+          if (ganhoIM > tempoIntervalo) {
+            statusTag = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">Evolução Acelerada</span>`;
+          } else if (ganhoIM > 0) {
+            statusTag = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-blue-800">Ganho Positivo</span>`;
+          } else if (ganhoIM === 0) {
+            statusTag = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600">Sem alteração</span>`;
+          } else {
+            statusTag = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-red-100 text-red-800">Regressão / Alerta</span>`;
+          }
+        }
+
+        tableRowsComp.push(`
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-semibold text-slate-800">${area.name}</td>
+            <td class="p-3 text-center font-bold text-slate-500">${area.sigla}</td>
+            <td class="p-3 text-center font-bold text-blue-900 bg-blue-50/40">${hasIMAnt ? imAnt + ' m' : '-'}</td>
+            <td class="p-3 text-center font-black text-emerald-900 bg-emerald-50/40">${imAtual !== null ? imAtual + ' m' : '-'}</td>
+            <td class="p-3 text-center font-black ${ganhoIM !== null ? (ganhoIM >= 0 ? 'text-emerald-700' : 'text-red-700') : 'text-slate-400'}">${ganhoIM !== null ? (ganhoIM >= 0 ? '+' : '') + ganhoIM + ' m' : '-'}</td>
+            <td class="p-3 text-center text-slate-600">${qmAnt !== null ? qmAnt : '-'}</td>
+            <td class="p-3 text-center font-bold text-indigo-700">${qmAtual !== null ? qmAtual : '-'}</td>
+            <td class="p-3 text-center font-bold ${deltaQM !== null ? (deltaQM >= 0 ? 'text-emerald-700' : 'text-amber-700') : 'text-slate-400'}">${deltaQM !== null ? (deltaQM >= 0 ? '+' : '') + deltaQM : '-'}</td>
+            <td class="p-3 text-center">${statusTag}</td>
+          </tr>
+        `);
+      });
+
+      document.getElementById("res-table-body").innerHTML = tableRowsCalc.join("");
+      const compTbody = document.getElementById("comp-table-body");
+      if (compTbody) compTbody.innerHTML = tableRowsComp.join("");
+
+      // Idade Motora Geral (IMG)
+      const all6Filled = countAreasCalculadas === 6;
+      const all6AntFilled = countIMAnt === 6;
+
+      const imgAtual = all6Filled ? (sumIMAtual / 6) : null;
+      const imgAnt = all6AntFilled ? (sumIMAnt / 6) : null;
+
+      if (imgAtual !== null) {
+        const imgM = Math.round(imgAtual * 10) / 10;
+        const imgDesc = formatarMesesParaAnosEMeses(imgAtual);
+        const imgMStr = imgM % 1 === 0 ? imgM.toFixed(0) : imgM.toFixed(1);
+        document.getElementById("res-img-txt").textContent = `${imgMStr} meses (${imgDesc})`;
+      } else {
+        document.getElementById("res-img-txt").textContent = "-";
+      }
+
+      const compCardImg = document.getElementById("comp-card-img");
+      if (compCardImg) compCardImg.textContent = imgAtual ? `${Math.round(imgAtual)} m` : "-";
+
+      // Quociente Motor Geral (QMG)
+      const qmgAtual = (imgAtual && hasIC && icAtual > 0) ? Math.round((imgAtual / icAtual) * 100) : null;
+      const qmgAnt = (imgAnt && icAnt && icAnt > 0) ? Math.round((imgAnt / icAnt) * 100) : null;
+
+      document.getElementById("res-qmg-val").textContent = qmgAtual !== null ? qmgAtual : "-";
+      const compCardQmg = document.getElementById("comp-card-qmg");
+      if (compCardQmg) compCardQmg.textContent = qmgAtual !== null ? qmgAtual : "-";
+
+      // Desvio Motor com idade em anos e meses (solicitado pelo usuário)
+      const desvAtual = (imgAtual && hasIC) ? (imgAtual - icAtual) : null;
+      const desvElem = document.getElementById("res-desv-txt");
+      const compCardDesv = document.getElementById("comp-card-desv");
+      const compCardStatus = document.getElementById("comp-card-status");
+
+      if (desvAtual !== null) {
+        const desvM = Math.round(desvAtual * 10) / 10;
+        const desvDesc = formatarMesesParaAnosEMeses(desvAtual);
+        const mStr = desvM % 1 === 0 ? Math.round(desvM) : desvM.toFixed(1);
+
+        if (desvM > 0) {
+          desvElem.textContent = `+${mStr} meses (${desvDesc}) (Avanço)`;
+          desvElem.className = "font-bold text-emerald-700";
+          if (compCardDesv) compCardDesv.textContent = `+${mStr} m (${desvDesc})`;
+          if (compCardStatus) compCardStatus.textContent = "Desenvolvimento Positivo";
+        } else if (desvM === 0) {
+          desvElem.textContent = `0 meses (Equivalente à idade)`;
+          desvElem.className = "font-bold text-blue-700";
+          if (compCardDesv) compCardDesv.textContent = `0 m`;
+          if (compCardStatus) compCardStatus.textContent = "Desenvolvimento Equivalente";
+        } else {
+          desvElem.textContent = `${mStr} meses (${desvDesc}) (Atraso)`;
+          desvElem.className = "font-bold text-amber-700";
+          if (compCardDesv) compCardDesv.textContent = `${mStr} m (${desvDesc})`;
+          if (compCardStatus) compCardStatus.textContent = "Alerta de Atraso";
+        }
+      } else {
+        desvElem.textContent = "-";
+        desvElem.className = "font-bold text-slate-700";
+        if (compCardDesv) compCardDesv.textContent = "-";
+        if (compCardStatus) compCardStatus.textContent = "-";
+      }
+
+      // Ganho Motor Geral (IMG) e Evolução de QMG no painel comparativo
+      const ganhoIMGGeral = (imgAtual !== null && imgAnt !== null) ? (imgAtual - imgAnt) : null;
+      const deltaQMGGeral = (qmgAtual !== null && qmgAnt !== null) ? (qmgAtual - qmgAnt) : null;
+
+      const compCardGanho = document.getElementById("comp-card-ganho-img");
+      const compCardGanhoSub = document.getElementById("comp-card-ganho-sub");
+      if (compCardGanho) {
+        if (ganhoIMGGeral !== null) {
+          compCardGanho.textContent = `${ganhoIMGGeral >= 0 ? '+' : ''}${ganhoIMGGeral.toFixed(1)} m`;
+          if (tempoIntervalo !== null && ganhoIMGGeral > tempoIntervalo) {
+            compCardGanhoSub.textContent = `Evolução acelerada (+${(ganhoIMGGeral - tempoIntervalo).toFixed(1)}m)`;
+            compCardGanhoSub.className = "text-[11px] font-bold text-emerald-700";
+          } else if (ganhoIMGGeral > 0) {
+            compCardGanhoSub.textContent = `Evolução contínua (+${ganhoIMGGeral.toFixed(1)}m)`;
+            compCardGanhoSub.className = "text-[11px] font-semibold text-blue-700";
+          } else {
+            compCardGanhoSub.textContent = `Estagnação ou Alerta`;
+            compCardGanhoSub.className = "text-[11px] font-bold text-amber-700";
+          }
+        } else {
+          compCardGanho.textContent = "-";
+          compCardGanhoSub.textContent = "Aguardando dados";
+          compCardGanhoSub.className = "text-[11px] font-bold text-slate-400";
+        }
+      }
+
+      const compCardDeltaQmg = document.getElementById("comp-card-delta-qmg");
+      const compCardDeltaQmgSub = document.getElementById("comp-card-delta-qmg-sub");
+      if (compCardDeltaQmg) {
+        if (deltaQMGGeral !== null) {
+          compCardDeltaQmg.textContent = `${deltaQMGGeral >= 0 ? '+' : ''}${deltaQMGGeral.toFixed(1)} pts`;
+          compCardDeltaQmgSub.textContent = `${qmgAnt.toFixed(1)} ➔ ${qmgAtual.toFixed(1)}`;
+        } else {
+          compCardDeltaQmg.textContent = "-";
+          compCardDeltaQmgSub.textContent = "-";
+        }
+      }
+
+      const compCardDiag = document.getElementById("comp-card-diag");
+      const compCardDiagSub = document.getElementById("comp-card-diag-sub");
+      if (compCardDiag) {
+        if (ganhoIMGGeral !== null && tempoIntervalo !== null) {
+          if (ganhoIMGGeral > tempoIntervalo && deltaQMGGeral > 0) {
+            compCardDiag.textContent = "Evolução Acelerada";
+            compCardDiag.className = "text-lg font-black text-emerald-700 mt-1 leading-tight";
+            compCardDiagSub.textContent = "Avanço superior ao tempo decorrido";
+          } else if (ganhoIMGGeral > 0) {
+            compCardDiag.textContent = "Progresso Positivo";
+            compCardDiag.className = "text-lg font-black text-blue-700 mt-1 leading-tight";
+            compCardDiagSub.textContent = "Ganhos psicomotores consistentes";
+          } else {
+            compCardDiag.textContent = "Alerta de Estagnação";
+            compCardDiag.className = "text-lg font-black text-amber-700 mt-1 leading-tight";
+            compCardDiagSub.textContent = "Reavaliar estratégias de intervenção";
+          }
+        } else {
+          compCardDiag.textContent = "Aguardando Dados";
+          compCardDiag.className = "text-lg font-black text-slate-400 mt-1 leading-tight";
+          compCardDiagSub.textContent = "Preencha ambas avaliações";
+        }
+      }
+
+      // Classificação Geral
+      const overallClass = qmgAtual ? getClassification(qmgAtual) : { label: "Aguardando dados", color: "bg-slate-100 text-slate-600", desc: "Preencha a data e marque os testes na grade acima." };
+      const classBadge = document.getElementById("res-class-badge");
+      classBadge.textContent = overallClass.label;
+      classBadge.className = `inline-block px-3 py-1 rounded-full text-xs font-extrabold ${overallClass.color} mt-1`;
+      document.getElementById("res-class-desc").textContent = overallClass.desc;
+
+      const compCardClass = document.getElementById("comp-card-class");
+      if (compCardClass) compCardClass.textContent = overallClass.label;
+
+      // =======================================================
+      // ATUALIZAÇÃO DO PAINEL CLÍNICO OFICIAL (ESTILO APP MOTRICIDADE)
+      // =======================================================
+      const clinBannerElem = document.getElementById("clin-banner");
+      const clinBadgeQmgElem = document.getElementById("clin-badge-qmg");
+      const clinBadgeIpinElem = document.getElementById("clin-badge-ipin");
+      const clinSummaryTxtElem = document.getElementById("clin-summary-txt");
+      const clinAtencaoListElem = document.getElementById("clin-atencao-list");
+      const clinPontoForteElem = document.getElementById("clin-ponto-forte");
+      const clinProximoFocoElem = document.getElementById("clin-proximo-foco");
+      const clinPerfilBodyElem = document.getElementById("clin-perfil-body");
+      const clinQuocientesBodyElem = document.getElementById("clin-quocientes-body");
+
+      const evaluatedAreasList = [];
+      const attentionAreasList = [];
+
+      AREAS_EDM.forEach(a => {
+        const im = calculatedAreasAtual[a.key];
+        const qm = (im !== null && hasIC && icAtual > 0) ? Math.round((im / icAtual) * 100) : null;
+        const diff = (im !== null && hasIC) ? (im - icAtual) : null;
+
+        if (im !== null && qm !== null) {
+          evaluatedAreasList.push({ area: a, im, qm, diff });
+          if (qm < 80) {
+            attentionAreasList.push({ area: a, im, qm, diff });
+          }
+        }
+      });
+
+      // 1. Top Banner
+      if (clinBannerElem) {
+        if (imgAtual && hasIC) {
+          clinBannerElem.classList.remove("hidden");
+          const imgM = Math.round(imgAtual);
+          const anosImg = Math.floor(imgM / 12);
+          const descImg = anosImg > 0 ? `${anosImg}a` : "";
+          const descIc = icData ? `${icData.anos}a` : "";
+          const difM = Math.round(Math.abs(desvAtual));
+          const descDif = formatarMesesParaAnosEMeses(desvAtual);
+          const sentido = desvAtual < 0 ? `${difM} meses (${descDif}) abaixo do esperado` : (desvAtual > 0 ? `${difM} meses (${descDif}) acima do esperado` : `compatível com o esperado`);
+
+          // Badge QMG
+          clinBadgeQmgElem.textContent = `QMG ${qmgAtual} · ${overallClass.label}`;
+          if (qmgAtual <= 69) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-red-600 text-white shadow-xs";
+            clinBannerElem.className = "bg-red-50/80 border-l-4 border-red-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else if (qmgAtual <= 79) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-orange-500 text-white shadow-xs";
+            clinBannerElem.className = "bg-orange-50/80 border-l-4 border-orange-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else if (qmgAtual <= 89) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-amber-500 text-white shadow-xs";
+            clinBannerElem.className = "bg-amber-50/80 border-l-4 border-amber-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else if (qmgAtual <= 119) {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-emerald-600 text-white shadow-xs";
+            clinBannerElem.className = "bg-emerald-50/80 border-l-4 border-emerald-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          } else {
+            clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-indigo-600 text-white shadow-xs";
+            clinBannerElem.className = "bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          }
+
+          // Badge IP/IN
+          const ipInVal = desvAtual !== null ? Math.round(desvAtual) : 0;
+          clinBadgeIpinElem.textContent = `IP/IN ${ipInVal > 0 ? '+' : ''}${ipInVal}`;
+          if (ipInVal < 0) {
+            clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-red-100 text-red-800";
+          } else if (ipInVal > 0) {
+            clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-emerald-100 text-emerald-800";
+          } else {
+            clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-800";
+          }
+
+          // Narrative Text
+          clinSummaryTxtElem.textContent = `IMG ${imgM} meses (${descImg}) · IC ${icAtual} meses (${descIc}) — ${sentido} (QMG ${qmgAtual}, ${overallClass.label}).`;
+        } else {
+          clinBadgeQmgElem.textContent = "QMG - · Aguardando dados";
+          clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-300 text-slate-700";
+          clinBadgeIpinElem.textContent = "IP/IN -";
+          clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-700";
+          clinBannerElem.className = "bg-slate-50 border-l-4 border-slate-300 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
+          clinSummaryTxtElem.textContent = "Preencha a data e marque os testes na grade acima para gerar o laudo clínico.";
+        }
+      }
+
+      // 2. Pontos de Atenção (QM abaixo de 80) ordenados do mais crítico para o menor
+      if (clinAtencaoListElem) {
+        attentionAreasList.sort((x, y) => x.qm - y.qm);
+        if (attentionAreasList.length > 0) {
+          clinAtencaoListElem.innerHTML = attentionAreasList.map(item => `
+            <div class="border border-slate-200 bg-white rounded-xl p-2.5 sm:px-4 sm:py-3 flex items-center justify-between text-xs shadow-xs hover:border-slate-300 transition">
+              <span class="font-bold text-slate-800">IM${item.area.num} — ${item.area.name}</span>
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded font-black text-[11px] bg-red-100 text-red-700">QM ${item.qm}</span>
+                <span class="font-bold text-red-600 text-xs">${item.diff !== null ? (item.diff > 0 ? '+' : '') + item.diff + ' meses' : '-'}</span>
+              </div>
+            </div>
+          `).join("");
+        } else if (evaluatedAreasList.length > 0) {
+          clinAtencaoListElem.innerHTML = `
+            <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50 text-xs font-semibold text-emerald-800 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              Nenhum ponto de atenção crítico identificado (todos os quocientes avaliados estão normais ou superiores &ge; 80).
+            </div>
+          `;
+        } else {
+          clinAtencaoListElem.innerHTML = `
+            <div class="p-3.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-400 italic text-center">
+              Preencha a data e marque a grade para identificar os pontos de atenção.
+            </div>
+          `;
+        }
+      }
+
+      // 3. Ponto Forte e Próximo Foco
+      if (clinPontoForteElem && clinProximoFocoElem) {
+        if (evaluatedAreasList.length > 0) {
+          const sortedByQM = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
+          const forte = sortedByQM[0];
+          const foco = sortedByQM[sortedByQM.length - 1];
+
+          clinPontoForteElem.innerHTML = `
+            <span class="font-bold text-slate-900">${forte.area.name}</span>
+            <span class="text-slate-600 font-semibold ml-1">— IM ${forte.im} meses</span>
+            <span class="${forte.diff >= 0 ? 'text-emerald-700' : 'text-red-600'} font-bold ml-1">(${forte.diff >= 0 ? '+' : ''}${forte.diff} meses)</span>
+          `;
+
+          clinProximoFocoElem.innerHTML = `
+            <span class="font-bold text-slate-900">${foco.area.name}</span>
+            <span class="text-slate-600 font-semibold ml-1">— IM ${foco.im} meses</span>
+            <span class="${foco.diff >= 0 ? 'text-emerald-700' : 'text-red-600'} font-bold ml-1">(${foco.diff >= 0 ? '+' : ''}${foco.diff} meses)</span>
+          `;
+        } else {
+          clinPontoForteElem.textContent = "Aguardando dados";
+          clinProximoFocoElem.textContent = "Aguardando dados";
+        }
+      }
+
+      // 4. Tabelas Perfil Motor e Quocientes
+      if (clinPerfilBodyElem) {
+        const pRows = AREAS_EDM.map(a => {
+          const im = calculatedAreasAtual[a.key];
+          const diff = (im !== null && hasIC) ? (im - icAtual) : null;
+          const diffText = diff !== null ? (diff >= 0 ? `+${diff} meses` : `${diff} meses`) : "-";
+          const diffColor = diff !== null ? (diff >= 0 ? "text-emerald-700" : "text-red-600") : "text-slate-400";
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2 font-medium text-slate-800">IM${a.num} — ${a.name}</td>
+              <td class="py-2 text-center font-bold text-slate-800">${im !== null ? im : "-"}</td>
+              <td class="py-2 text-right font-black ${diffColor}">${diffText}</td>
+            </tr>
+          `;
+        });
+
+        const imgDiff = (imgAtual !== null && hasIC) ? Math.round(imgAtual - icAtual) : null;
+        const imgDiffText = imgDiff !== null ? (imgDiff >= 0 ? `+${imgDiff} meses` : `${imgDiff} meses`) : "-";
+        const imgDiffColor = imgDiff !== null ? (imgDiff >= 0 ? "text-emerald-700" : "text-red-600") : "text-slate-400";
+        pRows.push(`
+          <tr class="border-t-2 border-slate-200 font-black bg-slate-50/70">
+            <td class="py-2 font-black text-slate-900">IMG</td>
+            <td class="py-2 text-center font-black text-slate-900">${imgAtual !== null ? Math.round(imgAtual) : "-"}</td>
+            <td class="py-2 text-right font-black ${imgDiffColor}">${imgDiffText}</td>
+          </tr>
+        `);
+        clinPerfilBodyElem.innerHTML = pRows.join("");
+      }
+
+      if (clinQuocientesBodyElem) {
+        const qRows = AREAS_EDM.map(a => {
+          const im = calculatedAreasAtual[a.key];
+          const qm = (im !== null && hasIC && icAtual > 0) ? Math.round((im / icAtual) * 100) : null;
+          let qmColor = "text-slate-400";
+          if (qm !== null) {
+            if (qm < 80) qmColor = "text-red-600 font-bold";
+            else if (qm < 90) qmColor = "text-amber-600 font-bold";
+            else qmColor = "text-emerald-700 font-bold";
+          }
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="py-2 font-medium text-slate-800">QM${a.num} — ${a.name}</td>
+              <td class="py-2 text-right font-black ${qmColor}">${qm !== null ? qm : "-"}</td>
+            </tr>
+          `;
+        });
+
+        let qmgColor = "text-slate-400";
+        if (qmgAtual !== null) {
+          if (qmgAtual < 80) qmgColor = "text-red-600 font-bold";
+          else if (qmgAtual < 90) qmgColor = "text-amber-600 font-bold";
+          else qmgColor = "text-emerald-700 font-bold";
+        }
+        qRows.push(`
+          <tr class="border-t-2 border-slate-200 font-black bg-slate-50/70">
+            <td class="py-2 font-black text-slate-900">QMG</td>
+            <td class="py-2 text-right font-black ${qmgColor}">${qmgAtual !== null ? qmgAtual : "-"}</td>
+          </tr>
+        `);
+        clinQuocientesBodyElem.innerHTML = qRows.join("");
+      }
+
+
+      // Lateralidade
+      let diagLat = "Destro Completo";
+      if (state.lat.mao === "C" && state.lat.olho === "C" && state.lat.pe === "C") {
+        diagLat = "Canhoto Completo";
+      } else if (state.lat.mao === "I" || state.lat.olho === "I" || state.lat.pe === "I") {
+        diagLat = "Lateralidade Indefinida";
+      } else if (state.lat.mao === state.lat.olho && state.lat.olho === state.lat.pe) {
+        diagLat = state.lat.mao === "D" ? "Destro Completo" : "Canhoto Completo";
+      } else {
+        diagLat = "Lateralidade Cruzada ou Mista";
+      }
+      document.getElementById("diag-lat-txt").textContent = diagLat;
+      document.getElementById("res-lat-badge").textContent = diagLat;
+
+      // Atualiza os Gráficos
+      updateAllCharts(icAtual, calculatedAreasAtual, imgAtual, icAnt, state.ant.areas, imgAnt);
+    }
+
+    function updateAllCharts(icAtual, areasAtual, imgAtual, icAnt, areasAnt, imgAnt) {
+      const labels = ["MF", "MG", "Equilíbrio", "Esquema Corp.", "Org. Espacial", "Org. Temporal", "IMG Geral"];
+      
+      const valAtual = [
+        areasAtual.mf || 0,
+        areasAtual.mg || 0,
+        areasAtual.e || 0,
+        areasAtual.ec || 0,
+        areasAtual.oe || 0,
+        areasAtual.ot || 0,
+        imgAtual ? Number(imgAtual.toFixed(1)) : 0
+      ];
+
+      const valIC = [
+        icAtual || 0, icAtual || 0, icAtual || 0, icAtual || 0, icAtual || 0, icAtual || 0, icAtual || 0
+      ];
+
+      const valAnt = [
+        areasAnt.mf || 0,
+        areasAnt.mg || 0,
+        areasAnt.e || 0,
+        areasAnt.ec || 0,
+        areasAnt.oe || 0,
+        areasAnt.ot || 0,
+        imgAnt ? Number(imgAnt.toFixed(1)) : 0
+      ];
+
+      // 1. Calc Tab Bar Chart
+      const ctxCalc = document.getElementById("chart-perfil-motor");
+      if (ctxCalc) {
+        if (!chartCalcInstance) {
+          chartCalcInstance = new Chart(ctxCalc, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Idade Motora Calculada (IM)",
+                  data: valAtual,
+                  backgroundColor: "rgba(79, 70, 229, 0.8)",
+                  borderColor: "rgb(79, 70, 229)",
+                  borderWidth: 1,
+                  borderRadius: 4
+                },
+                {
+                  label: "Idade Cronológica (IC)",
+                  data: valIC,
+                  backgroundColor: "rgba(148, 163, 184, 0.5)",
+                  borderColor: "rgb(148, 163, 184)",
+                  borderWidth: 1,
+                  borderRadius: 4
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: { display: true, text: "Idade (meses)" },
+                  suggestedMax: 130
+                }
+              },
+              plugins: { legend: { position: "top" } }
+            }
+          });
+        } else {
+          chartCalcInstance.data.datasets[0].data = valAtual;
+          chartCalcInstance.data.datasets[1].data = valIC;
+          chartCalcInstance.update();
+        }
+      }
+
+      // 2. Comparative Tab Bar Chart (Anterior vs Atual)
+      const ctxCompBar = document.getElementById("chart-comp-bar");
+      if (ctxCompBar) {
+        if (!chartCompBarInstance) {
+          chartCompBarInstance = new Chart(ctxCompBar, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "1. Avaliação Anterior (Dados Antigos)",
+                  data: valAnt,
+                  backgroundColor: "rgba(59, 130, 246, 0.8)",
+                  borderColor: "rgb(59, 130, 246)",
+                  borderWidth: 1,
+                  borderRadius: 4
+                },
+                {
+                  label: "2. Avaliação Atual (Reavaliação)",
+                  data: valAtual,
+                  backgroundColor: "rgba(16, 185, 129, 0.85)",
+                  borderColor: "rgb(16, 185, 129)",
+                  borderWidth: 1,
+                  borderRadius: 4
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: { display: true, text: "Idade em Meses" },
+                  suggestedMax: 130
+                }
+              },
+              plugins: { legend: { position: "top" } }
+            }
+          });
+        } else {
+          chartCompBarInstance.data.datasets[0].data = valAnt;
+          chartCompBarInstance.data.datasets[1].data = valAtual;
+          chartCompBarInstance.update();
+        }
+      }
+
+      // 3. Comparative Tab Radar Chart (Perfil Psicomotor: Anterior vs Atual)
+      const ctxCompRadar = document.getElementById("chart-comp-radar");
+      if (ctxCompRadar) {
+        const radarLabels = ["Motricidade Fina", "Motricidade Global", "Equilíbrio", "Esquema Corporal", "Org. Espacial", "Org. Temporal"];
+        const radarAtual = [areasAtual.mf || 0, areasAtual.mg || 0, areasAtual.e || 0, areasAtual.ec || 0, areasAtual.oe || 0, areasAtual.ot || 0];
+        const radarAnt = [areasAnt.mf || 0, areasAnt.mg || 0, areasAnt.e || 0, areasAnt.ec || 0, areasAnt.oe || 0, areasAnt.ot || 0];
+
+        if (!chartCompRadarInstance) {
+          chartCompRadarInstance = new Chart(ctxCompRadar, {
+            type: "radar",
+            data: {
+              labels: radarLabels,
+              datasets: [
+                {
+                  label: "Avaliação Atual",
+                  data: radarAtual,
+                  backgroundColor: "rgba(16, 185, 129, 0.25)",
+                  borderColor: "rgb(16, 185, 129)",
+                  pointBackgroundColor: "rgb(16, 185, 129)",
+                  borderWidth: 2
+                },
+                {
+                  label: "Avaliação Anterior (Dados Antigos)",
+                  data: radarAnt,
+                  backgroundColor: "rgba(59, 130, 246, 0.15)",
+                  borderColor: "rgb(59, 130, 246)",
+                  borderDash: [4, 4],
+                  borderWidth: 1.5,
+                  pointBackgroundColor: "rgb(59, 130, 246)"
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  suggestedMax: 120,
+                  ticks: { stepSize: 20 }
+                }
+              },
+              plugins: { legend: { position: "top" } }
+            }
+          });
+        } else {
+          chartCompRadarInstance.data.datasets[0].data = radarAtual;
+          chartCompRadarInstance.data.datasets[1].data = radarAnt;
+          chartCompRadarInstance.update();
+        }
+      }
+    }
+
+    function exportarParaPDF() {
+      showToast("Gerando PDF do Relatório...");
+      const element = document.getElementById("section-calc");
+      const printHdr = document.getElementById("print-header");
+      
+      const nomeLimpo = (state.nome || "Crianca_Avaliada").replace(/\\s+/g, "_");
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Relatorio_EDM_${nomeLimpo}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      if (printHdr) printHdr.classList.remove("hidden");
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        if (printHdr) printHdr.classList.add("hidden");
+        showToast("Relatório PDF baixado com sucesso!");
+      }).catch(err => {
+        if (printHdr) printHdr.classList.add("hidden");
+        window.print();
+      });
+    }
+
+    function exportarParaDrive() {
+      showToast("Gerando relatório e abrindo seu Google Drive...");
+      const element = document.getElementById("section-calc");
+      const printHdr = document.getElementById("print-header");
+      
+      const nomeLimpo = (state.nome || "Crianca_Avaliada").replace(/\s+/g, "_");
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `Relatorio_EDM_${nomeLimpo}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      if (printHdr) printHdr.classList.remove("hidden");
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        if (printHdr) printHdr.classList.add("hidden");
+        showToast("Relatório baixado! Abrindo seu Google Drive para upload...");
+        setTimeout(() => {
+          window.open("https://drive.google.com/drive/my-drive", "_blank");
+        }, 1000);
+      }).catch(err => {
+        if (printHdr) printHdr.classList.add("hidden");
+        window.open("https://drive.google.com/drive/my-drive", "_blank");
+      });
+    }
+
+
+    // =======================================================
+    // GERENCIAMENTO DE CRIANÇAS SALVAS NO NAVEGADOR (LOCALSTORAGE)
+    // =======================================================
+    function getSavedChildren() {
+      try {
+        const raw = localStorage.getItem("edm_criancas_salvas");
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveChildrenList(list) {
+      try {
+        localStorage.setItem("edm_criancas_salvas", JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function salvarCriancaAtual() {
+      const nomeTrim = (state.nome || "").trim();
+      if (!nomeTrim) {
+        showToast("Por favor, digite o nome da criança antes de salvar.");
+        const inNome = document.getElementById("input-nome");
+        if (inNome) inNome.focus();
+        return;
+      }
+
+      const list = getSavedChildren();
+
+      // Guarda o mapa das idades motoras calculadas
+      const ims = {};
+      AREAS_EDM.forEach(a => {
+        ims[a.key] = calculateAreaIMFromGrid(a.key);
+      });
+
+      const record = {
+        id: "child_" + Date.now(),
+        nome: nomeTrim,
+        nasc: state.nasc,
+        aval: state.aval,
+        obs: state.obs,
+        lat: { ...state.lat },
+        grid: JSON.parse(JSON.stringify(state.grid)),
+        areasIM: ims,
+        dataSalva: new Date().toLocaleDateString("pt-BR")
+      };
+
+      // Se já existir com o mesmo nome e mesma data de avaliação, substitui; caso contrário, insere no topo
+      const existingIdx = list.findIndex(c => c.nome.toLowerCase() === nomeTrim.toLowerCase() && c.aval === state.aval);
+      if (existingIdx >= 0) {
+        list[existingIdx] = record;
+      } else {
+        list.unshift(record);
+      }
+
+      saveChildrenList(list);
+      refreshSavedChildrenSelects();
+      showToast(`Criança "${nomeTrim}" salva com sucesso no seu navegador!`);
+    }
+
+    function refreshSavedChildrenSelects() {
+      const list = getSavedChildren();
+      
+      const selMain = document.getElementById("select-criancas-salvas");
+      const btnDel = document.getElementById("btn-excluir-crianca");
+      if (selMain) {
+        selMain.innerHTML = `<option value="">📂 Crianças Salvas (${list.length})...</option>` +
+          list.map(c => `<option value="${c.id}">${c.nome} (${c.aval || c.dataSalva})</option>`).join("");
+        if (btnDel) {
+          btnDel.classList.toggle("hidden", list.length === 0);
+        }
+      }
+
+      const selComp = document.getElementById("select-comp-carregar-salva");
+      if (selComp) {
+        selComp.innerHTML = `<option value="">📂 Carregar Criança Salva (${list.length})...</option>` +
+          list.map(c => `<option value="${c.id}">${c.nome} (${c.aval || c.dataSalva})</option>`).join("");
+      }
+    }
+
+    function carregarCriancaPorId(id) {
+      if (!id) return;
+      const list = getSavedChildren();
+      const c = list.find(item => item.id === id);
+      if (!c) return;
+
+      state.nome = c.nome || "";
+      state.nasc = c.nasc || "";
+      state.aval = c.aval || new Date().toISOString().split("T")[0];
+      state.obs = c.obs || "";
+      state.lat = c.lat ? { ...c.lat } : { mao: "D", olho: "D", pe: "D" };
+      state.grid = c.grid ? JSON.parse(JSON.stringify(c.grid)) : { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
+
+      const inNome = document.getElementById("input-nome");
+      const inNasc = document.getElementById("input-nasc");
+      const inAval = document.getElementById("input-aval");
+      const inObs = document.getElementById("input-obs");
+
+      if (inNome) inNome.value = state.nome;
+      if (inNasc) inNasc.value = state.nasc;
+      if (inAval) inAval.value = state.aval;
+      if (inObs) inObs.value = state.obs;
+
+      setupLatButtons("mao", "mao");
+      setupLatButtons("olho", "olho");
+      setupLatButtons("pe", "pe");
+
+      renderEdmGrid();
+      updateCalculations();
+      showToast(`Avaliação de "${c.nome}" carregada com sucesso!`);
+    }
+
+    function carregarCriancaNoComparativo(id) {
+      if (!id) return;
+      const list = getSavedChildren();
+      const c = list.find(item => item.id === id);
+      if (!c) return;
+
+      state.ant.data = c.aval || "";
+      const icData = calculateIC(state.nasc || c.nasc, c.aval);
+      state.ant.ic = icData ? icData.totalMeses : null;
+
+      const antDataInp = document.getElementById("comp-ant-data");
+      const antIcInp = document.getElementById("comp-ant-ic");
+      if (antDataInp) antDataInp.value = state.ant.data;
+      if (antIcInp) antIcInp.value = state.ant.ic || "";
+
+      const areasIM = c.areasIM || {};
+      AREAS_EDM.forEach(a => {
+        let imVal = areasIM[a.key];
+        if (imVal === undefined && c.grid && c.grid[a.key]) {
+          let sum = 0;
+          AGES_EDM.forEach(age => {
+            if (c.grid[a.key][age]) sum += Number(c.grid[a.key][age]);
+          });
+          imVal = Math.round(12 + sum * 12);
+        }
+        state.ant.areas[a.key] = imVal !== undefined ? imVal : null;
+        const el = document.getElementById(`comp-ant-${a.key}`);
+        if (el) el.value = state.ant.areas[a.key] ?? "";
+      });
+
+      updateCalculations();
+      showToast(`Avaliação anterior de "${c.nome}" carregada na linha de base!`);
+    }
+
+    function excluirCriancaSelecionada() {
+      const selMain = document.getElementById("select-criancas-salvas");
+      if (!selMain || !selMain.value) {
+        showToast("Selecione uma criança na lista para excluir.");
+        return;
+      }
+      const id = selMain.value;
+      let list = getSavedChildren();
+      const c = list.find(item => item.id === id);
+      if (!c) return;
+
+      list = list.filter(item => item.id !== id);
+      saveChildrenList(list);
+      refreshSavedChildrenSelects();
+      showToast(`Registro de "${c.nome}" removido do navegador.`);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const formLogin = document.getElementById("form-login");
+      const inputLoginEmail = document.getElementById("input-login-email");
+      formLogin.addEventListener("submit", e => {
+        e.preventDefault();
+        loginUser(inputLoginEmail.value);
+      });
+
+      document.getElementById("btn-logout").addEventListener("click", logoutUser);
+
+      const inNome = document.getElementById("input-nome");
+      const inAvaliar = document.getElementById("input-avaliador");
+      const inNasc = document.getElementById("input-nasc");
+      const inAval = document.getElementById("input-aval");
+      const inObs = document.getElementById("input-obs");
+
+      inNome.value = state.nome;
+      inAvaliar.value = state.avaliador;
+      inNasc.value = state.nasc;
+      inAval.value = state.aval;
+
+      inNome.addEventListener("input", e => { state.nome = e.target.value; updateCalculations(); });
+      inAvaliar.addEventListener("input", e => { 
+        state.avaliador = e.target.value; 
+        const pSign = document.getElementById("print-signature-name");
+        if (pSign) pSign.textContent = e.target.value ? `${e.target.value} — Avaliador(a) Responsável` : "Assinatura do Avaliador Responsável";
+      });
+      inNasc.addEventListener("change", e => { state.nasc = e.target.value; updateCalculations(); });
+      inAval.addEventListener("change", e => { state.aval = e.target.value; updateCalculations(); });
+      inObs.addEventListener("input", e => { state.obs = e.target.value; });
+
+      // Eventos das Idades Motoras Antigas (Painel Comparativo)
+      const antDataInp = document.getElementById("comp-ant-data");
+      const antIcInp = document.getElementById("comp-ant-ic");
+      if (antDataInp) {
+        antDataInp.value = "";
+        antDataInp.addEventListener("change", e => {
+          state.ant.data = e.target.value;
+          updateCalculations();
+        });
+      }
+      if (antIcInp) {
+        antIcInp.value = "";
+        antIcInp.addEventListener("input", e => {
+          state.ant.ic = e.target.value === "" ? null : Number(e.target.value);
+          updateCalculations();
+        });
+      }
+
+      ["mf", "mg", "e", "ec", "oe", "ot"].forEach(k => {
+        const antInp = document.getElementById(`comp-ant-${k}`);
+        if (antInp) {
+          antInp.value = "";
+          antInp.addEventListener("input", e => {
+            state.ant.areas[k] = e.target.value === "" ? null : Number(e.target.value);
+            updateCalculations();
+          });
+        }
+      });
+
+      // Botões do Comparativo (Carregar Salva e Limpar)
+
+      const btnCompLimpar = document.getElementById("btn-comp-limpar");
+      if (btnCompLimpar) {
+        btnCompLimpar.addEventListener("click", () => {
+          state.ant.data = "";
+          state.ant.ic = null;
+          ["mf", "mg", "e", "ec", "oe", "ot"].forEach(k => {
+            state.ant.areas[k] = null;
+            const el = document.getElementById(`comp-ant-${k}`);
+            if (el) el.value = "";
+          });
+          if (antDataInp) antDataInp.value = "";
+          if (antIcInp) antIcInp.value = "";
+          showToast("Dados anteriores limpos com sucesso.");
+          updateCalculations();
+        });
+      }
+
+      // Lateralidade Buttons
+      const setupLatButtons = (segment, key) => {
+        const btns = document.querySelectorAll(`.lat-btn-${segment}`);
+        btns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const val = btn.getAttribute("data-val");
+            state.lat[key] = val;
+            btns.forEach(b => {
+              if (b.getAttribute("data-val") === val) {
+                b.className = `lat-btn-${segment} px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs`;
+              } else {
+                b.className = `lat-btn-${segment} px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700`;
+              }
+            });
+            updateCalculations();
+          });
+        });
+      };
+      setupLatButtons("mao", "mao");
+      setupLatButtons("olho", "olho");
+      setupLatButtons("pe", "pe");
+
+      const tabCalc = document.getElementById("btn-tab-calc");
+      const tabComp = document.getElementById("btn-tab-comp");
+
+      const secCalc = document.getElementById("section-calc");
+      const secComp = document.getElementById("section-comp");
+
+      const setTab = (activeTab, activeSec) => {
+        [tabCalc, tabComp].forEach(t => {
+          t.className = "flex-1 sm:flex-initial px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors bg-blue-950/60 hover:bg-white/10 text-slate-200 flex items-center justify-center gap-1.5 text-center";
+        });
+        activeTab.className = "flex-1 sm:flex-initial px-3.5 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors bg-white text-blue-950 shadow-sm flex items-center justify-center gap-1.5 text-center";
+
+        [secCalc, secComp].forEach(s => s.classList.add("hidden"));
+        activeSec.classList.remove("hidden");
+
+        if (activeSec === secComp) {
+          setTimeout(() => {
+            if (chartCompBarInstance) chartCompBarInstance.resize();
+            if (chartCompRadarInstance) chartCompRadarInstance.resize();
+          }, 50);
+        }
+      };
+
+      tabCalc.addEventListener("click", () => setTab(tabCalc, secCalc));
+      tabComp.addEventListener("click", () => setTab(tabComp, secComp));
+
+      const btnIrComp = document.getElementById("btn-ir-para-comparativo");
+      if (btnIrComp) {
+        btnIrComp.addEventListener("click", () => setTab(tabComp, secComp));
+      }
+
+      // Preencher Exemplo Oficial (Caso Real Davi B. Anholon - EDM III 2020)
+      document.getElementById("btn-demo").addEventListener("click", () => {
+        state.nome = "Davi B. Anholon";
+        state.nasc = "2017-01-20";
+        state.aval = "2026-03-19";
+        state.obs = "Avaliação psicomotora EDM III. Dificuldade acentuada na coordenação óculo-manual e organização espacial. Motricidade global preservada.";
+
+        inNome.value = state.nome;
+        inNasc.value = state.nasc;
+        inAval.value = state.aval;
+        inObs.value = state.obs;
+
+        // Grade oficial do Davi B. Anholon
+        const demoGrid = {
+          mf: { 2: "1", 3: "1", 4: "0", 5: "0", 6: "0", 7: "0", 8: "0", 9: "0", 10: "0", 11: "0" }, // 36m (QM 32)
+          mg: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "1", 9: "1", 10: "0", 11: "0" }, // 108m (QM 97)
+          e:  { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "0", 8: "0", 9: "0", 10: "0", 11: "0" }, // 72m (QM 65)
+          ec: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "0", 9: "0", 10: "0", 11: "0" }, // 84m (QM 75)
+          oe: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "0", 7: "0", 8: "0", 9: "0", 10: "0", 11: "0" }, // 60m (QM 54)
+          ot: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "0", 9: "0", 10: "0", 11: "0" }  // 84m (QM 75)
+        };
+
+        state.grid = demoGrid;
+
+        // Lateralidade oficial do Davi: Mãos=Esquerdo, Olhos=Esquerdo, Pés=Destro -> Cruzada
+        state.lat = { mao: "C", olho: "C", pe: "D" };
+        setupLatButtons("mao", "mao");
+        setupLatButtons("olho", "olho");
+        setupLatButtons("pe", "pe");
+
+        renderEdmGrid();
+        showToast("Exemplo oficial do Davi B. Anholon carregado na grade!");
+        updateCalculations();
+      });
+
+      // Limpar todos os campos (100% limpo)
+      document.getElementById("btn-limpar").addEventListener("click", () => {
+        state.nome = "";
+        state.nasc = "";
+        state.aval = new Date().toISOString().split("T")[0];
+        state.obs = "";
+        state.lat = { mao: "D", olho: "D", pe: "D" };
+
+        inNome.value = "";
+        inNasc.value = "";
+        inAval.value = state.aval;
+        inObs.value = "";
+
+        // Resetar lateralidade para D
+        setupLatButtons("mao", "mao");
+        setupLatButtons("olho", "olho");
+        setupLatButtons("pe", "pe");
+
+        // Limpar toda a grade de testes
+        state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
+        renderEdmGrid();
+
+        showToast("Todos os campos foram limpos com sucesso.");
+        updateCalculations();
+      });
+
+      document.getElementById("btn-salvar-pdf-card").addEventListener("click", exportarParaPDF);
+
+      const btnSalvarDriveCard = document.getElementById("btn-salvar-drive-card");
+      if (btnSalvarDriveCard) btnSalvarDriveCard.addEventListener("click", exportarParaDrive);
+
+      document.getElementById("btn-imprimir-card").addEventListener("click", () => window.print());
+
+      // Eventos de Salvar Criança e Carregar Salvas
+      const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
+      if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
+
+      const selCriancas = document.getElementById("select-criancas-salvas");
+      if (selCriancas) {
+        selCriancas.addEventListener("change", e => carregarCriancaPorId(e.target.value));
+      }
+
+      const btnExcluirCrianca = document.getElementById("btn-excluir-crianca");
+      if (btnExcluirCrianca) {
+        btnExcluirCrianca.addEventListener("click", excluirCriancaSelecionada);
+      }
+
+      const selCompSalva = document.getElementById("select-comp-carregar-salva");
+      if (selCompSalva) {
+        selCompSalva.addEventListener("change", e => carregarCriancaNoComparativo(e.target.value));
+      }
+
+      refreshSavedChildrenSelects();
+
+      checkSession();
+    });
+  </script>
+</body>
+</html>
