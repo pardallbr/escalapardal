@@ -240,9 +240,6 @@
               <button type="button" id="btn-excluir-crianca" title="Excluir criança selecionada do navegador" class="px-2 py-1.5 text-xs font-bold rounded-lg bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-700 border border-slate-200 transition hidden">
                 🗑️
               </button>
-              <button type="button" id="btn-demo" class="px-3 py-1.5 text-xs font-semibold rounded bg-blue-50 text-blue-700 hover:bg-blue-100 transition">
-                Preencher Exemplo
-              </button>
               <button type="button" id="btn-limpar" class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
                 Limpar
               </button>
@@ -1875,111 +1872,27 @@
         const icTxt = icD ? `${icD.totalMeses}m (${icD.textoFormatado})` : "-";
         p2Patient.textContent = `Criança: ${state.nome || "Não informado"} | IC: ${icTxt} | Avaliador: ${state.avaliador || "Não informado"}`;
       }
+
+      // Sugere automaticamente o nome do arquivo em PDF ao salvar
+      const nomeLimpo = (state.nome || "Crianca_Avaliada").trim().replace(/\s+/g, "_");
+      document.title = `Relatorio_EDM_${nomeLimpo}`;
     }
 
     function exportarParaPDF() {
-      showToast("Gerando PDF oficial do Relatório...");
-      const element = document.getElementById("section-calc");
-      const printHdr = document.getElementById("print-header");
-      const printHdrP2 = document.getElementById("print-header-p2");
-
       syncPrintHeaderInfo();
-      
-      const nomeLimpo = (state.nome || "Crianca_Avaliada").replace(/\s+/g, "_");
-
-      // Rola para o topo (0, 0) para eliminar 100% o bug da primeira página em branco no html2canvas!
-      const originalScrollY = window.scrollY;
-      window.scrollTo(0, 0);
-
-      document.body.classList.add("pdf-export-mode");
-      if (printHdr) printHdr.classList.remove("hidden");
-      if (printHdrP2) printHdrP2.classList.remove("hidden");
-
-      const opt = {
-        margin: [6, 6, 6, 6],
-        filename: `Relatorio_EDM_${nomeLimpo}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          logging: false,
-          scrollY: 0,
-          scrollX: 0,
-          windowWidth: 1024
-        },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ['css', 'legacy'] }
-      };
-
+      showToast("Abrindo relatório... Selecione 'Salvar como PDF' na impressora para gerar o arquivo perfeito!");
       setTimeout(() => {
-        html2pdf().set(opt).from(element).save().then(() => {
-          document.body.classList.remove("pdf-export-mode");
-          if (printHdr) printHdr.classList.add("hidden");
-          if (printHdrP2) printHdrP2.classList.add("hidden");
-          window.scrollTo(0, originalScrollY);
-          showToast("Relatório PDF oficial baixado com sucesso!");
-        }).catch(err => {
-          document.body.classList.remove("pdf-export-mode");
-          if (printHdr) printHdr.classList.add("hidden");
-          if (printHdrP2) printHdrP2.classList.add("hidden");
-          window.scrollTo(0, originalScrollY);
-          window.print();
-        });
-      }, 150);
+        window.print();
+      }, 200);
     }
 
     function exportarParaDrive() {
-      showToast("Gerando relatório oficial e abrindo Google Drive...");
-      const element = document.getElementById("section-calc");
-      const printHdr = document.getElementById("print-header");
-      const printHdrP2 = document.getElementById("print-header-p2");
-
       syncPrintHeaderInfo();
-
-      const nomeLimpo = (state.nome || "Crianca_Avaliada").replace(/\s+/g, "_");
-
-      // Rola para o topo (0, 0)
-      const originalScrollY = window.scrollY;
-      window.scrollTo(0, 0);
-
-      document.body.classList.add("pdf-export-mode");
-      if (printHdr) printHdr.classList.remove("hidden");
-      if (printHdrP2) printHdrP2.classList.remove("hidden");
-
-      const opt = {
-        margin: [6, 6, 6, 6],
-        filename: `Relatorio_EDM_${nomeLimpo}.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { 
-          scale: 2, 
-          useCORS: true, 
-          logging: false,
-          scrollY: 0,
-          scrollX: 0,
-          windowWidth: 1024
-        },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ['css', 'legacy'] }
-      };
-
+      showToast("Abrindo relatório perfeito e o seu Google Drive...");
       setTimeout(() => {
-        html2pdf().set(opt).from(element).save().then(() => {
-          document.body.classList.remove("pdf-export-mode");
-          if (printHdr) printHdr.classList.add("hidden");
-          if (printHdrP2) printHdrP2.classList.add("hidden");
-          window.scrollTo(0, originalScrollY);
-          showToast("Relatório baixado! Abrindo seu Google Drive para upload...");
-          setTimeout(() => {
-            window.open("https://drive.google.com/drive/my-drive", "_blank");
-          }, 800);
-        }).catch(err => {
-          document.body.classList.remove("pdf-export-mode");
-          if (printHdr) printHdr.classList.add("hidden");
-          if (printHdrP2) printHdrP2.classList.add("hidden");
-          window.scrollTo(0, originalScrollY);
-          window.open("https://drive.google.com/drive/my-drive", "_blank");
-        });
-      }, 150);
+        window.open("https://drive.google.com/drive/my-drive", "_blank");
+        window.print();
+      }, 200);
     }
 
     // =======================================================
@@ -2289,40 +2202,7 @@
         btnIrComp.addEventListener("click", () => setTab(tabComp, secComp));
       }
 
-      // Preencher Exemplo Oficial (Caso Real Davi B. Anholon - EDM III 2020)
-      document.getElementById("btn-demo").addEventListener("click", () => {
-        state.nome = "Davi B. Anholon";
-        state.nasc = "2017-01-20";
-        state.aval = "2026-03-19";
-        state.obs = "Avaliação psicomotora EDM III. Dificuldade acentuada na coordenação óculo-manual e organização espacial. Motricidade global preservada.";
 
-        inNome.value = state.nome;
-        inNasc.value = state.nasc;
-        inAval.value = state.aval;
-        inObs.value = state.obs;
-
-        // Grade oficial do Davi B. Anholon
-        const demoGrid = {
-          mf: { 2: "1", 3: "1", 4: "0", 5: "0", 6: "0", 7: "0", 8: "0", 9: "0", 10: "0", 11: "0" }, // 36m (QM 32)
-          mg: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "1", 9: "1", 10: "0", 11: "0" }, // 108m (QM 97)
-          e:  { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "0", 8: "0", 9: "0", 10: "0", 11: "0" }, // 72m (QM 65)
-          ec: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "0", 9: "0", 10: "0", 11: "0" }, // 84m (QM 75)
-          oe: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "0", 7: "0", 8: "0", 9: "0", 10: "0", 11: "0" }, // 60m (QM 54)
-          ot: { 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "0", 9: "0", 10: "0", 11: "0" }  // 84m (QM 75)
-        };
-
-        state.grid = demoGrid;
-
-        // Lateralidade oficial do Davi: Mãos=Esquerdo, Olhos=Esquerdo, Pés=Destro -> Cruzada
-        state.lat = { mao: "C", olho: "C", pe: "D" };
-        setupLatButtons("mao", "mao");
-        setupLatButtons("olho", "olho");
-        setupLatButtons("pe", "pe");
-
-        renderEdmGrid();
-        showToast("Exemplo oficial do Davi B. Anholon carregado na grade!");
-        updateCalculations();
-      });
 
       // Limpar todos os campos (100% limpo)
       document.getElementById("btn-limpar").addEventListener("click", () => {
