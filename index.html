@@ -11,7 +11,7 @@
     @media print {
       @page {
         size: A4 portrait;
-        margin: 5mm 8mm;
+        margin: 8mm 10mm;
       }
 
       .no-print { display: none !important; }
@@ -19,7 +19,7 @@
       body {
         background: white !important;
         color: #0f172a !important;
-        font-size: 8pt !important;
+        font-size: 8.5pt !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         margin: 0 !important;
@@ -32,74 +32,10 @@
         margin: 0 !important;
       }
 
-      /* Compacta espaçamentos verticais na impressão para travar rigorosamente em 2 páginas */
-      .space-y-6 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 0.35rem !important;
-        margin-bottom: 0 !important;
-      }
-      .space-y-4 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 0.25rem !important;
-        margin-bottom: 0 !important;
-      }
-      .space-y-3 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 0.2rem !important;
-        margin-bottom: 0 !important;
-      }
-      .space-y-2 > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 0.15rem !important;
-        margin-bottom: 0 !important;
-      }
-
-      .p-6 { padding: 0.4rem !important; }
-      .p-5 { padding: 0.35rem !important; }
-      .p-4 { padding: 0.3rem !important; }
-      .p-3 { padding: 0.25rem !important; }
-      .p-3\.5 { padding: 0.25rem 0.5rem !important; }
-      .mb-4, .my-4 { margin-bottom: 0.25rem !important; }
-      .mb-3 { margin-bottom: 0.2rem !important; }
-      .mt-4 { margin-top: 0.25rem !important; }
-      .mt-6 { margin-top: 0.35rem !important; }
-
       .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
       .page-break-avoid { break-inside: avoid !important; page-break-inside: avoid !important; }
 
-      /* ==================================================== */
-      /* PÁGINA 1: DADOS, GRADE 60 NÍVEIS, LATERALIDADE E OBS */
-      /* ==================================================== */
-      #section-calc > div.bg-white:first-child {
-        padding: 0.3rem 0.5rem !important;
-      }
-
-      /* Tabela 60 níveis */
-      .overflow-x-auto { overflow: visible !important; }
-      table.print-table-fixed {
-        min-width: 0 !important;
-        width: 100% !important;
-        table-layout: fixed !important;
-        border-collapse: collapse !important;
-      }
-      table.print-table-fixed th, table.print-table-fixed td {
-        padding: 1.5px 1px !important;
-        font-size: 7.5pt !important;
-      }
-      #edm-grid-body select { display: none !important; }
-      [id^="grid-print-"] { display: inline-block !important; }
-
-      /* Lateralidade limpa */
-      [id^="group-lat-"] { display: none !important; }
-      [id^="print-val-lat-"] { display: inline-block !important; }
-
-      /* Campo Observações compacto para caber 100% na Página 1 */
-      #input-obs {
-        height: 42px !important;
-        min-height: 38px !important;
-        max-height: 48px !important;
-        font-size: 7.5pt !important;
-        padding: 3px 5px !important;
-        resize: none !important;
-      }
-
-      /* Quebra de página estrita entre Página 1 e Página 2 */
+      /* Quebra de página estrita entre as páginas 1, 2 e 3 */
       .print-page-break {
         page-break-before: always !important;
         break-before: page !important;
@@ -109,56 +45,48 @@
         padding: 0 !important;
       }
 
-      /* ==================================================== */
-      /* PÁGINA 2: DISTRIBUIÇÃO LADO A LADO EM 2 COLUNAS      */
-      /* ==================================================== */
-      #relatorio-export-area {
-        display: grid !important;
-        grid-template-columns: 1.8fr 1.2fr !important;
-        gap: 10px !important;
-        align-items: start !important;
+      /* Tabela de 60 níveis da Página 1 */
+      .overflow-x-auto { overflow: visible !important; }
+      table.print-table-fixed {
+        min-width: 0 !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
       }
-      #relatorio-export-area > div:first-child {
-        grid-column: 1 / 2 !important;
-        margin: 0 !important;
+      table.print-table-fixed th, table.print-table-fixed td {
+        padding: 3px 1px !important;
+        font-size: 8pt !important;
       }
-      #relatorio-export-area > div:last-child {
-        grid-column: 2 / 3 !important;
-        margin: 0 !important;
+      #edm-grid-body select { display: none !important; }
+      [id^="grid-print-"] { display: inline-block !important; }
+
+      /* Lateralidade limpa */
+      [id^="group-lat-"] { display: none !important; }
+      [id^="print-val-lat-"] { display: inline-block !important; }
+
+      /* Campo Observações na Página 2 */
+      #input-obs {
+        height: 65px !important;
+        min-height: 55px !important;
+        font-size: 8.5pt !important;
+        padding: 6px !important;
+        resize: none !important;
       }
 
-      /* Banner Resumo Clínico */
-      #clin-banner {
-        padding: 4px 8px !important;
-        margin-bottom: 3px !important;
-      }
-      #clin-banner p {
-        font-size: 7.5pt !important;
-        line-height: 1.2 !important;
-      }
-
-      /* Gráfico Perfil Motor compacto */
+      /* Gráfico Perfil Motor na Página 2 (Grande e Nítido) */
       .relative.h-72, [class*="h-72"] {
-        height: 165px !important;
+        height: 240px !important;
       }
       #chart-perfil-motor {
-        max-height: 165px !important;
-        height: 165px !important;
+        max-height: 240px !important;
+        height: 240px !important;
       }
-
-      /* Card Resultado Geral (Direita) */
-      #res-qmg-val {
-        font-size: 2rem !important;
-        margin: 2px 0 !important;
-      }
-      .py-5 { padding-top: 3px !important; padding-bottom: 3px !important; }
-      .py-4 { padding-top: 3px !important; padding-bottom: 3px !important; }
 
       /* Assinatura visível */
       #print-signature-block, #print-signature-block-comp {
         display: block !important;
-        margin-top: 8px !important;
-        padding-top: 6px !important;
+        margin-top: 1.5rem !important;
+        padding-top: 0.75rem !important;
       }
     }
 
@@ -173,6 +101,7 @@
     body.pdf-export-mode .no-print { display: none !important; }
     body.pdf-export-mode #print-header { display: block !important; }
     body.pdf-export-mode #print-header-p2 { display: block !important; }
+    body.pdf-export-mode #print-header-p3 { display: block !important; }
     body.pdf-export-mode #print-header-comp { display: block !important; }
     body.pdf-export-mode #print-signature-block-comp { display: block !important; }
     body.pdf-export-mode .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
@@ -185,7 +114,7 @@
     }
     body.pdf-export-mode table.print-table-fixed th,
     body.pdf-export-mode table.print-table-fixed td {
-      padding: 2px 1px !important;
+      padding: 3px 1px !important;
       font-size: 8pt !important;
     }
     body.pdf-export-mode #edm-grid-body select { display: none !important; }
@@ -310,7 +239,7 @@
           <div class="flex justify-between items-start">
             <div>
               <h1 class="text-lg font-black text-slate-900 uppercase tracking-tight">Relatório de Avaliação do Desenvolvimento Motor</h1>
-              <p class="text-[11px] font-semibold text-slate-600">Protocolo Oficial EDM — Prof. Dr. Francisco Rosa Neto (Página 1 de 2)</p>
+              <p class="text-[11px] font-semibold text-slate-600">Protocolo Oficial EDM — Prof. Dr. Francisco Rosa Neto (Página 1 de 3)</p>
             </div>
             <div class="text-right text-[10px] text-slate-500">
               <span class="font-bold text-slate-700">Sistema Motricidade</span><br>
@@ -491,18 +420,10 @@
             </div>
           </div>
 
-          <!-- Observações / Parecer do Avaliador -->
-          <div class="mt-4 pt-4 border-t border-slate-100 page-break-avoid">
-            <label for="input-obs" class="block text-xs font-bold text-slate-800 mb-1">
-              Observações e Parecer Técnico do Profissional
-            </label>
-            <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-2.5 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-          </div>
-
-        </div>
+                  </div>
 
         <!-- QUEBRA DE PÁGINA OFICIAL ENTRE PÁGINA 1 E PÁGINA 2 -->
-        <div id="page-break-divider" class="hidden print:block print-page-break"></div>
+        <div id="page-break-divider-1" class="hidden print:block print-page-break"></div>
 
         <!-- Cabeçalho da Página 2 (Laudo & Resultados) -->
         <div id="print-header-p2" class="hidden print:block pb-3 mb-4 border-b-2 border-slate-800">
@@ -512,19 +433,19 @@
               <span id="print-p2-patient" class="text-slate-600 block text-[10px] font-semibold"></span>
             </div>
             <div class="text-right text-[10px] text-slate-500">
-              <span class="font-bold text-slate-700">Página 2 de 2</span><br>
+              <span class="font-bold text-slate-700">Página 2 de 3</span><br>
               <span id="print-date-p2"></span>
             </div>
           </div>
         </div>
 
         <!-- ======================================================= -->
-        <!-- PASSO 3: RESULTADOS AUTOMÁTICOS & LAUDO CLÍNICO -->
+        <!-- PÁGINA 2 DO RELATÓRIO: LAUDO CLÍNICO, GRÁFICO E OBSERVAÇÕES -->
         <!-- ======================================================= -->
-        <div id="relatorio-export-area" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          <!-- Left: Painel Clínico Oficial Motricidade (Resumo, Pontos de Atenção, Ponto Forte/Foco, Siglas, Gráfico e Tabelas) -->
-          <div class="lg:col-span-2 space-y-6">
+        <div class="space-y-6">
+
+          <!-- Left / Main: Painel Clínico Oficial Motricidade (Resumo, Pontos de Atenção, Ponto Forte/Foco, Gráfico e Observações) -->
+          <div class="space-y-6">
 
             <!-- Banner Resumo Clínico (Estilo Oficial App Motricidade) -->
             <div id="clin-banner" class="bg-red-50/80 border-l-4 border-red-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all">
@@ -569,7 +490,7 @@
               </div>
             </div>
 
-            <!-- Seta de Informações: O que significa cada sigla? -->
+            <!-- Seta de Informações: O que significa cada sigla? (Tela apenas) -->
             <details class="group bg-slate-50 rounded-xl border border-slate-200 overflow-hidden transition-all no-print">
               <summary class="flex items-center gap-2 p-3 text-xs font-bold text-slate-700 cursor-pointer hover:bg-slate-100 transition list-none select-none">
                 <svg class="w-3.5 h-3.5 text-slate-500 transition-transform group-open:rotate-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -604,7 +525,7 @@
               </div>
             </details>
 
-            <!-- Gráfico de Perfil Motor -->
+            <!-- Gráfico de Perfil Motor (Grande, Lindo e Nítido) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none page-break-avoid">
               <div class="flex items-center justify-between mb-2">
                 <h2 class="text-base font-bold text-slate-900">Perfil Motor: Idade Cronológica vs Idades Motoras Calculadas</h2>
@@ -617,8 +538,80 @@
               </div>
             </div>
 
-            <!-- Tabelas Perfil Motor e Quocientes (Estilo Oficial App Motricidade) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 page-break-avoid">
+            <!-- Observações e Parecer Técnico do Profissional (Integrado na Página 2 com Espaço Confortável) -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid">
+              <label for="input-obs" class="block text-xs font-bold text-slate-800 mb-2">
+                Observações e Parecer Técnico do Profissional
+              </label>
+              <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- QUEBRA DE PÁGINA OFICIAL ENTRE PÁGINA 2 E PÁGINA 3 -->
+        <div id="page-break-divider-2" class="hidden print:block print-page-break"></div>
+
+        <!-- Cabeçalho da Página 3 (Resultado Geral, Tabelas & Assinatura) -->
+        <div id="print-header-p3" class="hidden print:block pb-3 mb-4 border-b-2 border-slate-800">
+          <div class="flex justify-between items-center text-xs">
+            <div>
+              <span class="font-black text-slate-900 uppercase tracking-wide">Relatório de Avaliação do Desenvolvimento Motor (EDM III)</span>
+              <span id="print-p3-patient" class="text-slate-600 block text-[10px] font-semibold"></span>
+            </div>
+            <div class="text-right text-[10px] text-slate-500">
+              <span class="font-bold text-slate-700">Página 3 de 3</span><br>
+              <span id="print-date-p3"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- PÁGINA 3 DO RELATÓRIO: RESULTADO GERAL, TABELAS E ASSINATURA -->
+        <!-- ======================================================= -->
+        <div class="space-y-6">
+
+          <!-- Card do Resultado Geral (Destaque do QMG e Indicadores Clínicos) -->
+          <div class="bg-gradient-to-b from-white to-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none page-break-avoid">
+            <h2 class="text-lg font-bold text-slate-900 pb-3 border-b border-slate-200 flex items-center justify-between">
+              <span>Resultado Geral</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Rosa Neto</span>
+            </h2>
+
+            <!-- Big Metric: QMG -->
+            <div class="py-5 text-center border-b border-slate-100">
+              <span class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Quociente Motor Geral (QMG)</span>
+              <div id="res-qmg-val" class="text-4xl font-black text-indigo-700 my-1">-</div>
+              <div id="res-class-badge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-600 mt-1">
+                Aguardando dados
+              </div>
+              <p id="res-class-desc" class="text-xs text-slate-500 mt-2 px-2">
+                Preencha a data e marque os testes na grade acima.
+              </p>
+            </div>
+
+            <!-- Indicadores Clínicos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4 text-xs border-b border-slate-100">
+              <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+                <span class="text-slate-500 block text-[11px]">Idade Cronológica (IC):</span>
+                <span id="res-ic-txt" class="font-bold text-slate-800 text-sm">-</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+                <span class="text-slate-500 block text-[11px]">Idade Motora Geral (IMG):</span>
+                <span id="res-img-txt" class="font-bold text-slate-800 text-sm">-</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+                <span class="text-slate-500 block text-[11px]">Desvio Motor (IMG - IC):</span>
+                <span id="res-desv-txt" class="font-bold text-slate-700 text-sm">-</span>
+              </div>
+              <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+                <span class="text-slate-500 block text-[11px]">Dominância Lateral:</span>
+                <span id="res-lat-badge" class="font-bold text-slate-800 text-sm">Destro Completo</span>
+              </div>
+            </div>
+
+            <!-- Tabelas Detalhadas Lado a Lado (Perfil Motor e Quocientes) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
               <!-- Card Perfil Motor -->
               <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
                 <h3 class="text-sm font-black text-slate-900">Perfil Motor</h3>
@@ -655,95 +648,53 @@
               </div>
             </div>
 
-          </div>
-
-          <!-- Right: Resultados Gerais (QMG, Desvio, Classificação) -->
-          <div class="space-y-6">
-            <div class="bg-gradient-to-b from-white to-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 sticky top-6 print-shadow-none page-break-avoid">
-              <h2 class="text-lg font-bold text-slate-900 pb-3 border-b border-slate-200 flex items-center justify-between">
-                <span>Resultado Geral</span>
-                <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Rosa Neto</span>
-              </h2>
-
-              <!-- Big Metric: QMG -->
-              <div class="py-5 text-center border-b border-slate-100">
-                <span class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Quociente Motor Geral (QMG)</span>
-                <div id="res-qmg-val" class="text-4xl font-black text-indigo-700 my-1">-</div>
-                <div id="res-class-badge" class="inline-block px-3 py-1 rounded-full text-xs font-extrabold bg-slate-100 text-slate-600 mt-1">
-                  Aguardando dados
-                </div>
-                <p id="res-class-desc" class="text-xs text-slate-500 mt-2 px-2">
-                  Preencha a data e marque os testes na grade acima.
-                </p>
+            <!-- Summary Table for Print / View -->
+            <div class="pt-4 border-t border-slate-100 mt-4">
+              <h3 class="text-xs font-bold text-slate-800 mb-2 uppercase tracking-wide">Quadro Resumo das 6 Áreas</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr class="border-b border-slate-200 text-slate-500">
+                      <th class="py-1">Área</th>
+                      <th class="py-1 text-center">IM</th>
+                      <th class="py-1 text-right">QM</th>
+                    </tr>
+                  </thead>
+                  <tbody id="res-table-body" class="divide-y divide-slate-100">
+                  </tbody>
+                </table>
               </div>
+            </div>
 
-              <!-- Key Indicators List -->
-              <div class="py-4 space-y-3 text-xs border-b border-slate-100">
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-600">Idade Cronológica (IC):</span>
-                  <span id="res-ic-txt" class="font-bold text-slate-800">-</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-600">Idade Motora Geral (IMG):</span>
-                  <span id="res-img-txt" class="font-bold text-slate-800">-</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-600">Desvio Motor (IMG - IC):</span>
-                  <span id="res-desv-txt" class="font-bold text-slate-700">-</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-slate-600">Dominância Lateral:</span>
-                  <span id="res-lat-badge" class="font-bold text-slate-800">Destro Completo</span>
-                </div>
-              </div>
+            <!-- Signature block for Print / PDF (Página 3) -->
+            <div id="print-signature-block" class="mt-8 pt-6 border-t border-slate-300 text-center hidden print:block page-break-avoid">
+              <div class="w-64 mx-auto border-b border-slate-400 pb-1"></div>
+              <p id="print-signature-name" class="text-xs font-bold text-slate-800 mt-1">Assinatura do Avaliador Responsável</p>
+              <p class="text-[10px] text-slate-500">Registro Profissional / Carimbo</p>
+            </div>
 
-              <!-- Summary Table for Print / View -->
-              <div class="pt-4">
-                <h3 class="text-xs font-bold text-slate-800 mb-2 uppercase tracking-wide">Quadro Resumo das 6 Áreas</h3>
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr class="border-b border-slate-200 text-slate-500">
-                        <th class="py-1">Área</th>
-                        <th class="py-1 text-center">IM</th>
-                        <th class="py-1 text-right">QM</th>
-                      </tr>
-                    </thead>
-                    <tbody id="res-table-body" class="divide-y divide-slate-100">
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- Action Buttons on Right Card (Screen only) -->
-              <div class="mt-6 pt-4 border-t border-slate-200 space-y-2 no-print">
-                <button type="button" id="btn-salvar-crianca-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                  Salvar Criança no Navegador
-                </button>
-                <button id="btn-salvar-pdf-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                  Salvar Relatório em PDF
-                </button>
-                <button id="btn-salvar-drive-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
-                  <svg class="w-4 h-4 shrink-0" viewBox="0 0 87.3 78" fill="none"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
-                  Salvar no Google Drive
-                </button>
-                <button id="btn-imprimir-card" class="w-full py-2.5 px-3 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                  Imprimir Laudo
-                </button>
-              </div>
-
-              <!-- Signature block for Print / PDF -->
-              <div id="print-signature-block" class="mt-8 pt-6 border-t border-slate-300 text-center hidden print:block page-break-avoid">
-                <div class="w-64 mx-auto border-b border-slate-400 pb-1"></div>
-                <p id="print-signature-name" class="text-xs font-bold text-slate-800 mt-1">Assinatura do Avaliador Responsável</p>
-                <p class="text-[10px] text-slate-500">Registro Profissional / Carimbo</p>
-              </div>
-
+            <!-- Action Buttons on Right Card (Screen only) -->
+            <div class="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
+              <button type="button" id="btn-salvar-crianca-card" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                Salvar Criança no Navegador
+              </button>
+              <button id="btn-salvar-pdf-card" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Salvar Relatório em PDF
+              </button>
+              <button id="btn-salvar-drive-card" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-sky-600 hover:bg-sky-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 87.3 78" fill="none"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+                Salvar no Google Drive
+              </button>
+              <button id="btn-imprimir-card" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Imprimir Laudo
+              </button>
             </div>
           </div>
+
+        </div>
 
         </div>
 
@@ -957,10 +908,6 @@
 
           <!-- Barra de Ações Inferior do Comparativo (Tela) -->
           <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
-            <button type="button" id="btn-comp-salvar-crianca" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2 shadow-sm transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-              Salvar Criança no Navegador
-            </button>
             <button type="button" id="btn-comp-salvar-pdf-bottom" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
               Salvar Relatório Comparativo em PDF
@@ -2026,15 +1973,25 @@
     function syncPrintHeaderInfo() {
       const pDate = document.getElementById("print-date");
       const pDate2 = document.getElementById("print-date-p2");
+      const pDate3 = document.getElementById("print-date-p3");
       const p2Patient = document.getElementById("print-p2-patient");
+      const p3Patient = document.getElementById("print-p3-patient");
+      const pSign = document.getElementById("print-signature-name");
       const dtStr = state.aval ? state.aval.split("-").reverse().join("/") : new Date().toLocaleDateString("pt-BR");
 
       if (pDate) pDate.textContent = `Data: ${dtStr}`;
       if (pDate2) pDate2.textContent = `Data: ${dtStr}`;
-      if (p2Patient) {
-        const icD = calculateIC(state.nasc, state.aval);
-        const icTxt = icD ? `${icD.totalMeses}m (${icD.textoFormatado})` : "-";
-        p2Patient.textContent = `Criança: ${state.nome || "Não informado"} | IC: ${icTxt} | Avaliador: ${state.avaliador || "Não informado"}`;
+      if (pDate3) pDate3.textContent = `Data: ${dtStr}`;
+
+      const icD = calculateIC(state.nasc, state.aval);
+      const icTxt = icD ? `${icD.totalMeses}m (${icD.textoFormatado})` : "-";
+      const infoPatient = `Criança: ${state.nome || "Não informado"} | IC: ${icTxt} | Avaliador: ${state.avaliador || "Não informado"}`;
+
+      if (p2Patient) p2Patient.textContent = infoPatient;
+      if (p3Patient) p3Patient.textContent = infoPatient;
+
+      if (pSign) {
+        pSign.textContent = state.avaliador ? `${state.avaliador} — Avaliador Psicomotor` : "Assinatura do Avaliador Responsável";
       }
 
       // Sugere automaticamente o nome do arquivo em PDF ao salvar
