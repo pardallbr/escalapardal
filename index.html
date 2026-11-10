@@ -696,8 +696,6 @@
 
         </div>
 
-        </div>
-
       </section>
 
       <!-- ======================================================= -->
@@ -1215,11 +1213,12 @@
     // Regra Inteligente: "Ao marcar, os níveis vizinhos se preenchem sozinhos"
     function handleGridCellChange(areaKey, changedAge, val) {
       state.grid[areaKey][changedAge] = val;
+      const numAge = Number(changedAge);
 
-      if (val === "1") {
-        // Se acertou (1), todos os níveis anteriores são preenchidos com 1 (caso vazios ou sem teste)
+      if (val === "1" || val === "0.5") {
+        // Se acertou (1 ou 0,5), todos os níveis anteriores são preenchidos com 1 (caso vazios ou 0)
         AGES_EDM.forEach(a => {
-          if (a < changedAge) {
+          if (a < numAge) {
             if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "0") {
               state.grid[areaKey][a] = "1";
               const el = document.getElementById(`grid-${areaKey}-${a}`);
@@ -1231,10 +1230,10 @@
           }
         });
       } else if (val === "0") {
-        // Se errou (0), todos os níveis posteriores são preenchidos com 0 (caso vazios)
+        // Se errou (0), todos os níveis posteriores são preenchidos com 0 (caso vazios, 1 ou 0.5)
         AGES_EDM.forEach(a => {
-          if (a > changedAge) {
-            if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "1") {
+          if (a > numAge) {
+            if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "1" || state.grid[areaKey][a] === "0.5") {
               state.grid[areaKey][a] = "0";
               const el = document.getElementById(`grid-${areaKey}-${a}`);
               if (el) {
@@ -1250,6 +1249,36 @@
       if (curSelect) updateSelectColor(curSelect, val);
 
       updateCalculations();
+    }
+
+    // Função de Lateralidade acessível globalmente
+    function setupLatButtons(segment, key) {
+      const btns = document.querySelectorAll(`.lat-btn-${segment}`);
+      const currentVal = (state.lat && state.lat[key]) ? state.lat[key] : "D";
+
+      btns.forEach(b => {
+        if (b.getAttribute("data-val") === currentVal) {
+          b.className = `lat-btn-${segment} px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs`;
+        } else {
+          b.className = `lat-btn-${segment} px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700`;
+        }
+      });
+
+      const printElem = document.getElementById(`print-val-lat-${segment}`);
+      if (printElem) {
+        const mapLat = { "D": "Direito (Destro)", "C": "Canhoto (Esquerdo)", "I": "Indefinido" };
+        printElem.textContent = mapLat[currentVal] || "Direito";
+      }
+
+      btns.forEach(btn => {
+        btn.onclick = () => {
+          const val = btn.getAttribute("data-val");
+          if (!state.lat) state.lat = { mao: "D", olho: "D", pe: "D" };
+          state.lat[key] = val;
+          setupLatButtons(segment, key);
+          updateCalculations();
+        };
+      });
     }
 
     // CÁLCULO DA IDADE MOTORA A PARTIR DA GRADE EDM
@@ -2083,13 +2112,20 @@
     }
 
     function salvarCriancaAtual() {
+      const inNome = document.getElementById("input-nome");
+      if (inNome && inNome.value) state.nome = inNome.value.trim();
       const nomeTrim = (state.nome || "").trim();
       if (!nomeTrim) {
         showToast("Por favor, digite o nome da criança antes de salvar.");
-        const inNome = document.getElementById("input-nome");
         if (inNome) inNome.focus();
         return;
       }
+      const inNasc = document.getElementById("input-nasc");
+      if (inNasc && inNasc.value) state.nasc = inNasc.value;
+      const inAval = document.getElementById("input-aval");
+      if (inAval && inAval.value) state.aval = inAval.value;
+      const inObs = document.getElementById("input-obs");
+      if (inObs) state.obs = inObs.value;
 
       // 1. Sincroniza ativamente da tela para garantir que 100% dos 60 testes estão no state.grid
       AREAS_EDM.forEach(area => {
@@ -2103,6 +2139,8 @@
       });
 
       // 2. Sincroniza dados manuais da avaliação anterior (Painel Comparativo)
+      if (!state.ant) state.ant = { data: "", ic: null, areas: {} };
+      if (!state.ant.areas) state.ant.areas = {};
       const antDataInp = document.getElementById("comp-ant-data");
       const antIcInp = document.getElementById("comp-ant-ic");
       if (antDataInp) state.ant.data = antDataInp.value || "";
@@ -2122,8 +2160,9 @@
         ims[a.key] = calculateAreaIMFromGrid(a.key);
       });
 
+      const recordId = "child_" + Date.now();
       const record = {
-        id: "child_" + Date.now(),
+        id: recordId,
         nome: nomeTrim,
         nasc: state.nasc,
         aval: state.aval,
@@ -2137,25 +2176,31 @@
 
       // Se já existir com o mesmo nome e mesma data de avaliação, substitui; caso contrário, insere no topo
       const existingIdx = list.findIndex(c => c.nome.toLowerCase() === nomeTrim.toLowerCase() && c.aval === state.aval);
+      let activeChildId = recordId;
       if (existingIdx >= 0) {
+        record.id = list[existingIdx].id;
+        activeChildId = record.id;
         list[existingIdx] = record;
       } else {
         list.unshift(record);
       }
 
       saveChildrenList(list);
-      refreshSavedChildrenSelects();
+      refreshSavedChildrenSelects(activeChildId);
       showToast(`Criança "${nomeTrim}" salva com sucesso no seu navegador!`);
     }
 
-    function refreshSavedChildrenSelects() {
+    function refreshSavedChildrenSelects(selectedId) {
       const list = getSavedChildren();
       
       const selMain = document.getElementById("select-criancas-salvas");
       const btnDel = document.getElementById("btn-excluir-crianca");
       if (selMain) {
-        selMain.innerHTML = `<option value="">📂 Crianças Salvas (${list.length})...</option>` +
+        selMain.innerHTML = `<option value="">📁 Crianças Salvas (${list.length})...</option>` +
           list.map(c => `<option value="${c.id}">${c.nome} (${c.aval || c.dataSalva})</option>`).join("");
+        if (selectedId) {
+          selMain.value = selectedId;
+        }
         if (btnDel) {
           btnDel.classList.toggle("hidden", list.length === 0);
         }
@@ -2163,7 +2208,7 @@
 
       const selComp = document.getElementById("select-comp-carregar-salva");
       if (selComp) {
-        selComp.innerHTML = `<option value="">📂 Carregar Criança Salva (${list.length})...</option>` +
+        selComp.innerHTML = `<option value="">📁 Carregar Criança Salva (${list.length})...</option>` +
           list.map(c => `<option value="${c.id}">${c.nome} (${c.aval || c.dataSalva})</option>`).join("");
       }
     }
@@ -2192,14 +2237,28 @@
         });
       }
 
+      // Se houver níveis com êxito (1 ou 0.5), garante que os níveis anteriores também fiquem preenchidos com 1
+      AREAS_EDM.forEach(area => {
+        AGES_EDM.forEach(age => {
+          const val = state.grid[area.key][age];
+          if (val === "1" || val === "0.5") {
+            AGES_EDM.forEach(prevAge => {
+              if (prevAge < age && (!state.grid[area.key][prevAge] || state.grid[area.key][prevAge] === "0")) {
+                state.grid[area.key][prevAge] = "1";
+              }
+            });
+          }
+        });
+      });
+
       // Restaura dados do comparativo associados a essa gravação, ou limpa se não houver
-      if (c.ant) {
+      if (c.ant && c.ant.areas) {
         state.ant = JSON.parse(JSON.stringify(c.ant));
       } else {
         state.ant = {
-          data: "",
-          ic: null,
-          areas: { mf: null, mg: null, e: null, ec: null, oe: null, ot: null }
+          data: (c.ant && c.ant.data) || "",
+          ic: (c.ant && c.ant.ic) || null,
+          areas: (c.ant && c.ant.areas) || { mf: null, mg: null, e: null, ec: null, oe: null, ot: null }
         };
       }
 
@@ -2363,34 +2422,7 @@
         });
       }
 
-      // Lateralidade Buttons
-      const setupLatButtons = (segment, key) => {
-        const btns = document.querySelectorAll(`.lat-btn-${segment}`);
-        const currentVal = state.lat[key] || "D";
-
-        btns.forEach(b => {
-          if (b.getAttribute("data-val") === currentVal) {
-            b.className = `lat-btn-${segment} px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs`;
-          } else {
-            b.className = `lat-btn-${segment} px-3 py-1.5 text-xs font-bold rounded-lg bg-white border border-slate-300 text-slate-700`;
-          }
-        });
-
-        const printElem = document.getElementById(`print-val-lat-${segment}`);
-        if (printElem) {
-          const mapLat = { "D": "Direito (Destro)", "C": "Canhoto (Esquerdo)", "I": "Indefinido" };
-          printElem.textContent = mapLat[currentVal] || "Direito";
-        }
-
-        btns.forEach(btn => {
-          btn.onclick = () => {
-            const val = btn.getAttribute("data-val");
-            state.lat[key] = val;
-            setupLatButtons(segment, key);
-            updateCalculations();
-          };
-        });
-      };
+      // Inicialização da Lateralidade
       setupLatButtons("mao", "mao");
       setupLatButtons("olho", "olho");
       setupLatButtons("pe", "pe");
@@ -2465,41 +2497,4 @@
       const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
       if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
 
-      const selCriancas = document.getElementById("select-criancas-salvas");
-      if (selCriancas) {
-        selCriancas.addEventListener("change", e => carregarCriancaPorId(e.target.value));
-      }
-
-      const btnExcluirCrianca = document.getElementById("btn-excluir-crianca");
-      if (btnExcluirCrianca) {
-        btnExcluirCrianca.addEventListener("click", excluirCriancaSelecionada);
-      }
-
-      const selCompSalva = document.getElementById("select-comp-carregar-salva");
-      if (selCompSalva) {
-        selCompSalva.addEventListener("change", e => carregarCriancaNoComparativo(e.target.value));
-      }
-
-      // Eventos dos botões de Imprimir e Salvar PDF do Comparativo
-      const btnCompPdf = document.getElementById("btn-comp-salvar-pdf");
-      if (btnCompPdf) btnCompPdf.addEventListener("click", exportarComparativoPDF);
-
-      const btnCompImp = document.getElementById("btn-comp-imprimir");
-      if (btnCompImp) btnCompImp.addEventListener("click", imprimirComparativo);
-
-      const btnCompSalvarCrianca = document.getElementById("btn-comp-salvar-crianca");
-      if (btnCompSalvarCrianca) btnCompSalvarCrianca.addEventListener("click", salvarCriancaAtual);
-
-      const btnCompPdfBottom = document.getElementById("btn-comp-salvar-pdf-bottom");
-      if (btnCompPdfBottom) btnCompPdfBottom.addEventListener("click", exportarComparativoPDF);
-
-      const btnCompImpBottom = document.getElementById("btn-comp-imprimir-bottom");
-      if (btnCompImpBottom) btnCompImpBottom.addEventListener("click", imprimirComparativo);
-
-      refreshSavedChildrenSelects();
-
-      checkSession();
-    });
-  </script>
-</body>
-</html>
+      const selCriancas = 
