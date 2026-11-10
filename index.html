@@ -9,26 +9,68 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     @media print {
-      /* Oculta data, hora, titulo da pagina e link URL automaticos do navegador */
       @page {
-        margin: 0;
         size: A4 portrait;
+        margin: 5mm 8mm;
       }
+
       .no-print { display: none !important; }
+
       body {
         background: white !important;
         color: #0f172a !important;
-        font-size: 9pt !important;
+        font-size: 8pt !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         margin: 0 !important;
-        padding: 10mm 12mm !important;
+        padding: 0 !important;
       }
+
+      main {
+        padding: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+
+      /* Compacta espaçamentos verticais na impressão para travar rigorosamente em 2 páginas */
+      .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 0.35rem !important;
+        margin-bottom: 0 !important;
+      }
+      .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 0.25rem !important;
+        margin-bottom: 0 !important;
+      }
+      .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 0.2rem !important;
+        margin-bottom: 0 !important;
+      }
+      .space-y-2 > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 0.15rem !important;
+        margin-bottom: 0 !important;
+      }
+
+      .p-6 { padding: 0.4rem !important; }
+      .p-5 { padding: 0.35rem !important; }
+      .p-4 { padding: 0.3rem !important; }
+      .p-3 { padding: 0.25rem !important; }
+      .p-3\.5 { padding: 0.25rem 0.5rem !important; }
+      .mb-4, .my-4 { margin-bottom: 0.25rem !important; }
+      .mb-3 { margin-bottom: 0.2rem !important; }
+      .mt-4 { margin-top: 0.25rem !important; }
+      .mt-6 { margin-top: 0.35rem !important; }
+
       .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
       .page-break-avoid { break-inside: avoid !important; page-break-inside: avoid !important; }
-      main { padding: 0 !important; max-width: 100% !important; margin: 0 !important; }
 
-      /* Tabela 60 níveis inteira sem corte */
+      /* ==================================================== */
+      /* PÁGINA 1: DADOS, GRADE 60 NÍVEIS, LATERALIDADE E OBS */
+      /* ==================================================== */
+      #section-calc > div.bg-white:first-child {
+        padding: 0.3rem 0.5rem !important;
+      }
+
+      /* Tabela 60 níveis */
       .overflow-x-auto { overflow: visible !important; }
       table.print-table-fixed {
         min-width: 0 !important;
@@ -37,20 +79,27 @@
         border-collapse: collapse !important;
       }
       table.print-table-fixed th, table.print-table-fixed td {
-        padding: 3px 1px !important;
-        font-size: 8pt !important;
+        padding: 1.5px 1px !important;
+        font-size: 7.5pt !important;
       }
       #edm-grid-body select { display: none !important; }
       [id^="grid-print-"] { display: inline-block !important; }
 
-      /* Lateralidade limpa sem sobreposição */
+      /* Lateralidade limpa */
       [id^="group-lat-"] { display: none !important; }
       [id^="print-val-lat-"] { display: inline-block !important; }
 
-      /* Assinatura visível */
-      #print-signature-block, #print-signature-block-comp { display: block !important; }
+      /* Campo Observações compacto para caber 100% na Página 1 */
+      #input-obs {
+        height: 42px !important;
+        min-height: 38px !important;
+        max-height: 48px !important;
+        font-size: 7.5pt !important;
+        padding: 3px 5px !important;
+        resize: none !important;
+      }
 
-      /* Quebra de página oficial entre Passo 2 e Passo 3 */
+      /* Quebra de página estrita entre Página 1 e Página 2 */
       .print-page-break {
         page-break-before: always !important;
         break-before: page !important;
@@ -59,13 +108,65 @@
         margin: 0 !important;
         padding: 0 !important;
       }
+
+      /* ==================================================== */
+      /* PÁGINA 2: DISTRIBUIÇÃO LADO A LADO EM 2 COLUNAS      */
+      /* ==================================================== */
+      #relatorio-export-area {
+        display: grid !important;
+        grid-template-columns: 1.8fr 1.2fr !important;
+        gap: 10px !important;
+        align-items: start !important;
+      }
+      #relatorio-export-area > div:first-child {
+        grid-column: 1 / 2 !important;
+        margin: 0 !important;
+      }
+      #relatorio-export-area > div:last-child {
+        grid-column: 2 / 3 !important;
+        margin: 0 !important;
+      }
+
+      /* Banner Resumo Clínico */
+      #clin-banner {
+        padding: 4px 8px !important;
+        margin-bottom: 3px !important;
+      }
+      #clin-banner p {
+        font-size: 7.5pt !important;
+        line-height: 1.2 !important;
+      }
+
+      /* Gráfico Perfil Motor compacto */
+      .relative.h-72, [class*="h-72"] {
+        height: 165px !important;
+      }
+      #chart-perfil-motor {
+        max-height: 165px !important;
+        height: 165px !important;
+      }
+
+      /* Card Resultado Geral (Direita) */
+      #res-qmg-val {
+        font-size: 2rem !important;
+        margin: 2px 0 !important;
+      }
+      .py-5 { padding-top: 3px !important; padding-bottom: 3px !important; }
+      .py-4 { padding-top: 3px !important; padding-bottom: 3px !important; }
+
+      /* Assinatura visível */
+      #print-signature-block, #print-signature-block-comp {
+        display: block !important;
+        margin-top: 8px !important;
+        padding-top: 6px !important;
+      }
     }
 
     /* MODO EXPORTAÇÃO PDF OFICIAL (HTML2PDF) */
     body.pdf-export-mode {
       background: white !important;
       color: #0f172a !important;
-      font-size: 9pt !important;
+      font-size: 8.5pt !important;
       width: 794px !important;
       margin: 0 auto !important;
     }
@@ -84,7 +185,7 @@
     }
     body.pdf-export-mode table.print-table-fixed th,
     body.pdf-export-mode table.print-table-fixed td {
-      padding: 3px 1px !important;
+      padding: 2px 1px !important;
       font-size: 8pt !important;
     }
     body.pdf-export-mode #edm-grid-body select { display: none !important; }
@@ -684,17 +785,9 @@
                 Digite os dados da avaliação anterior para comparar a evolução entre as sessões.
               </p>
             </div>
-            <div class="flex flex-wrap items-center gap-2 text-xs no-print">
+            <div class="flex items-center gap-2 text-xs">
               <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold" id="comp-patient-tag">Avaliado</span>
               <span class="px-2.5 py-1 rounded-lg bg-blue-100 text-blue-800 font-bold" id="comp-ic-tag">IC: -</span>
-              <button type="button" id="btn-comp-salvar-pdf" class="px-3 py-1.5 font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1.5 shadow-xs transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                Salvar PDF
-              </button>
-              <button type="button" id="btn-comp-imprimir" class="px-3 py-1.5 font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Imprimir
-              </button>
             </div>
           </div>
 
@@ -864,11 +957,15 @@
 
           <!-- Barra de Ações Inferior do Comparativo (Tela) -->
           <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
+            <button type="button" id="btn-comp-salvar-crianca" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2 shadow-sm transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+              Salvar Criança no Navegador
+            </button>
             <button type="button" id="btn-comp-salvar-pdf-bottom" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
               Salvar Relatório Comparativo em PDF
             </button>
-            <button type="button" id="btn-comp-imprimir-bottom" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2 shadow-sm transition">
+            <button type="button" id="btn-comp-imprimir-bottom" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-slate-700 hover:bg-slate-800 text-white flex items-center gap-2 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
               Imprimir Laudo Comparativo
             </button>
@@ -1077,6 +1174,8 @@
       tbody.innerHTML = "";
 
       AREAS_EDM.forEach(area => {
+        if (!state.grid[area.key]) state.grid[area.key] = {};
+
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50 transition";
 
@@ -1091,7 +1190,8 @@
           const tdAge = document.createElement("td");
           tdAge.className = "p-1.5";
 
-          const currentVal = state.grid[area.key][age] ?? "";
+          const rawVal = state.grid[area.key][age];
+          const currentVal = (rawVal === undefined || rawVal === null || rawVal === "") ? "" : String(rawVal);
 
           const select = document.createElement("select");
           select.id = `grid-${area.key}-${age}`;
@@ -1103,15 +1203,16 @@
           printSpan.className = "hidden print:inline-block font-extrabold text-[8.5pt] text-center w-full py-0.5";
           printSpan.textContent = currentVal === "" ? "—" : (currentVal === "0.5" ? "0,5" : currentVal);
 
-          // Estilo condicional de cor
-          updateSelectColor(select, currentVal);
-
           select.innerHTML = `
             <option value="" ${currentVal === "" ? "selected" : ""}>—</option>
             <option value="1" ${currentVal === "1" ? "selected" : ""}>1</option>
             <option value="0.5" ${currentVal === "0.5" ? "selected" : ""}>0,5</option>
             <option value="0" ${currentVal === "0" ? "selected" : ""}>0</option>
           `;
+          select.value = currentVal;
+
+          // Estilo condicional de cor
+          updateSelectColor(select, currentVal);
 
           // Evento de alteração com preenchimento inteligente dos vizinhos
           select.addEventListener("change", (e) => {
@@ -1136,11 +1237,12 @@
     }
 
     function updateSelectColor(selectElem, val) {
-      if (val === "1") {
+      const strVal = (val === undefined || val === null || val === "") ? "" : String(val);
+      if (strVal === "1") {
         selectElem.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-emerald-400 bg-emerald-100 text-emerald-900 focus:ring-2 focus:ring-emerald-500 outline-none print:hidden";
-      } else if (val === "0.5") {
+      } else if (strVal === "0.5") {
         selectElem.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-amber-400 bg-amber-100 text-amber-900 focus:ring-2 focus:ring-amber-500 outline-none print:hidden";
-      } else if (val === "0") {
+      } else if (strVal === "0") {
         selectElem.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-slate-300 bg-slate-200 text-slate-800 focus:ring-2 focus:ring-slate-500 outline-none print:hidden";
       } else {
         selectElem.className = "w-14 sm:w-16 p-1 text-center font-semibold text-xs rounded border border-slate-300 bg-white text-slate-500 focus:ring-2 focus:ring-blue-500 outline-none print:hidden";
@@ -1150,12 +1252,12 @@
       const printId = selectElem.id.replace("grid-", "grid-print-");
       const printSpan = document.getElementById(printId);
       if (printSpan) {
-        printSpan.textContent = val === "" ? "—" : (val === "0.5" ? "0,5" : val);
-        if (val === "1") {
+        printSpan.textContent = strVal === "" ? "—" : (strVal === "0.5" ? "0,5" : strVal);
+        if (strVal === "1") {
           printSpan.className = "hidden print:inline-block font-extrabold text-[8.5pt] text-center text-emerald-900 bg-emerald-100 rounded px-0.5 w-full";
-        } else if (val === "0.5") {
+        } else if (strVal === "0.5") {
           printSpan.className = "hidden print:inline-block font-extrabold text-[8.5pt] text-center text-amber-900 bg-amber-100 rounded px-0.5 w-full";
-        } else if (val === "0") {
+        } else if (strVal === "0") {
           printSpan.className = "hidden print:inline-block font-bold text-[8.5pt] text-center text-slate-600 bg-slate-100 rounded px-0.5 w-full";
         } else {
           printSpan.className = "hidden print:inline-block font-normal text-[8.5pt] text-center text-slate-300 w-full";
@@ -1962,8 +2064,18 @@
       }
 
       const nomeLimpo = (state.nome || "Crianca_Avaliada").trim().replace(/\s+/g, "_");
-      document.title = `Relatorio_Comparativo_EDM_${nomeLimpo}`;
+      document.title = `Comparativo_EDM_${nomeLimpo}`;
     }
+
+    window.addEventListener("beforeprint", () => {
+      const secComp = document.getElementById("section-comp");
+      const isCompActive = secComp && !secComp.classList.contains("hidden");
+      if (isCompActive) {
+        syncPrintCompHeaderInfo();
+      } else {
+        syncPrintHeaderInfo();
+      }
+    });
 
     function exportarComparativoPDF() {
       syncPrintCompHeaderInfo();
@@ -2022,6 +2134,29 @@
         return;
       }
 
+      // 1. Sincroniza ativamente da tela para garantir que 100% dos 60 testes estão no state.grid
+      AREAS_EDM.forEach(area => {
+        if (!state.grid[area.key]) state.grid[area.key] = {};
+        AGES_EDM.forEach(age => {
+          const el = document.getElementById(`grid-${area.key}-${age}`);
+          if (el) {
+            state.grid[area.key][age] = el.value || "";
+          }
+        });
+      });
+
+      // 2. Sincroniza dados manuais da avaliação anterior (Painel Comparativo)
+      const antDataInp = document.getElementById("comp-ant-data");
+      const antIcInp = document.getElementById("comp-ant-ic");
+      if (antDataInp) state.ant.data = antDataInp.value || "";
+      if (antIcInp) state.ant.ic = antIcInp.value === "" ? null : Number(antIcInp.value);
+      AREAS_EDM.forEach(a => {
+        const el = document.getElementById(`comp-ant-${a.key}`);
+        if (el) {
+          state.ant.areas[a.key] = el.value === "" ? null : Number(el.value);
+        }
+      });
+
       const list = getSavedChildren();
 
       // Guarda o mapa das idades motoras calculadas
@@ -2039,6 +2174,7 @@
         lat: { ...state.lat },
         grid: JSON.parse(JSON.stringify(state.grid)),
         areasIM: ims,
+        ant: JSON.parse(JSON.stringify(state.ant)),
         dataSalva: new Date().toLocaleDateString("pt-BR")
       };
 
@@ -2086,7 +2222,38 @@
       state.aval = c.aval || new Date().toISOString().split("T")[0];
       state.obs = c.obs || "";
       state.lat = c.lat ? { ...c.lat } : { mao: "D", olho: "D", pe: "D" };
-      state.grid = c.grid ? JSON.parse(JSON.stringify(c.grid)) : { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
+      
+      // Carrega o grid normalizando cada valor para String ("1", "0.5", "0", "")
+      state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
+      if (c.grid) {
+        AREAS_EDM.forEach(a => {
+          state.grid[a.key] = {};
+          AGES_EDM.forEach(age => {
+            const rawVal = c.grid[a.key] ? c.grid[a.key][age] : "";
+            state.grid[a.key][age] = (rawVal === undefined || rawVal === null || rawVal === "") ? "" : String(rawVal);
+          });
+        });
+      }
+
+      // Restaura dados do comparativo associados a essa gravação, ou limpa se não houver
+      if (c.ant) {
+        state.ant = JSON.parse(JSON.stringify(c.ant));
+      } else {
+        state.ant = {
+          data: "",
+          ic: null,
+          areas: { mf: null, mg: null, e: null, ec: null, oe: null, ot: null }
+        };
+      }
+
+      const antDataInp = document.getElementById("comp-ant-data");
+      const antIcInp = document.getElementById("comp-ant-ic");
+      if (antDataInp) antDataInp.value = state.ant.data || "";
+      if (antIcInp) antIcInp.value = state.ant.ic || "";
+      AREAS_EDM.forEach(a => {
+        const el = document.getElementById(`comp-ant-${a.key}`);
+        if (el) el.value = (state.ant.areas && state.ant.areas[a.key] !== null && state.ant.areas[a.key] !== undefined) ? state.ant.areas[a.key] : "";
+      });
 
       const inNome = document.getElementById("input-nome");
       const inNasc = document.getElementById("input-nasc");
@@ -2362,6 +2529,9 @@
 
       const btnCompImp = document.getElementById("btn-comp-imprimir");
       if (btnCompImp) btnCompImp.addEventListener("click", imprimirComparativo);
+
+      const btnCompSalvarCrianca = document.getElementById("btn-comp-salvar-crianca");
+      if (btnCompSalvarCrianca) btnCompSalvarCrianca.addEventListener("click", salvarCriancaAtual);
 
       const btnCompPdfBottom = document.getElementById("btn-comp-salvar-pdf-bottom");
       if (btnCompPdfBottom) btnCompPdfBottom.addEventListener("click", exportarComparativoPDF);
