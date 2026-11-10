@@ -61,7 +61,8 @@
       [id^="group-lat-"] { display: none !important; }
       [id^="print-val-lat-"] { display: inline-block !important; }
 
-      #input-obs {
+      /* Formatação de campos de texto na impressão */
+      #input-obs, #comp-input-obs {
         height: 65px !important;
         min-height: 55px !important;
         font-size: 8.5pt !important;
@@ -72,7 +73,7 @@
       .relative.h-72, [class*="h-72"] {
         height: 240px !important;
       }
-      #chart-perfil-motor {
+      #chart-perfil-motor, #chart-comp-bar, #chart-comp-radar {
         max-height: 240px !important;
         height: 240px !important;
       }
@@ -115,6 +116,13 @@
     body.pdf-export-mode [id^="group-lat-"] { display: none !important; }
     body.pdf-export-mode [id^="print-val-lat-"] { display: inline-block !important; }
     body.pdf-export-mode #print-signature-block { display: block !important; }
+    body.pdf-export-mode #comp-input-obs {
+      height: 65px !important;
+      min-height: 55px !important;
+      font-size: 8.5pt !important;
+      padding: 6px !important;
+      resize: none !important;
+    }
     body.pdf-export-mode .print-page-break {
       page-break-before: always !important;
       break-before: page !important;
@@ -499,6 +507,7 @@
               </div>
             </div>
 
+            <!-- Card de Observações da Avaliação Atual -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid">
               <label for="input-obs" class="block text-xs font-bold text-slate-800 mb-2">
                 Observações e Parecer Técnico do Profissional
@@ -838,6 +847,14 @@
             </div>
           </div>
 
+          <!-- NOVO: Card de Observações e Parecer Técnico no Comparativo -->
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid">
+            <label for="comp-input-obs" class="block text-xs font-bold text-slate-800 mb-2">
+              Observações e Parecer Técnico do Profissional
+            </label>
+            <textarea id="comp-input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+          </div>
+
           <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
             <button type="button" id="btn-comp-salvar-pdf-bottom" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -891,6 +908,7 @@
       ant: {
         data: "",
         ic: null,
+        obs: "",
         areas: { mf: null, mg: null, e: null, ec: null, oe: null, ot: null }
       }
     };
@@ -1998,6 +2016,10 @@
       const inObs = document.getElementById("input-obs");
       if (inObs) state.obs = inObs.value;
 
+      // Sincroniza observações do comparativo
+      const compInObs = document.getElementById("comp-input-obs");
+      if (compInObs) state.ant.obs = compInObs.value;
+
       AREAS_EDM.forEach(area => {
         if (!state.grid[area.key]) state.grid[area.key] = {};
         AGES_EDM.forEach(age => {
@@ -2008,7 +2030,7 @@
         });
       });
 
-      if (!state.ant) state.ant = { data: "", ic: null, areas: {} };
+      if (!state.ant) state.ant = { data: "", ic: null, obs: "", areas: {} };
       if (!state.ant.areas) state.ant.areas = {};
       const antDataInp = document.getElementById("comp-ant-data");
       const antIcInp = document.getElementById("comp-ant-ic");
@@ -2121,14 +2143,19 @@
         state.ant = {
           data: (c.ant && c.ant.data) || "",
           ic: (c.ant && c.ant.ic) || null,
+          obs: (c.ant && c.ant.obs) || "",
           areas: (c.ant && c.ant.areas) || { mf: null, mg: null, e: null, ec: null, oe: null, ot: null }
         };
       }
 
       const antDataInp = document.getElementById("comp-ant-data");
       const antIcInp = document.getElementById("comp-ant-ic");
+      const compInObs = document.getElementById("comp-input-obs");
+
       if (antDataInp) antDataInp.value = state.ant.data || "";
       if (antIcInp) antIcInp.value = state.ant.ic || "";
+      if (compInObs) compInObs.value = state.ant.obs || "";
+
       AREAS_EDM.forEach(a => {
         const el = document.getElementById(`comp-ant-${a.key}`);
         if (el) el.value = (state.ant.areas && state.ant.areas[a.key] !== null && state.ant.areas[a.key] !== undefined) ? state.ant.areas[a.key] : "";
@@ -2219,6 +2246,7 @@
       const inNasc = document.getElementById("input-nasc");
       const inAval = document.getElementById("input-aval");
       const inObs = document.getElementById("input-obs");
+      const compInObs = document.getElementById("comp-input-obs");
 
       inNome.value = state.nome;
       inAvaliar.value = state.avaliador;
@@ -2230,10 +2258,15 @@
         state.avaliador = e.target.value; 
         const pSign = document.getElementById("print-signature-name");
         if (pSign) pSign.textContent = e.target.value ? `${e.target.value} — Avaliador(a) Responsável` : "Assinatura do Avaliador Responsável";
+        const pCompSign = document.getElementById("print-comp-signature-name");
+        if (pCompSign) pCompSign.textContent = e.target.value ? `${e.target.value} — Avaliador(a) Responsável` : "Assinatura do Avaliador Responsável";
       });
       inNasc.addEventListener("change", e => { state.nasc = e.target.value; updateCalculations(); });
       inAval.addEventListener("change", e => { state.aval = e.target.value; updateCalculations(); });
       inObs.addEventListener("input", e => { state.obs = e.target.value; });
+      if (compInObs) {
+        compInObs.addEventListener("input", e => { state.ant.obs = e.target.value; });
+      }
 
       const antDataInp = document.getElementById("comp-ant-data");
       const antIcInp = document.getElementById("comp-ant-ic");
@@ -2268,6 +2301,7 @@
         btnCompLimpar.addEventListener("click", () => {
           state.ant.data = "";
           state.ant.ic = null;
+          state.ant.obs = "";
           ["mf", "mg", "e", "ec", "oe", "ot"].forEach(k => {
             state.ant.areas[k] = null;
             const el = document.getElementById(`comp-ant-${k}`);
@@ -2275,6 +2309,7 @@
           });
           if (antDataInp) antDataInp.value = "";
           if (antIcInp) antIcInp.value = "";
+          if (compInObs) compInObs.value = "";
           showToast("Dados anteriores limpos com sucesso.");
           updateCalculations();
         });
