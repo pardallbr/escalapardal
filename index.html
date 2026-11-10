@@ -35,7 +35,6 @@
       .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
       .page-break-avoid { break-inside: avoid !important; page-break-inside: avoid !important; }
 
-      /* Quebra de página estrita entre as páginas 1, 2 e 3 */
       .print-page-break {
         page-break-before: always !important;
         break-before: page !important;
@@ -45,7 +44,6 @@
         padding: 0 !important;
       }
 
-      /* Tabela de 60 níveis da Página 1 */
       .overflow-x-auto { overflow: visible !important; }
       table.print-table-fixed {
         min-width: 0 !important;
@@ -60,11 +58,9 @@
       #edm-grid-body select { display: none !important; }
       [id^="grid-print-"] { display: inline-block !important; }
 
-      /* Lateralidade limpa */
       [id^="group-lat-"] { display: none !important; }
       [id^="print-val-lat-"] { display: inline-block !important; }
 
-      /* Campo Observações na Página 2 */
       #input-obs {
         height: 65px !important;
         min-height: 55px !important;
@@ -73,7 +69,6 @@
         resize: none !important;
       }
 
-      /* Gráfico Perfil Motor na Página 2 (Grande e Nítido) */
       .relative.h-72, [class*="h-72"] {
         height: 240px !important;
       }
@@ -82,7 +77,6 @@
         height: 240px !important;
       }
 
-      /* Assinatura visível */
       #print-signature-block, #print-signature-block-comp {
         display: block !important;
         margin-top: 1.5rem !important;
@@ -90,7 +84,6 @@
       }
     }
 
-    /* MODO EXPORTAÇÃO PDF OFICIAL (HTML2PDF) */
     body.pdf-export-mode {
       background: white !important;
       color: #0f172a !important;
@@ -134,9 +127,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen font-sans flex flex-col antialiased">
 
-  <!-- ============================================== -->
-  <!-- TELA DE LOGIN (ACESSO RESTRITO - LIMPA) -->
-  <!-- ============================================== -->
+  <!-- TELA DE LOGIN (ACESSO RESTRITO) -->
   <div id="screen-login" class="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 sm:p-8 space-y-6">
       
@@ -154,7 +145,7 @@
           <input type="email" id="input-login-email" placeholder="seu-email@dominio.com" required class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
           <p id="login-error-msg" class="text-xs text-red-600 mt-2 hidden flex items-center gap-1 font-medium">
             <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-            E-mail não autorizado. Digite seu e-mail cadastrado.
+            <span>E-mail não autorizado. Digite seu e-mail cadastrado.</span>
           </p>
         </div>
 
@@ -167,9 +158,7 @@
     </div>
   </div>
 
-  <!-- ============================================== -->
-  <!-- APLICAÇÃO PRINCIPAL (EXIBIDA APÓS O LOGIN) -->
-  <!-- ============================================== -->
+  <!-- APLICAÇÃO PRINCIPAL -->
   <div id="app-content" class="hidden flex-1 flex flex-col">
 
     <!-- Header Banner -->
@@ -191,7 +180,6 @@
             </p>
           </div>
 
-          <!-- User Info and Action Buttons -->
           <div class="flex flex-col sm:flex-row sm:items-center gap-3">
             <div class="px-3 py-1.5 rounded-lg bg-blue-950/70 border border-blue-400/20 text-xs flex items-center justify-between sm:justify-start gap-2">
               <div class="flex items-center gap-2">
@@ -206,7 +194,6 @@
               </button>
             </div>
 
-            <!-- Navegação por Abas (Garantido lado a lado na mesma linha em mobile e desktop) -->
             <div class="flex items-center gap-2 w-full sm:w-auto">
               <button id="btn-tab-calc" class="flex-1 sm:flex-initial px-3.5 py-2 text-xs sm:text-sm font-bold rounded-lg transition-colors bg-white text-blue-950 shadow-sm flex items-center justify-center gap-1.5 text-center">
                 Nova Avaliação (EDM)
@@ -224,17 +211,15 @@
     <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
 
-      <!-- Toast Notification Container -->
+      <!-- Toast Notification -->
       <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 text-sm hidden flex items-center gap-2 transition-all no-print">
         <span id="toast-msg">Mensagem</span>
       </div>
 
-      <!-- ======================================================= -->
-      <!-- TAB 1: FLUXO DE AVALIAÇÃO EDM (DADOS -> TESTES -> RESULTADOS) -->
-      <!-- ======================================================= -->
+      <!-- TAB 1: FLUXO DE AVALIAÇÃO EDM -->
       <section id="section-calc" class="space-y-6">
 
-        <!-- Print / Export Header (Página 1 do Relatório) -->
+        <!-- Print Header Pág 1 -->
         <div id="print-header" class="hidden print:block pb-3 mb-3 border-b-2 border-slate-800">
           <div class="flex justify-between items-start">
             <div>
@@ -248,7 +233,7 @@
           </div>
         </div>
 
-        <!-- Progress Steps (Igual à tela do App Motricidade) -->
+        <!-- Passos -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 no-print flex items-center justify-center">
           <div class="flex items-center gap-4 sm:gap-8 text-xs font-bold">
             <div class="flex items-center gap-2 text-blue-700">
@@ -268,7 +253,7 @@
           </div>
         </div>
 
-        <!-- Passo 1: Identificação do Avaliado -->
+        <!-- Passo 1: Identificação -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-100 gap-3">
             <div>
@@ -280,7 +265,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-2 no-print">
               <select id="select-criancas-salvas" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 focus:ring-2 focus:ring-blue-500 outline-none max-w-[190px] truncate">
-                <option value="">📂 Crianças Salvas...</option>
+                <option value="">📁 Crianças Salvas...</option>
               </select>
               <button type="button" id="btn-excluir-crianca" title="Excluir criança selecionada do navegador" class="px-2 py-1.5 text-xs font-bold rounded-lg bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-700 border border-slate-200 transition hidden">
                 🗑️
@@ -318,11 +303,8 @@
           </div>
         </div>
 
-        <!-- ======================================================= -->
-        <!-- PASSO 2: GRADE OFICIAL DE TESTES EDM (EXATAMENTE COMO NA FOTO) -->
-        <!-- ======================================================= -->
+        <!-- Passo 2: Grade de Testes -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none space-y-5">
-          
           <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-200 gap-2">
             <div>
               <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -340,7 +322,6 @@
             </div>
           </div>
 
-          <!-- Legenda de Cores -->
           <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 no-print pb-1">
             <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-emerald-500"></span> 1 = Êxito</span>
             <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-amber-500"></span> 0,5 = Parcial</span>
@@ -348,7 +329,6 @@
             <span class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded border border-slate-300 bg-white"></span> — = Não avaliado</span>
           </div>
 
-          <!-- TABELA DE GRADE 6x10 (RESPONSIVA) -->
           <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-xs print:border-none print:shadow-none">
             <table class="w-full text-xs text-center border-collapse min-w-[700px] print-table-fixed">
               <thead class="bg-slate-100 text-slate-800 font-extrabold border-b border-slate-200">
@@ -368,12 +348,11 @@
                 </tr>
               </thead>
               <tbody id="edm-grid-body" class="divide-y divide-slate-100">
-                <!-- Linhas criadas via JavaScript dinamicamente -->
               </tbody>
             </table>
           </div>
 
-          <!-- Seção de Lateralidade (Mãos, Olhos, Pés - Igual à Imagem) -->
+          <!-- Lateralidade -->
           <div class="mt-6 pt-5 border-t border-slate-100 page-break-avoid">
             <div class="mb-3">
               <h3 class="text-sm font-bold text-slate-900">Lateralidade</h3>
@@ -381,7 +360,6 @@
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <!-- Mãos -->
               <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-800">Mãos</span>
                 <div class="flex gap-1 print:hidden" id="group-lat-mao">
@@ -392,7 +370,6 @@
                 <span id="print-val-lat-mao" class="hidden print:inline-block font-black text-xs text-blue-900 bg-blue-100 px-3 py-1 rounded">Direito (Destro)</span>
               </div>
 
-              <!-- Olhos -->
               <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-800">Olhos</span>
                 <div class="flex gap-1 print:hidden" id="group-lat-olho">
@@ -403,7 +380,6 @@
                 <span id="print-val-lat-olho" class="hidden print:inline-block font-black text-xs text-blue-900 bg-blue-100 px-3 py-1 rounded">Direito (Destro)</span>
               </div>
 
-              <!-- Pés -->
               <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70 flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-800">Pés</span>
                 <div class="flex gap-1 print:hidden" id="group-lat-pe">
@@ -419,13 +395,11 @@
               Diagnóstico de Lateralidade: <span id="diag-lat-txt" class="font-bold text-blue-700">Destro Completo</span>
             </div>
           </div>
+        </div>
 
-                  </div>
-
-        <!-- QUEBRA DE PÁGINA OFICIAL ENTRE PÁGINA 1 E PÁGINA 2 -->
         <div id="page-break-divider-1" class="hidden print:block print-page-break"></div>
 
-        <!-- Cabeçalho da Página 2 (Laudo & Resultados) -->
+        <!-- Cabeçalho Pág 2 -->
         <div id="print-header-p2" class="hidden print:block pb-3 mb-4 border-b-2 border-slate-800">
           <div class="flex justify-between items-center text-xs">
             <div>
@@ -439,15 +413,9 @@
           </div>
         </div>
 
-        <!-- ======================================================= -->
-        <!-- PÁGINA 2 DO RELATÓRIO: LAUDO CLÍNICO, GRÁFICO E OBSERVAÇÕES -->
-        <!-- ======================================================= -->
+        <!-- PÁGINA 2: LAUDO CLÍNICO & GRÁFICO -->
         <div class="space-y-6">
-
-          <!-- Left / Main: Painel Clínico Oficial Motricidade (Resumo, Pontos de Atenção, Ponto Forte/Foco, Gráfico e Observações) -->
           <div class="space-y-6">
-
-            <!-- Banner Resumo Clínico (Estilo Oficial App Motricidade) -->
             <div id="clin-banner" class="bg-red-50/80 border-l-4 border-red-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all">
               <div class="flex flex-wrap items-center gap-2">
                 <span id="clin-badge-qmg" class="px-2.5 py-1 rounded-md text-xs font-black bg-red-600 text-white shadow-xs">
@@ -462,7 +430,6 @@
               </p>
             </div>
 
-            <!-- Pontos de Atenção (QM abaixo de 80) -->
             <div class="space-y-2.5">
               <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
                 <span>Pontos de atenção</span>
@@ -475,7 +442,6 @@
               </div>
             </div>
 
-            <!-- Ponto forte e próximo foco -->
             <div class="space-y-2">
               <h3 class="text-xs font-black text-slate-900 uppercase tracking-wide">Ponto forte e próximo foco</h3>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -490,7 +456,6 @@
               </div>
             </div>
 
-            <!-- Seta de Informações: O que significa cada sigla? (Tela apenas) -->
             <details class="group bg-slate-50 rounded-xl border border-slate-200 overflow-hidden transition-all no-print">
               <summary class="flex items-center gap-2 p-3 text-xs font-bold text-slate-700 cursor-pointer hover:bg-slate-100 transition list-none select-none">
                 <svg class="w-3.5 h-3.5 text-slate-500 transition-transform group-open:rotate-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -519,13 +484,9 @@
                   <span class="px-2 py-0.5 rounded font-black bg-emerald-100 text-emerald-800 text-[11px] shrink-0 min-w-[50px] text-center">QM</span>
                   <span class="text-slate-600">Quociente de cada área (IM ÷ IC × 100). Abaixo de 80 = atenção.</span>
                 </div>
-                <div class="pt-2 text-[11px] text-slate-500 italic border-t border-slate-100">
-                  Para esta idade, consideramos até 132 meses nos cálculos (padrão da escala).
-                </div>
               </div>
             </details>
 
-            <!-- Gráfico de Perfil Motor (Grande, Lindo e Nítido) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none page-break-avoid">
               <div class="flex items-center justify-between mb-2">
                 <h2 class="text-base font-bold text-slate-900">Perfil Motor: Idade Cronológica vs Idades Motoras Calculadas</h2>
@@ -538,21 +499,18 @@
               </div>
             </div>
 
-            <!-- Observações e Parecer Técnico do Profissional (Integrado na Página 2 com Espaço Confortável) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid">
               <label for="input-obs" class="block text-xs font-bold text-slate-800 mb-2">
                 Observações e Parecer Técnico do Profissional
               </label>
               <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
             </div>
-
           </div>
         </div>
 
-        <!-- QUEBRA DE PÁGINA OFICIAL ENTRE PÁGINA 2 E PÁGINA 3 -->
         <div id="page-break-divider-2" class="hidden print:block print-page-break"></div>
 
-        <!-- Cabeçalho da Página 3 (Resultado Geral, Tabelas & Assinatura) -->
+        <!-- Cabeçalho Pág 3 -->
         <div id="print-header-p3" class="hidden print:block pb-3 mb-4 border-b-2 border-slate-800">
           <div class="flex justify-between items-center text-xs">
             <div>
@@ -566,19 +524,14 @@
           </div>
         </div>
 
-        <!-- ======================================================= -->
-        <!-- PÁGINA 3 DO RELATÓRIO: RESULTADO GERAL, TABELAS E ASSINATURA -->
-        <!-- ======================================================= -->
+        <!-- PÁGINA 3: TABELAS E RESULTADO GERAL -->
         <div class="space-y-6">
-
-          <!-- Card do Resultado Geral (Destaque do QMG e Indicadores Clínicos) -->
           <div class="bg-gradient-to-b from-white to-slate-50 rounded-xl shadow-sm border border-slate-200 p-6 print-shadow-none page-break-avoid">
             <h2 class="text-lg font-bold text-slate-900 pb-3 border-b border-slate-200 flex items-center justify-between">
               <span>Resultado Geral</span>
               <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Rosa Neto</span>
             </h2>
 
-            <!-- Big Metric: QMG -->
             <div class="py-5 text-center border-b border-slate-100">
               <span class="text-xs uppercase tracking-wider text-slate-500 font-semibold">Quociente Motor Geral (QMG)</span>
               <div id="res-qmg-val" class="text-4xl font-black text-indigo-700 my-1">-</div>
@@ -590,7 +543,6 @@
               </p>
             </div>
 
-            <!-- Indicadores Clínicos -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4 text-xs border-b border-slate-100">
               <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
                 <span class="text-slate-500 block text-[11px]">Idade Cronológica (IC):</span>
@@ -610,9 +562,7 @@
               </div>
             </div>
 
-            <!-- Tabelas Detalhadas Lado a Lado (Perfil Motor e Quocientes) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-              <!-- Card Perfil Motor -->
               <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
                 <h3 class="text-sm font-black text-slate-900">Perfil Motor</h3>
                 <div class="overflow-x-auto">
@@ -630,7 +580,6 @@
                 </div>
               </div>
 
-              <!-- Card Quocientes -->
               <div class="bg-white rounded-xl shadow-xs border border-slate-200 p-4 space-y-3">
                 <h3 class="text-sm font-black text-slate-900">Quocientes</h3>
                 <div class="overflow-x-auto">
@@ -648,7 +597,6 @@
               </div>
             </div>
 
-            <!-- Summary Table for Print / View -->
             <div class="pt-4 border-t border-slate-100 mt-4">
               <h3 class="text-xs font-bold text-slate-800 mb-2 uppercase tracking-wide">Quadro Resumo das 6 Áreas</h3>
               <div class="overflow-x-auto">
@@ -666,14 +614,12 @@
               </div>
             </div>
 
-            <!-- Signature block for Print / PDF (Página 3) -->
             <div id="print-signature-block" class="mt-8 pt-6 border-t border-slate-300 text-center hidden print:block page-break-avoid">
               <div class="w-64 mx-auto border-b border-slate-400 pb-1"></div>
               <p id="print-signature-name" class="text-xs font-bold text-slate-800 mt-1">Assinatura do Avaliador Responsável</p>
               <p class="text-[10px] text-slate-500">Registro Profissional / Carimbo</p>
             </div>
 
-            <!-- Action Buttons on Right Card (Screen only) -->
             <div class="mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
               <button type="button" id="btn-salvar-crianca-card" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 shadow-sm transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
@@ -693,18 +639,14 @@
               </button>
             </div>
           </div>
-
         </div>
 
       </section>
 
-      <!-- ======================================================= -->
-      <!-- TAB 2: COMPARATIVO DE EVOLUÇÃO (DADOS ANTIGOS vs ATUAIS) -->
-      <!-- ======================================================= -->
+      <!-- TAB 2: COMPARATIVO DE EVOLUÇÃO -->
       <section id="section-comp" class="space-y-6 hidden">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
           
-          <!-- CABEÇALHO EXCLUSIVO PARA IMPRESSÃO / PDF DO COMPARATIVO (Oculto em tela) -->
           <div id="print-header-comp" class="hidden print:block pb-3 mb-4 border-b-2 border-slate-800">
             <div class="flex justify-between items-start">
               <div>
@@ -740,7 +682,6 @@
             </div>
           </div>
 
-          <!-- ÁREA DESTACADA PARA INSERIR OS DADOS ANTIGOS (Não sai na impressão/PDF) -->
           <div class="p-5 rounded-xl border-2 border-indigo-300 bg-indigo-50/50 space-y-4 shadow-sm no-print">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-indigo-200">
               <div class="flex items-center gap-2">
@@ -751,7 +692,7 @@
               </div>
               <div class="flex flex-wrap items-center gap-2">
                 <select id="select-comp-carregar-salva" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-indigo-300 bg-white text-indigo-900 focus:ring-2 focus:ring-indigo-500 outline-none max-w-[220px] truncate">
-                  <option value="">📂 Carregar Criança Salva...</option>
+                  <option value="">📁 Carregar Criança Salva...</option>
                 </select>
                 <button type="button" id="btn-comp-limpar" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition">
                   Limpar Dados Antigos
@@ -759,7 +700,6 @@
               </div>
             </div>
 
-            <!-- Formulário dos Dados Antigos (Data e IC) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label for="comp-ant-data" class="block text-xs font-bold text-slate-700 mb-1">Data da Avaliação Anterior</label>
@@ -775,7 +715,6 @@
               </div>
             </div>
 
-            <!-- Inserção das 6 Idades Motoras Antigas -->
             <div class="pt-2">
               <p class="text-xs font-bold text-slate-800 mb-2">Digite as 6 Idades Motoras obtidas na Avaliação Anterior (meses):</p>
               <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -805,10 +744,8 @@
                 </div>
               </div>
             </div>
-
           </div>
 
-          <!-- Resumo da Avaliação Atual -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="p-3 rounded-lg border border-slate-200 bg-slate-50">
               <span class="text-[10px] font-bold text-slate-500 uppercase">Idade Cronológica Atual</span>
@@ -832,7 +769,6 @@
             </div>
           </div>
 
-          <!-- KPI Cards Comparativos de Evolução -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70">
               <span class="text-[11px] font-bold text-slate-500 uppercase">Tempo de Intervenção</span>
@@ -856,7 +792,6 @@
             </div>
           </div>
 
-          <!-- Charts Grid (Comparative Bar Chart + Radar Chart) -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-sm space-y-2">
               <h3 class="text-sm font-bold text-slate-800 flex items-center justify-between">
@@ -878,7 +813,6 @@
             </div>
           </div>
 
-          <!-- Tabela Comparativa Lado a Lado Detalhada -->
           <div class="pt-2">
             <h3 class="text-sm font-bold text-slate-800 mb-3 uppercase tracking-wide">
               Quadro Comparativo de Evolução por Área (Rosa Neto)
@@ -904,7 +838,6 @@
             </div>
           </div>
 
-          <!-- Barra de Ações Inferior do Comparativo (Tela) -->
           <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
             <button type="button" id="btn-comp-salvar-pdf-bottom" class="py-2.5 px-4 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 shadow-sm transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -916,7 +849,6 @@
             </button>
           </div>
 
-          <!-- Assinatura do Avaliador no Relatório Comparativo (Apenas na Impressão/PDF) -->
           <div id="print-signature-block-comp" class="mt-8 pt-6 border-t border-slate-300 text-center hidden print:block page-break-avoid">
             <div class="w-64 mx-auto border-b border-slate-400 pb-1"></div>
             <p id="print-comp-signature-name" class="text-xs font-bold text-slate-800 mt-1">Assinatura do Avaliador Responsável</p>
@@ -926,7 +858,6 @@
         </div>
       </section>
 
-      
     </main>
   </div>
 
@@ -937,7 +868,6 @@
       "carol_porcari@hotmail.com": { name: "Carol Porcari", role: "Avaliadora Psicomotora" }
     };
 
-    // Definição das 6 Áreas da EDM
     const AREAS_EDM = [
       { key: "mf", name: "Motricidade Fina", sigla: "MF", num: 1 },
       { key: "mg", name: "Motricidade Global", sigla: "MG", num: 2 },
@@ -949,7 +879,6 @@
 
     const AGES_EDM = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-    // Estado da Aplicação (100% LIMPO INICIALMENTE)
     const state = {
       user: null,
       nome: "",
@@ -957,21 +886,12 @@
       nasc: "",
       aval: new Date().toISOString().split("T")[0],
       obs: "",
-      // Matriz de Testes da Avaliação Atual: 6 áreas x 10 idades
-      grid: {
-        mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {}
-      },
-      lat: {
-        mao: "D",
-        olho: "D",
-        pe: "D"
-      },
+      grid: { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} },
+      lat: { mao: "D", olho: "D", pe: "D" },
       ant: {
         data: "",
         ic: null,
-        areas: {
-          mf: null, mg: null, e: null, ec: null, oe: null, ot: null
-        }
+        areas: { mf: null, mg: null, e: null, ec: null, oe: null, ot: null }
       }
     };
 
@@ -981,13 +901,18 @@
 
     function checkSession() {
       try {
-        const savedEmail = localStorage.getItem("edm_auth_email");
-        if (savedEmail && AUTHORIZED_USERS[savedEmail.toLowerCase()]) {
-          loginUser(savedEmail.toLowerCase());
-          return;
+        const rawSaved = localStorage.getItem("edm_auth_email");
+        if (rawSaved) {
+          const savedEmail = rawSaved.trim().toLowerCase();
+          if (AUTHORIZED_USERS[savedEmail]) {
+            loginUser(savedEmail);
+            return;
+          } else {
+            localStorage.removeItem("edm_auth_email");
+          }
         }
       } catch (e) {
-        console.warn("Storage not available:", e);
+        console.warn("Storage check failed:", e);
       }
       showLoginScreen();
     }
@@ -998,24 +923,44 @@
     }
 
     function loginUser(email) {
-      const normalizedEmail = email.trim().toLowerCase();
-      const userData = AUTHORIZED_USERS[normalizedEmail];
-      if (!userData) {
-        const err = document.getElementById("login-error-msg");
-        if (err) err.classList.remove("hidden");
+      const err = document.getElementById("login-error-msg");
+      if (!email) {
+        if (err) {
+          const span = err.querySelector("span") || err;
+          span.textContent = "Digite um e-mail válido.";
+          err.classList.remove("hidden");
+        }
         return;
       }
+
+      const normalizedEmail = String(email).trim().toLowerCase();
+      const userData = AUTHORIZED_USERS[normalizedEmail];
+
+      if (!userData) {
+        if (err) {
+          const span = err.querySelector("span") || err;
+          span.textContent = "E-mail não autorizado. Digite seu e-mail cadastrado.";
+          err.classList.remove("hidden");
+        }
+        return;
+      }
+
+      if (err) err.classList.add("hidden");
 
       state.user = { email: normalizedEmail, ...userData };
       state.avaliador = userData.name;
 
       try {
         localStorage.setItem("edm_auth_email", normalizedEmail);
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Armazenamento local indisponível:", e);
+      }
 
-      document.getElementById("user-display-name").textContent = userData.name;
-      document.getElementById("user-display-email").textContent = normalizedEmail;
-      
+      const nameElem = document.getElementById("user-display-name");
+      const emailElem = document.getElementById("user-display-email");
+      if (nameElem) nameElem.textContent = userData.name;
+      if (emailElem) emailElem.textContent = normalizedEmail;
+
       const inAvaliar = document.getElementById("input-avaliador");
       if (inAvaliar) inAvaliar.value = userData.name;
 
@@ -1064,8 +1009,6 @@
       return isNaN(dt.getTime()) ? null : dt;
     }
 
-    // Fórmula oficial do protocolo Rosa Neto extraída diretamente da planilha (Célula S8):
-    // =ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0)&" anos e "&ARRED((((S7-S6)/365)-ARREDONDAR.PARA.BAIXO(((S7-S6)/365);0))*12;0)&" m"
     function formatarMesesParaAnosEMeses(totalM) {
       if (totalM === null || totalM === undefined || isNaN(totalM)) return "";
       const absM = Math.abs(Math.round(totalM));
@@ -1094,8 +1037,6 @@
       const meses = Math.round((anosDecimal - anos) * 12);
       const totalMeses = (anos * 12) + meses;
       const textoFormatado = `${anos} anos e ${meses} m`;
-
-      // Divisor oficial de Quociente Motor (QM) na planilha: (($S$7-$S$6)/30)
       const divisorQM = diffDays / 30;
 
       return { diffDays, anos, meses, totalMeses, textoFormatado, divisorQM };
@@ -1109,9 +1050,6 @@
       setTimeout(() => t.classList.add("hidden"), 3000);
     }
 
-    // =======================================================
-    // RENDERIZAÇÃO DA GRADE OFICIAL DE TESTES EDM (6x10)
-    // =======================================================
     function renderEdmGrid() {
       const tbody = document.getElementById("edm-grid-body");
       if (!tbody) return;
@@ -1124,13 +1062,11 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50 transition";
 
-        // Coluna do Nome da Área
         const tdName = document.createElement("td");
         tdName.className = "p-2.5 text-left font-bold text-slate-800";
         tdName.innerHTML = `<span class="text-xs font-bold text-slate-800">${area.name}</span>`;
         tr.appendChild(tdName);
 
-        // 10 Colunas de Idades (2 a 11 anos)
         AGES_EDM.forEach(age => {
           const tdAge = document.createElement("td");
           tdAge.className = "p-1.5";
@@ -1142,7 +1078,6 @@
           select.id = `grid-${area.key}-${age}`;
           select.className = "w-14 sm:w-16 p-1 text-center font-bold text-xs rounded border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition print:hidden";
 
-          // Elemento exclusivo de impressão e PDF (garante 100% de integridade sem cortes)
           const printSpan = document.createElement("span");
           printSpan.id = `grid-print-${area.key}-${age}`;
           printSpan.className = "hidden print:inline-block font-extrabold text-[8.5pt] text-center w-full py-0.5";
@@ -1156,10 +1091,8 @@
           `;
           select.value = currentVal;
 
-          // Estilo condicional de cor
           updateSelectColor(select, currentVal);
 
-          // Evento de alteração com preenchimento inteligente dos vizinhos
           select.addEventListener("change", (e) => {
             const val = e.target.value;
             handleGridCellChange(area.key, age, val);
@@ -1170,7 +1103,6 @@
           tr.appendChild(tdAge);
         });
 
-        // Coluna da Idade Motora Calculada (meses)
         const tdIM = document.createElement("td");
         tdIM.id = `grid-im-calc-${area.key}`;
         tdIM.className = "p-2.5 text-center font-black text-indigo-700 bg-blue-50/50 text-xs";
@@ -1193,7 +1125,6 @@
         selectElem.className = "w-14 sm:w-16 p-1 text-center font-semibold text-xs rounded border border-slate-300 bg-white text-slate-500 focus:ring-2 focus:ring-blue-500 outline-none print:hidden";
       }
 
-      // Sincroniza o span de impressão correspondente
       const printId = selectElem.id.replace("grid-", "grid-print-");
       const printSpan = document.getElementById(printId);
       if (printSpan) {
@@ -1210,13 +1141,11 @@
       }
     }
 
-    // Regra Inteligente: "Ao marcar, os níveis vizinhos se preenchem sozinhos"
     function handleGridCellChange(areaKey, changedAge, val) {
       state.grid[areaKey][changedAge] = val;
       const numAge = Number(changedAge);
 
       if (val === "1" || val === "0.5") {
-        // Se acertou (1 ou 0,5), todos os níveis anteriores são preenchidos com 1 (caso vazios ou 0)
         AGES_EDM.forEach(a => {
           if (a < numAge) {
             if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "0") {
@@ -1230,7 +1159,6 @@
           }
         });
       } else if (val === "0") {
-        // Se errou (0), todos os níveis posteriores são preenchidos com 0 (caso vazios, 1 ou 0.5)
         AGES_EDM.forEach(a => {
           if (a > numAge) {
             if (!state.grid[areaKey][a] || state.grid[areaKey][a] === "1" || state.grid[areaKey][a] === "0.5") {
@@ -1251,7 +1179,6 @@
       updateCalculations();
     }
 
-    // Função de Lateralidade acessível globalmente
     function setupLatButtons(segment, key) {
       const btns = document.querySelectorAll(`.lat-btn-${segment}`);
       const currentVal = (state.lat && state.lat[key]) ? state.lat[key] : "D";
@@ -1281,9 +1208,6 @@
       });
     }
 
-    // CÁLCULO DA IDADE MOTORA A PARTIR DA GRADE EDM
-    // Fórmula oficial Rosa Neto:
-    // Idade Motora = 12 + (Soma dos pontos obtidos nas idades de 2 a 11 anos) * 12 meses
     function calculateAreaIMFromGrid(areaKey) {
       const areaScores = state.grid[areaKey];
       let sumPoints = 0;
@@ -1297,27 +1221,16 @@
         }
       });
 
-      // Contador interno de níveis preenchidos
-      // (Removido o badge X/10 que causava confusão com o nível 2 anos)
-
       if (countFilled === 0) return null;
+      if (sumPoints === 0) return 12;
 
-      // Se todas forem 0
-      if (sumPoints === 0) return 12; // Abaixo da base de 24 meses
-
-      // Cálculo em meses: Base 12 meses + pontos * 12 meses
-      // Ex: Nível 2 = 1 ponto -> 12 + 12 = 24 meses (2 anos)
-      // Ex: Nível 2=1, 3=1, 4=1, 5=1, 6=0.5 -> 12 + 4.5*12 = 66 meses (5 anos e 6 meses)
-      const imCalculada = Math.round(12 + (sumPoints * 12));
-      return imCalculada;
+      return Math.round(12 + (sumPoints * 12));
     }
 
-    // Atualização Geral
     function updateCalculations() {
       const icData = calculateIC(state.nasc, state.aval);
       const hasIC = icData !== null;
       const icAtual = hasIC ? icData.totalMeses : null;
-      
 
       if (hasIC) {
         document.getElementById("badge-ic-meses").textContent = `${icAtual} meses`;
@@ -1340,7 +1253,6 @@
       const compPatientTag = document.getElementById("comp-patient-tag");
       if (compPatientTag) compPatientTag.textContent = state.nome || "Novo Avaliado";
 
-      // Contador geral de progresso de níveis (0 de 60)
       let totalNiveisPreenchidos = 0;
       AREAS_EDM.forEach(a => {
         AGES_EDM.forEach(age => {
@@ -1352,13 +1264,10 @@
       const progressoElem = document.getElementById("progresso-niveis");
       if (progressoElem) progressoElem.textContent = `${totalNiveisPreenchidos} de 60 níveis`;
 
-      // Cálculo de IC Anterior
       let icAnt = state.ant.ic;
-      
       if (state.ant.data && state.nasc) {
         const icAntData = calculateIC(state.nasc, state.ant.data);
         icAnt = icAntData ? icAntData.totalMeses : null;
-        
         state.ant.ic = icAnt;
         const compAntIcInp = document.getElementById("comp-ant-ic");
         if (compAntIcInp && document.activeElement !== compAntIcInp) {
@@ -1390,16 +1299,13 @@
 
       const tableRowsCalc = [];
       const tableRowsComp = [];
-
       const calculatedAreasAtual = {};
 
       AREAS_EDM.forEach(area => {
         const k = area.key;
-        // Idade Motora calculada a partir da Grade de Testes
         const imAtual = calculateAreaIMFromGrid(k);
         calculatedAreasAtual[k] = imAtual;
 
-        // Atualiza a coluna da tabela da grade com meses e anos claros
         const gridColIM = document.getElementById(`grid-im-calc-${k}`);
         if (gridColIM) {
           if (imAtual !== null) {
@@ -1427,13 +1333,9 @@
         const qmAtual = (imAtual !== null && hasIC && icAtual > 0) ? Math.round((imAtual / icAtual) * 100) : null;
         const qmAnt = (hasIMAnt && icAnt && icAnt > 0) ? Math.round((Number(imAnt) / icAnt) * 100) : null;
 
-        const clAtual = qmAtual ? getClassification(qmAtual) : { label: "Aguardando", color: "text-slate-400" };
-        const clAnt = qmAnt ? getClassification(qmAnt) : { label: "-", color: "text-slate-400" };
-
         const ganhoIM = (imAtual !== null && hasIMAnt) ? (imAtual - Number(imAnt)) : null;
         const deltaQM = (qmAtual !== null && qmAnt !== null) ? (qmAtual - qmAnt) : null;
 
-        // Tabela Calculadora Resumo
         tableRowsCalc.push(`
           <tr class="hover:bg-slate-50">
             <td class="py-1.5 font-medium text-slate-800">${area.name}</td>
@@ -1442,7 +1344,6 @@
           </tr>
         `);
 
-        // Tabela Comparativa (Anterior vs Atual)
         let statusTag = `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-500">-</span>`;
         if (ganhoIM !== null && tempoIntervalo !== null) {
           if (ganhoIM > tempoIntervalo) {
@@ -1475,10 +1376,8 @@
       const compTbody = document.getElementById("comp-table-body");
       if (compTbody) compTbody.innerHTML = tableRowsComp.join("");
 
-      // Idade Motora Geral (IMG)
       const all6Filled = countAreasCalculadas === 6;
       const all6AntFilled = countIMAnt === 6;
-
       const imgAtual = all6Filled ? (sumIMAtual / 6) : null;
       const imgAnt = all6AntFilled ? (sumIMAnt / 6) : null;
 
@@ -1494,7 +1393,6 @@
       const compCardImg = document.getElementById("comp-card-img");
       if (compCardImg) compCardImg.textContent = imgAtual ? `${Math.round(imgAtual)} m` : "-";
 
-      // Quociente Motor Geral (QMG)
       const qmgAtual = (imgAtual && hasIC && icAtual > 0) ? Math.round((imgAtual / icAtual) * 100) : null;
       const qmgAnt = (imgAnt && icAnt && icAnt > 0) ? Math.round((imgAnt / icAnt) * 100) : null;
 
@@ -1502,7 +1400,6 @@
       const compCardQmg = document.getElementById("comp-card-qmg");
       if (compCardQmg) compCardQmg.textContent = qmgAtual !== null ? qmgAtual : "-";
 
-      // Desvio Motor com idade em anos e meses (solicitado pelo usuário)
       const desvAtual = (imgAtual && hasIC) ? (imgAtual - icAtual) : null;
       const desvElem = document.getElementById("res-desv-txt");
       const compCardDesv = document.getElementById("comp-card-desv");
@@ -1536,7 +1433,6 @@
         if (compCardStatus) compCardStatus.textContent = "-";
       }
 
-      // Ganho Motor Geral (IMG) e Evolução de QMG no painel comparativo
       const ganhoIMGGeral = (imgAtual !== null && imgAnt !== null) ? (imgAtual - imgAnt) : null;
       const deltaQMGGeral = (qmgAtual !== null && qmgAnt !== null) ? (qmgAtual - qmgAnt) : null;
 
@@ -1598,7 +1494,6 @@
         }
       }
 
-      // Classificação Geral
       const overallClass = qmgAtual ? getClassification(qmgAtual) : { label: "Aguardando dados", color: "bg-slate-100 text-slate-600", desc: "Preencha a data e marque os testes na grade acima." };
       const classBadge = document.getElementById("res-class-badge");
       classBadge.textContent = overallClass.label;
@@ -1608,9 +1503,6 @@
       const compCardClass = document.getElementById("comp-card-class");
       if (compCardClass) compCardClass.textContent = overallClass.label;
 
-      // =======================================================
-      // ATUALIZAÇÃO DO PAINEL CLÍNICO OFICIAL (ESTILO APP MOTRICIDADE)
-      // =======================================================
       const clinBannerElem = document.getElementById("clin-banner");
       const clinBadgeQmgElem = document.getElementById("clin-badge-qmg");
       const clinBadgeIpinElem = document.getElementById("clin-badge-ipin");
@@ -1637,7 +1529,6 @@
         }
       });
 
-      // 1. Top Banner
       if (clinBannerElem) {
         if (imgAtual && hasIC) {
           clinBannerElem.classList.remove("hidden");
@@ -1649,7 +1540,6 @@
           const descDif = formatarMesesParaAnosEMeses(desvAtual);
           const sentido = desvAtual < 0 ? `${difM} meses (${descDif}) abaixo do esperado` : (desvAtual > 0 ? `${difM} meses (${descDif}) acima do esperado` : `compatível com o esperado`);
 
-          // Badge QMG
           clinBadgeQmgElem.textContent = `QMG ${qmgAtual} · ${overallClass.label}`;
           if (qmgAtual <= 69) {
             clinBadgeQmgElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-red-600 text-white shadow-xs";
@@ -1668,7 +1558,6 @@
             clinBannerElem.className = "bg-indigo-50/80 border-l-4 border-indigo-500 rounded-r-xl p-4 space-y-2 shadow-xs transition-all";
           }
 
-          // Badge IP/IN
           const ipInVal = desvAtual !== null ? Math.round(desvAtual) : 0;
           clinBadgeIpinElem.textContent = `IP/IN ${ipInVal > 0 ? '+' : ''}${ipInVal}`;
           if (ipInVal < 0) {
@@ -1679,7 +1568,6 @@
             clinBadgeIpinElem.className = "px-2.5 py-1 rounded-md text-xs font-black bg-slate-200 text-slate-800";
           }
 
-          // Narrative Text
           clinSummaryTxtElem.textContent = `IMG ${imgM} meses (${descImg}) · IC ${icAtual} meses (${descIc}) — ${sentido} (QMG ${qmgAtual}, ${overallClass.label}).`;
         } else {
           clinBadgeQmgElem.textContent = "QMG - · Aguardando dados";
@@ -1691,7 +1579,6 @@
         }
       }
 
-      // 2. Pontos de Atenção (QM abaixo de 80) ordenados do mais crítico para o menor
       if (clinAtencaoListElem) {
         attentionAreasList.sort((x, y) => x.qm - y.qm);
         if (attentionAreasList.length > 0) {
@@ -1720,7 +1607,6 @@
         }
       }
 
-      // 3. Ponto Forte e Próximo Foco
       if (clinPontoForteElem && clinProximoFocoElem) {
         if (evaluatedAreasList.length > 0) {
           const sortedByQM = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
@@ -1744,7 +1630,6 @@
         }
       }
 
-      // 4. Tabelas Perfil Motor e Quocientes
       if (clinPerfilBodyElem) {
         const pRows = AREAS_EDM.map(a => {
           const im = calculatedAreasAtual[a.key];
@@ -1806,8 +1691,6 @@
         clinQuocientesBodyElem.innerHTML = qRows.join("");
       }
 
-
-      // Lateralidade
       let diagLat = "Destro Completo";
       if (state.lat.mao === "C" && state.lat.olho === "C" && state.lat.pe === "C") {
         diagLat = "Canhoto Completo";
@@ -1821,7 +1704,6 @@
       document.getElementById("diag-lat-txt").textContent = diagLat;
       document.getElementById("res-lat-badge").textContent = diagLat;
 
-      // Atualiza os Gráficos
       updateAllCharts(icAtual, calculatedAreasAtual, imgAtual, icAnt, state.ant.areas, imgAnt);
     }
 
@@ -1852,7 +1734,6 @@
         imgAnt ? Number(imgAnt.toFixed(1)) : 0
       ];
 
-      // 1. Calc Tab Bar Chart
       const ctxCalc = document.getElementById("chart-perfil-motor");
       if (ctxCalc) {
         if (!chartCalcInstance) {
@@ -1899,7 +1780,6 @@
         }
       }
 
-      // 2. Comparative Tab Bar Chart (Anterior vs Atual)
       const ctxCompBar = document.getElementById("chart-comp-bar");
       if (ctxCompBar) {
         if (!chartCompBarInstance) {
@@ -1946,7 +1826,6 @@
         }
       }
 
-      // 3. Comparative Tab Radar Chart (Perfil Psicomotor: Anterior vs Atual)
       const ctxCompRadar = document.getElementById("chart-comp-radar");
       if (ctxCompRadar) {
         const radarLabels = ["Motricidade Fina", "Motricidade Global", "Equilíbrio", "Esquema Corporal", "Org. Espacial", "Org. Temporal"];
@@ -2023,7 +1902,6 @@
         pSign.textContent = state.avaliador ? `${state.avaliador} — Avaliador Psicomotor` : "Assinatura do Avaliador Responsável";
       }
 
-      // Sugere automaticamente o nome do arquivo em PDF ao salvar
       const nomeLimpo = (state.nome || "Crianca_Avaliada").trim().replace(/\s+/g, "_");
       document.title = `Relatorio_EDM_${nomeLimpo}`;
     }
@@ -2065,10 +1943,8 @@
 
     function exportarComparativoPDF() {
       syncPrintCompHeaderInfo();
-      showToast("Abrindo comparativo... Selecione 'Salvar como PDF' na impressora para gerar o arquivo.");
-      setTimeout(() => {
-        window.print();
-      }, 200);
+      showToast("Abrindo comparativo... Selecione 'Salvar como PDF' na impressora.");
+      setTimeout(() => { window.print(); }, 200);
     }
 
     function imprimirComparativo() {
@@ -2078,24 +1954,19 @@
 
     function exportarParaPDF() {
       syncPrintHeaderInfo();
-      showToast("Abrindo relatório... Selecione 'Salvar como PDF' na impressora para gerar o arquivo perfeito!");
-      setTimeout(() => {
-        window.print();
-      }, 200);
+      showToast("Abrindo relatório... Selecione 'Salvar como PDF' na impressora.");
+      setTimeout(() => { window.print(); }, 200);
     }
 
     function exportarParaDrive() {
       syncPrintHeaderInfo();
-      showToast("Abrindo relatório perfeito e o seu Google Drive...");
+      showToast("Abrindo relatório e o Google Drive...");
       setTimeout(() => {
         window.open("https://drive.google.com/drive/my-drive", "_blank");
         window.print();
       }, 200);
     }
 
-    // =======================================================
-    // GERENCIAMENTO DE CRIANÇAS SALVAS NO NAVEGADOR (LOCALSTORAGE)
-    // =======================================================
     function getSavedChildren() {
       try {
         const raw = localStorage.getItem("edm_criancas_salvas");
@@ -2127,7 +1998,6 @@
       const inObs = document.getElementById("input-obs");
       if (inObs) state.obs = inObs.value;
 
-      // 1. Sincroniza ativamente da tela para garantir que 100% dos 60 testes estão no state.grid
       AREAS_EDM.forEach(area => {
         if (!state.grid[area.key]) state.grid[area.key] = {};
         AGES_EDM.forEach(age => {
@@ -2138,7 +2008,6 @@
         });
       });
 
-      // 2. Sincroniza dados manuais da avaliação anterior (Painel Comparativo)
       if (!state.ant) state.ant = { data: "", ic: null, areas: {} };
       if (!state.ant.areas) state.ant.areas = {};
       const antDataInp = document.getElementById("comp-ant-data");
@@ -2153,8 +2022,6 @@
       });
 
       const list = getSavedChildren();
-
-      // Guarda o mapa das idades motoras calculadas
       const ims = {};
       AREAS_EDM.forEach(a => {
         ims[a.key] = calculateAreaIMFromGrid(a.key);
@@ -2174,7 +2041,6 @@
         dataSalva: new Date().toLocaleDateString("pt-BR")
       };
 
-      // Se já existir com o mesmo nome e mesma data de avaliação, substitui; caso contrário, insere no topo
       const existingIdx = list.findIndex(c => c.nome.toLowerCase() === nomeTrim.toLowerCase() && c.aval === state.aval);
       let activeChildId = recordId;
       if (existingIdx >= 0) {
@@ -2225,7 +2091,6 @@
       state.obs = c.obs || "";
       state.lat = c.lat ? { ...c.lat } : { mao: "D", olho: "D", pe: "D" };
       
-      // Carrega o grid normalizando cada valor para String ("1", "0.5", "0", "")
       state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
       if (c.grid) {
         AREAS_EDM.forEach(a => {
@@ -2237,7 +2102,6 @@
         });
       }
 
-      // Se houver níveis com êxito (1 ou 0.5), garante que os níveis anteriores também fiquem preenchidos com 1
       AREAS_EDM.forEach(area => {
         AGES_EDM.forEach(age => {
           const val = state.grid[area.key][age];
@@ -2251,7 +2115,6 @@
         });
       });
 
-      // Restaura dados do comparativo associados a essa gravação, ou limpa se não houver
       if (c.ant && c.ant.areas) {
         state.ant = JSON.parse(JSON.stringify(c.ant));
       } else {
@@ -2341,8 +2204,6 @@
       showToast(`Registro de "${c.nome}" removido do navegador.`);
     }
 
-    window.addEventListener("beforeprint", syncPrintHeaderInfo);
-
     window.addEventListener("DOMContentLoaded", () => {
       const formLogin = document.getElementById("form-login");
       const inputLoginEmail = document.getElementById("input-login-email");
@@ -2374,7 +2235,6 @@
       inAval.addEventListener("change", e => { state.aval = e.target.value; updateCalculations(); });
       inObs.addEventListener("input", e => { state.obs = e.target.value; });
 
-      // Eventos das Idades Motoras Antigas (Painel Comparativo)
       const antDataInp = document.getElementById("comp-ant-data");
       const antIcInp = document.getElementById("comp-ant-ic");
       if (antDataInp) {
@@ -2403,8 +2263,6 @@
         }
       });
 
-      // Botões do Comparativo (Carregar Salva e Limpar)
-
       const btnCompLimpar = document.getElementById("btn-comp-limpar");
       if (btnCompLimpar) {
         btnCompLimpar.addEventListener("click", () => {
@@ -2422,14 +2280,12 @@
         });
       }
 
-      // Inicialização da Lateralidade
       setupLatButtons("mao", "mao");
       setupLatButtons("olho", "olho");
       setupLatButtons("pe", "pe");
 
       const tabCalc = document.getElementById("btn-tab-calc");
       const tabComp = document.getElementById("btn-tab-comp");
-
       const secCalc = document.getElementById("section-calc");
       const secComp = document.getElementById("section-comp");
 
@@ -2458,9 +2314,6 @@
         btnIrComp.addEventListener("click", () => setTab(tabComp, secComp));
       }
 
-
-
-      // Limpar todos os campos (100% limpo)
       document.getElementById("btn-limpar").addEventListener("click", () => {
         state.nome = "";
         state.nasc = "";
@@ -2473,12 +2326,10 @@
         inAval.value = state.aval;
         inObs.value = "";
 
-        // Resetar lateralidade para D
         setupLatButtons("mao", "mao");
         setupLatButtons("olho", "olho");
         setupLatButtons("pe", "pe");
 
-        // Limpar toda a grade de testes
         state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
         renderEdmGrid();
 
@@ -2493,8 +2344,33 @@
 
       document.getElementById("btn-imprimir-card").addEventListener("click", () => window.print());
 
-      // Eventos de Salvar Criança e Carregar Salvas
       const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
       if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
 
-      const selCriancas = 
+      const selCriancas = document.getElementById("select-criancas-salvas");
+      if (selCriancas) {
+        selCriancas.addEventListener("change", e => carregarCriancaPorId(e.target.value));
+      }
+
+      const btnExcluirCrianca = document.getElementById("btn-excluir-crianca");
+      if (btnExcluirCrianca) {
+        btnExcluirCrianca.addEventListener("click", excluirCriancaSelecionada);
+      }
+
+      const selCompSalva = document.getElementById("select-comp-carregar-salva");
+      if (selCompSalva) {
+        selCompSalva.addEventListener("change", e => carregarCriancaNoComparativo(e.target.value));
+      }
+
+      const btnCompPdfBottom = document.getElementById("btn-comp-salvar-pdf-bottom");
+      if (btnCompPdfBottom) btnCompPdfBottom.addEventListener("click", exportarComparativoPDF);
+
+      const btnCompImpBottom = document.getElementById("btn-comp-imprimir-bottom");
+      if (btnCompImpBottom) btnCompImpBottom.addEventListener("click", imprimirComparativo);
+
+      refreshSavedChildrenSelects();
+      checkSession();
+    });
+  </script>
+</body>
+</html>
