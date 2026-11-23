@@ -267,7 +267,7 @@
             <div>
               <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-blue-600 no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                1. Dados do Avaliado
+1. Dados do Avaliado
               </h2>
               <p class="text-xs text-slate-500 no-print">Preencha o nome e a data de nascimento para calcular a Idade Cronológica.</p>
             </div>
@@ -317,7 +317,7 @@
             <div>
               <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-indigo-600 no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                2. Testes de Níveis Motores (EDM)
+2. Testes de Níveis Motores (EDM)
               </h2>
               <p class="text-xs text-slate-600 mt-0.5">
                 <strong>1</strong> = fez sozinho • <strong>0,5</strong> = fez com ajuda • <strong>0</strong> = ainda não fez. Ao marcar, os níveis vizinhos se preenchem sozinhos.
@@ -695,7 +695,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-indigo-200">
               <div class="flex items-center gap-2">
                 <span class="px-2.5 py-1 rounded-md text-xs font-extrabold bg-indigo-600 text-white shadow-sm">
-                  1. Entrada de Dados Antigos
+1. Entrada de Dados Antigos
                 </span>
                 <h3 class="text-sm font-extrabold text-indigo-950">Digite a Avaliação Anterior da Criança (Linha de Base)</h3>
               </div>
@@ -847,7 +847,7 @@
             </div>
           </div>
 
-          <!-- NOVO: Card de Observações e Parecer Técnico no Comparativo -->
+          <!-- Card de Observações e Parecer Técnico no Comparativo -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid">
             <label for="comp-input-obs" class="block text-xs font-bold text-slate-800 mb-2">
               Observações e Parecer Técnico do Profissional
@@ -876,6 +876,20 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- Modal de Aviso de Backup em PDF -->
+  <div id="modal-aviso-pdf" class="no-print" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 9999; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
+    <div style="background: #ffffff; max-width: 420px; width: 100%; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: sans-serif;">
+      <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
+      <h3 style="margin: 0 0 12px 0; color: #1e293b; font-size: 18px; font-weight: bold;">Atenção ao salvar a avaliação!</h3>
+      <p style="margin: 0 0 20px 0; color: #475569; font-size: 14px; line-height: 1.5;">
+        Lembre-se de <strong>salvar a criança em PDF</strong>. Os dados salvos apenas no navegador ficam presos neste dispositivo e você vai perdê-los se trocar de aparelho ou limpar o histórico.
+      </p>
+      <button type="button" id="btn-fechar-aviso-pdf" style="background: #2563eb; color: #ffffff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%;">
+        Entendi, vou salvar em PDF
+      </button>
+    </div>
   </div>
 
   <script>
@@ -916,6 +930,14 @@
     let chartCalcInstance = null;
     let chartCompBarInstance = null;
     let chartCompRadarInstance = null;
+
+    // Controle do aviso de PDF (dispara 1x por criança iniciada ao chegar no final da página)
+    let avisoPdfExibidoNestaCrianca = false;
+
+    function resetarAvisoParaNovaCrianca() {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      avisoPdfExibidoNestaCrianca = false;
+    }
 
     function checkSession() {
       try {
@@ -988,6 +1010,7 @@
       document.getElementById("screen-login").classList.add("hidden");
       document.getElementById("app-content").classList.remove("hidden");
 
+      resetarAvisoParaNovaCrianca();
       renderEdmGrid();
       updateCalculations();
       showToast(`Bem-vindo(a), ${userData.name}!`);
@@ -2016,7 +2039,6 @@
       const inObs = document.getElementById("input-obs");
       if (inObs) state.obs = inObs.value;
 
-      // Sincroniza observações do comparativo
       const compInObs = document.getElementById("comp-input-obs");
       if (compInObs) state.ant.obs = compInObs.value;
 
@@ -2106,6 +2128,8 @@
       const list = getSavedChildren();
       const c = list.find(item => item.id === id);
       if (!c) return;
+
+      resetarAvisoParaNovaCrianca();
 
       state.nome = c.nome || "";
       state.nasc = c.nasc || "";
@@ -2231,7 +2255,66 @@
       showToast(`Registro de "${c.nome}" removido do navegador.`);
     }
 
+    function limparFormularioParaNovaCrianca(exibirToast = true) {
+      const inNome = document.getElementById("input-nome");
+      const inNasc = document.getElementById("input-nasc");
+      const inAval = document.getElementById("input-aval");
+      const inObs = document.getElementById("input-obs");
+      const selCriancas = document.getElementById("select-criancas-salvas");
+
+      state.nome = "";
+      state.nasc = "";
+      state.aval = new Date().toISOString().split("T")[0];
+      state.obs = "";
+      state.lat = { mao: "D", olho: "D", pe: "D" };
+
+      if (inNome) inNome.value = "";
+      if (inNasc) inNasc.value = "";
+      if (inAval) inAval.value = state.aval;
+      if (inObs) inObs.value = "";
+      if (selCriancas) selCriancas.value = "";
+
+      setupLatButtons("mao", "mao");
+      setupLatButtons("olho", "olho");
+      setupLatButtons("pe", "pe");
+
+      state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
+      renderEdmGrid();
+
+      resetarAvisoParaNovaCrianca();
+      if (exibirToast) showToast("Todos os campos foram limpos. Pronto para nova criança!");
+      updateCalculations();
+    }
+
+    // Dispara o aviso 1x por criança ao rolar até o final da página
+    window.addEventListener("scroll", function() {
+      if (avisoPdfExibidoNestaCrianca) return;
+
+      const appContent = document.getElementById("app-content");
+      const secCalc = document.getElementById("section-calc");
+      if (!appContent || appContent.classList.contains("hidden")) return;
+      if (!secCalc || secCalc.classList.contains("hidden")) return;
+
+      const chegouNoFinal = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 40);
+
+      if (chegouNoFinal) {
+        avisoPdfExibidoNestaCrianca = true;
+        const modal = document.getElementById("modal-aviso-pdf");
+        if (modal) {
+          modal.style.display = "flex";
+        }
+      }
+    });
+
     window.addEventListener("DOMContentLoaded", () => {
+      const btnFecharAvisoPdf = document.getElementById("btn-fechar-aviso-pdf");
+      if (btnFecharAvisoPdf) {
+        btnFecharAvisoPdf.addEventListener("click", () => {
+          const modal = document.getElementById("modal-aviso-pdf");
+          if (modal) modal.style.display = "none";
+        });
+      }
+
       const formLogin = document.getElementById("form-login");
       const inputLoginEmail = document.getElementById("input-login-email");
       formLogin.addEventListener("submit", e => {
@@ -2341,7 +2424,14 @@
         }
       };
 
-      tabCalc.addEventListener("click", () => setTab(tabCalc, secCalc));
+      tabCalc.addEventListener("click", () => {
+        const jaEstavaNaAba = !secCalc.classList.contains("hidden");
+        setTab(tabCalc, secCalc);
+        if (jaEstavaNaAba) {
+          limparFormularioParaNovaCrianca(true);
+        }
+      });
+
       tabComp.addEventListener("click", () => setTab(tabComp, secComp));
 
       const btnIrComp = document.getElementById("btn-ir-para-comparativo");
@@ -2350,26 +2440,7 @@
       }
 
       document.getElementById("btn-limpar").addEventListener("click", () => {
-        state.nome = "";
-        state.nasc = "";
-        state.aval = new Date().toISOString().split("T")[0];
-        state.obs = "";
-        state.lat = { mao: "D", olho: "D", pe: "D" };
-
-        inNome.value = "";
-        inNasc.value = "";
-        inAval.value = state.aval;
-        inObs.value = "";
-
-        setupLatButtons("mao", "mao");
-        setupLatButtons("olho", "olho");
-        setupLatButtons("pe", "pe");
-
-        state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
-        renderEdmGrid();
-
-        showToast("Todos os campos foram limpos com sucesso.");
-        updateCalculations();
+        limparFormularioParaNovaCrianca(true);
       });
 
       document.getElementById("btn-salvar-pdf-card").addEventListener("click", exportarParaPDF);
@@ -2407,42 +2478,5 @@
       checkSession();
     });
   </script>
-  <!-- Modal de Aviso de Backup em PDF -->
-<div id="modal-aviso-pdf" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: 9999; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
-  <div style="background: #ffffff; max-width: 420px; width: 100%; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: sans-serif;">
-    <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
-    <h3 style="margin: 0 0 12px 0; color: #1e293b; font-size: 18px;">Atenção ao salvar a avaliação!</h3>
-    <p style="margin: 0 0 20px 0; color: #475569; font-size: 14px; line-height: 1.5;">
-      Lembre-se de <strong>salvar a criança em PDF</strong>. Os dados salvos apenas no navegador ficam presos neste dispositivo e você vai perdê-los se trocar de aparelho ou limpar o histórico.
-    </p>
-    <button id="btn-fechar-aviso-pdf" style="background: #2563eb; color: #ffffff; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%;">
-      Entendi, vou salvar em PDF
-    </button>
-  </div>
-</div>
-// 1. Controle por criança (começa falso toda vez que abre ou inicia nova criança)
-let avisoPdfExibidoNestaCrianca = false;
-
-// 2. Dispara o aviso ao chegar no final da página (apenas 1x por criança)
-window.addEventListener('scroll', function() {
-  if (avisoPdfExibidoNestaCrianca) return;
-
-  const chegouNoFinal = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 40);
-
-  if (chegouNoFinal) {
-    avisoPdfExibidoNestaCrianca = true;
-    // Substitua 'modalAvisoPdf' pelo ID exato do seu modal/aviso no HTML
-    const modal = document.getElementById('modalAvisoPdf');
-    if (modal) {
-      modal.style.display = 'flex'; // ou 'block', conforme seu CSS
-    }
-  }
-});
-
-// 3. Chame esta função dentro do botão de "Nova Criança" / "Limpar Campos"
-function resetarAvisoParaNovaCrianca() {
-  avisoPdfExibidoNestaCrianca = false;
-}
-</script>
 </body>
 </html>
