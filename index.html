@@ -131,6 +131,21 @@
       margin: 0 !important;
       padding: 0 !important;
     }
+
+    /* [Item 2] Destaque visual da coluna correspondente à Idade Cronológica (IC) */
+    th.ic-guide-col,
+    td.ic-guide-col {
+      background-color: #eef2ff !important;
+      box-shadow: inset 2px 0 0 #4f46e5, inset -2px 0 0 #4f46e5 !important;
+    }
+    th.ic-guide-col {
+      background-color: #c7d2fe !important;
+      color: #1e1b4b !important;
+      box-shadow: inset 2px 2px 0 #4f46e5, inset -2px 0 0 #4f46e5 !important;
+    }
+    tbody tr:last-child td.ic-guide-col {
+      box-shadow: inset 2px 0 0 #4f46e5, inset -2px -2px 0 #4f46e5 !important;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen font-sans flex flex-col antialiased">
@@ -278,7 +293,14 @@
               <button type="button" id="btn-excluir-crianca" title="Excluir criança selecionada do navegador" class="px-2 py-1.5 text-xs font-bold rounded-lg bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-700 border border-slate-200 transition hidden">
                 🗑️
               </button>
-              <button type="button" id="btn-limpar" class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
+              <button type="button" id="btn-exportar-backup" title="Baixar arquivo JSON com todas as crianças salvas" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 transition">
+                ⬇ Backup
+              </button>
+              <button type="button" id="btn-importar-backup" title="Importar arquivo JSON de backup de crianças" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 transition">
+                ⬆ Restaurar
+              </button>
+              <input type="file" id="input-arquivo-backup" accept=".json,application/json" class="hidden">
+              <button type="button" id="btn-limpar" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
                 Limpar
               </button>
             </div>
@@ -323,7 +345,10 @@
                 <strong>1</strong> = fez sozinho • <strong>0,5</strong> = fez com ajuda • <strong>0</strong> = ainda não fez. Ao marcar, os níveis vizinhos se preenchem sozinhos.
               </p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="guia-ic-coluna" class="hidden text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200">
+                Guia IC: -
+              </span>
               <span class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200" id="progresso-niveis">
                 0 de 60 níveis
               </span>
@@ -342,16 +367,16 @@
               <thead class="bg-slate-100 text-slate-800 font-extrabold border-b border-slate-200">
                 <tr>
                   <th class="p-3 text-left w-52 print:w-[26%] print:p-1.5 print:text-[8.5pt]">Teste / Área</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">2</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">3</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">4</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">5</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">6</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">7</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">8</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">9</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">10</th>
-                  <th class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">11</th>
+                  <th id="th-age-2" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">2</th>
+                  <th id="th-age-3" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">3</th>
+                  <th id="th-age-4" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">4</th>
+                  <th id="th-age-5" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">5</th>
+                  <th id="th-age-6" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">6</th>
+                  <th id="th-age-7" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">7</th>
+                  <th id="th-age-8" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">8</th>
+                  <th id="th-age-9" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">9</th>
+                  <th id="th-age-10" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">10</th>
+                  <th id="th-age-11" class="p-2.5 print:p-1 print:text-[8pt] print:w-[6.4%]">11</th>
                   <th class="p-2.5 bg-blue-50 text-blue-900 font-black print:p-1 print:text-[8pt] print:w-[10%]">IM (meses)</th>
                 </tr>
               </thead>
@@ -507,12 +532,39 @@
               </div>
             </div>
 
-            <!-- Card de Observações da Avaliação Atual -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid">
-              <label for="input-obs" class="block text-xs font-bold text-slate-800 mb-2">
+            <!-- Card de Observações da Avaliação Atual + Bloco de Atividades (Item 1 em ressalva) -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid space-y-3">
+              <label for="input-obs" class="block text-xs font-bold text-slate-800">
                 Observações e Parecer Técnico do Profissional
               </label>
               <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+
+              <!-- [Item 1 - Em ressalva] Sugestões de Atividades — Educação Física e Psicomotricidade -->
+              <div id="bloco-sugestoes-atividades" class="pt-3 border-t border-slate-100 space-y-2 no-print">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-[11px] font-bold text-slate-700">
+                    Sugestões de Atividades — Educação Física e Psicomotricidade <span class="text-slate-400 font-normal">(clique para inserir no texto acima)</span>
+                  </span>
+                  <span class="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-semibold">
+                    Em ressalva • Destaque automático para QM &lt; 80
+                  </span>
+                </div>
+                <div id="botoes-sugestoes-areas" class="flex flex-wrap gap-1.5">
+                </div>
+              </div>
+            </div>
+
+            <!-- [Item 5] Devolutiva Didática para Família e Escola -->
+            <div id="bloco-devolutiva-familia" class="bg-blue-50/50 rounded-xl shadow-xs border border-blue-200/80 p-5 print-shadow-none page-break-avoid space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-xs font-black text-blue-950 uppercase tracking-wide">
+                  Devolutiva Didática para Família e Escola
+                </h3>
+                <span class="text-[10px] font-semibold text-blue-700">Leitura acessível</span>
+              </div>
+              <p id="devolutiva-familia-texto" class="text-xs text-slate-700 leading-relaxed">
+                Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara de como o desempenho motor atual se reflete no dia a dia em casa e na escola.
+              </p>
             </div>
           </div>
         </div>
@@ -908,6 +960,16 @@
       { key: "ot", name: "Organização Temporal", sigla: "OT", num: 6 }
     ];
 
+    /* [Item 1 - Em ressalva] Sugestões de atividades práticas (Educação Física e Psicomotricidade) */
+    const SUGESTOES_ATIVIDADES_EDM = {
+      mf: "Atividades práticas de coordenação óculo-manual e destreza: pinças, encaixes, recortes, alinhavos, desenhos com contornos e manipulação de pequenos objetos com variação de pressão.",
+      mg: "Vivências motoras amplas e coordenação dinâmica geral: circuitos com deslocamentos variados, saltos, arremessos, recepções, rastejar e transposição de obstáculos.",
+      e: "Estímulos de equilíbrio estático e dinâmico: apoios unipodais, caminhar sobre linhas/fita/trave baixa, mudanças de direção com parada súbita e jogos de estabilidade.",
+      ec: "Consciência e domínio corporal: jogos de imitação, percepção de segmentos corporais em movimento, controle tônico-postural e atividades diante do espelho.",
+      oe: "Noções espaciais em ação: percursos com comandos de frente/trás/dentro/fora/acima/abaixo, deslocamentos em espaços reduzidos e organização de alvos/trajetos.",
+      ot: "Estruturação rítmica e temporal: jogos de acompanhar batidas/músicas, alternância de ritmos rápidos e lentos, sequências motoras ordenadas e jogos de tempo de reação."
+    };
+
     const AGES_EDM = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
     const state = {
@@ -1110,6 +1172,7 @@
 
         AGES_EDM.forEach(age => {
           const tdAge = document.createElement("td");
+          tdAge.id = `cell-age-${area.key}-${age}`;
           tdAge.className = "p-1.5";
 
           const rawVal = state.grid[area.key][age];
@@ -1152,6 +1215,42 @@
 
         tbody.appendChild(tr);
       });
+
+      atualizarDestaqueColunaIC();
+    }
+
+    /* [Item 2] Destaca a coluna correspondente à Idade Cronológica (IC) na grade */
+    function atualizarDestaqueColunaIC() {
+      const icData = calculateIC(state.nasc, state.aval);
+      const guiaBadge = document.getElementById("guia-ic-coluna");
+
+      AGES_EDM.forEach(age => {
+        const th = document.getElementById(`th-age-${age}`);
+        if (th) th.classList.remove("ic-guide-col");
+        AREAS_EDM.forEach(a => {
+          const td = document.getElementById(`cell-age-${a.key}-${age}`);
+          if (td) td.classList.remove("ic-guide-col");
+        });
+      });
+
+      if (!icData) {
+        if (guiaBadge) guiaBadge.classList.add("hidden");
+        return;
+      }
+
+      const idadeGuia = Math.max(2, Math.min(11, icData.anos));
+      const thGuia = document.getElementById(`th-age-${idadeGuia}`);
+      if (thGuia) thGuia.classList.add("ic-guide-col");
+
+      AREAS_EDM.forEach(a => {
+        const tdGuia = document.getElementById(`cell-age-${a.key}-${idadeGuia}`);
+        if (tdGuia) tdGuia.classList.add("ic-guide-col");
+      });
+
+      if (guiaBadge) {
+        guiaBadge.classList.remove("hidden");
+        guiaBadge.textContent = `Coluna IC: ${idadeGuia} anos`;
+      }
     }
 
     function updateSelectColor(selectElem, val) {
@@ -1268,7 +1367,81 @@
       return Math.round(12 + (sumPoints * 12));
     }
 
+    /* [Item 1 - Em ressalva] Renderiza botões de sugestões práticas de Educação Física e Psicomotricidade */
+    function renderBotoesSugestoesAtividades(areasAtencaoKeys) {
+      const container = document.getElementById("botoes-sugestoes-areas");
+      if (!container) return;
+
+      const atencaoSet = new Set(areasAtencaoKeys || []);
+
+      container.innerHTML = AREAS_EDM.map(area => {
+        const isAtencao = atencaoSet.has(area.key);
+        const cls = isAtencao
+          ? "px-2.5 py-1 text-[11px] font-bold rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-400 transition"
+          : "px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-800 border border-slate-200 transition";
+        const marcador = isAtencao ? " ★ QM<80" : "";
+        return `<button type="button" data-area="${area.key}" class="${cls}">+ ${area.name}${marcador}</button>`;
+      }).join("");
+
+      container.querySelectorAll("button[data-area]").forEach(btn => {
+        btn.onclick = () => {
+          const key = btn.getAttribute("data-area");
+          const textoSugestao = SUGESTOES_ATIVIDADES_EDM[key];
+          if (!textoSugestao) return;
+
+          const inObs = document.getElementById("input-obs");
+          const atual = inObs ? inObs.value : "";
+          if (atual.includes(textoSugestao)) {
+            showToast("Essa sugestão já está nas observações.");
+            return;
+          }
+          const novoTexto = atual.trim() ? `${atual.trim()}\n${textoSugestao}` : textoSugestao;
+          state.obs = novoTexto;
+          if (inObs) {
+            inObs.value = novoTexto;
+            inObs.focus();
+          }
+          showToast("Sugestão inserida nas observações.");
+        };
+      });
+    }
+
+    /* [Item 5] Atualiza texto didático para família e escola */
+    function atualizarDevolutivaFamilia(nomeCrianca, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList) {
+      const el = document.getElementById("devolutiva-familia-texto");
+      if (!el) return;
+
+      const nomeExibicao = (nomeCrianca || "").trim() || "A criança";
+
+      if (!hasIC || evaluatedAreasList.length === 0) {
+        el.textContent = "Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara de como o desempenho motor atual se reflete no dia a dia em casa e na escola.";
+        return;
+      }
+
+      const sortedByQM = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
+      const forte = sortedByQM[0];
+      const foco = sortedByQM[sortedByQM.length - 1];
+
+      let fraseGeral = `${nomeExibicao} apresenta desempenho motor classificado como ${overallClass.label.toLowerCase()} (QMG ${qmgAtual})`;
+      if (imgAtual !== null) {
+        fraseGeral += `, com idade motora geral estimada em ${Math.round(imgAtual)} meses frente à idade cronológica de ${icAtual} meses`;
+      }
+      fraseGeral += `. O maior destaque atual aparece em ${forte.area.name.toLowerCase()}.`;
+
+      let frasePratica = "";
+      if (attentionAreasList.length > 0) {
+        const nomesAtencao = attentionAreasList.map(item => item.area.name.toLowerCase()).join(" e ");
+        frasePratica = ` Na rotina escolar e familiar, vale oferecer vivências lúdicas e graduadas com foco principal em ${nomesAtencao}, acompanhando o ritmo da criança sem pressa e valorizando cada avanço conquistado.`;
+      } else {
+        frasePratica = ` Na rotina em casa e na escola, recomenda-se manter propostas variadas de movimento e exploração corporal para consolidar as habilidades já adquiridas, dando atenção especial a ${foco.area.name.toLowerCase()} como próximo passo de estímulo.`;
+      }
+
+      el.textContent = fraseGeral + frasePratica;
+    }
+
     function updateCalculations() {
+      atualizarDestaqueColunaIC();
+
       const icData = calculateIC(state.nasc, state.aval);
       const hasIC = icData !== null;
       const icAtual = hasIC ? icData.totalMeses : null;
@@ -1570,6 +1743,9 @@
         }
       });
 
+      renderBotoesSugestoesAtividades(attentionAreasList.map(item => item.area.key));
+      atualizarDevolutivaFamilia(state.nome, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList);
+
       if (clinBannerElem) {
         if (imgAtual && hasIC) {
           clinBannerElem.classList.remove("hidden");
@@ -1721,7 +1897,7 @@
         if (qmgAtual !== null) {
           if (qmgAtual < 80) qmgColor = "text-red-600 font-bold";
           else if (qmgAtual < 90) qmgColor = "text-amber-600 font-bold";
-          else qmgColor = "text-emerald-700 font-bold";
+          else qmColor = "text-emerald-700 font-bold";
         }
         qRows.push(`
           <tr class="border-t-2 border-slate-200 font-black bg-slate-50/70">
@@ -2023,6 +2199,133 @@
       } catch (e) {}
     }
 
+    /* [Item 4] Exportar backup completo em .json */
+    function exportarBackupJSON() {
+      const list = getSavedChildren();
+      if (!list.length) {
+        showToast("Não há crianças salvas no navegador para exportar.");
+        return;
+      }
+      const payload = {
+        sistema: "escalapardal_edm",
+        versao: 1,
+        exportadoEm: new Date().toISOString(),
+        criancas: list
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const dataHoje = new Date().toISOString().split("T")[0];
+      a.href = url;
+      a.download = `backup_escalapardal_${dataHoje}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast(`Backup exportado com ${list.length} registro(s).`);
+    }
+
+    /* [Item 4] Restaurar backup .json mesclando com registros existentes */
+    function importarBackupJSON(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          const importedList = Array.isArray(parsed)
+            ? parsed
+            : (Array.isArray(parsed.criancas) ? parsed.criancas : null);
+
+          if (!importedList) {
+            showToast("Arquivo de backup inválido.");
+            return;
+          }
+
+          const currentList = getSavedChildren();
+          const byId = new Map();
+          currentList.forEach(item => {
+            if (item && item.id) byId.set(item.id, item);
+          });
+
+          let adicionadosOuAtualizados = 0;
+          importedList.forEach(item => {
+            if (!item || !item.nome) return;
+            const id = item.id || ("child_" + Math.random().toString(36).slice(2, 9));
+            byId.set(id, { ...item, id });
+            adicionadosOuAtualizados++;
+          });
+
+          const merged = Array.from(byId.values()).sort((a, b) => {
+            const numA = parseInt(String(a.id || "").replace(/\D/g, ""), 10) || 0;
+            const numB = parseInt(String(b.id || "").replace(/\D/g, ""), 10) || 0;
+            return numB - numA;
+          });
+
+          saveChildrenList(merged);
+          refreshSavedChildrenSelects();
+          showToast(`Backup restaurado (${adicionadosOuAtualizados} registro(s) processado(s)).`);
+        } catch (err) {
+          showToast("Não foi possível ler o arquivo JSON.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /* [Item 3] Busca avaliação anterior da mesma criança quando existem 2 ou mais registros */
+    function buscarAvaliacaoAnteriorAutomatica(registroAtual, list) {
+      if (!registroAtual || !registroAtual.nome || !Array.isArray(list)) return null;
+      const nomeNorm = registroAtual.nome.trim().toLowerCase();
+      const mesmosRegistros = list.filter(item =>
+        item &&
+        item.id !== registroAtual.id &&
+        String(item.nome || "").trim().toLowerCase() === nomeNorm
+      );
+      if (!mesmosRegistros.length) return null;
+
+      mesmosRegistros.sort((a, b) => {
+        const dA = a.aval || "";
+        const dB = b.aval || "";
+        if (dA !== dB) return dB.localeCompare(dA);
+        const nA = parseInt(String(a.id || "").replace(/\D/g, ""), 10) || 0;
+        const nB = parseInt(String(b.id || "").replace(/\D/g, ""), 10) || 0;
+        return nB - nA;
+      });
+
+      return mesmosRegistros[0];
+    }
+
+    function aplicarRegistroComoLinhaDeBase(registroAnterior, nascReferencia, exibirAvisoToast = false) {
+      if (!registroAnterior) return;
+
+      state.ant.data = registroAnterior.aval || "";
+      const icData = calculateIC(nascReferencia || registroAnterior.nasc, registroAnterior.aval);
+      state.ant.ic = icData ? icData.totalMeses : null;
+
+      const antDataInp = document.getElementById("comp-ant-data");
+      const antIcInp = document.getElementById("comp-ant-ic");
+      if (antDataInp) antDataInp.value = state.ant.data;
+      if (antIcInp) antIcInp.value = state.ant.ic || "";
+
+      const areasIM = registroAnterior.areasIM || {};
+      AREAS_EDM.forEach(a => {
+        let imVal = areasIM[a.key];
+        if (imVal === undefined && registroAnterior.grid && registroAnterior.grid[a.key]) {
+          let sum = 0;
+          AGES_EDM.forEach(age => {
+            if (registroAnterior.grid[a.key][age]) sum += Number(registroAnterior.grid[a.key][age]);
+          });
+          imVal = Math.round(12 + sum * 12);
+        }
+        state.ant.areas[a.key] = (imVal !== undefined && imVal !== null) ? imVal : null;
+        const el = document.getElementById(`comp-ant-${a.key}`);
+        if (el) el.value = state.ant.areas[a.key] ?? "";
+      });
+
+      if (exibirAvisoToast) {
+        showToast(`Avaliação anterior de "${registroAnterior.nome}" (${registroAnterior.aval || registroAnterior.dataSalva}) carregada automaticamente!`);
+      }
+    }
+
     function salvarCriancaAtual() {
       const inNome = document.getElementById("input-nome");
       if (inNome && inNome.value) state.nome = inNome.value.trim();
@@ -2185,6 +2488,13 @@
         if (el) el.value = (state.ant.areas && state.ant.areas[a.key] !== null && state.ant.areas[a.key] !== undefined) ? state.ant.areas[a.key] : "";
       });
 
+      /* [Item 3] Se houver outra avaliação salva para a mesma criança sem linha de base preenchida, carrega automaticamente */
+      const anteriorAuto = buscarAvaliacaoAnteriorAutomatica(c, list);
+      const semAntPreenchido = !state.ant.data && !state.ant.ic && AREAS_EDM.every(a => state.ant.areas[a.key] === null || state.ant.areas[a.key] === undefined);
+      if (anteriorAuto && semAntPreenchido) {
+        aplicarRegistroComoLinhaDeBase(anteriorAuto, state.nasc, false);
+      }
+
       const inNome = document.getElementById("input-nome");
       const inNasc = document.getElementById("input-nasc");
       const inAval = document.getElementById("input-aval");
@@ -2210,30 +2520,7 @@
       const c = list.find(item => item.id === id);
       if (!c) return;
 
-      state.ant.data = c.aval || "";
-      const icData = calculateIC(state.nasc || c.nasc, c.aval);
-      state.ant.ic = icData ? icData.totalMeses : null;
-
-      const antDataInp = document.getElementById("comp-ant-data");
-      const antIcInp = document.getElementById("comp-ant-ic");
-      if (antDataInp) antDataInp.value = state.ant.data;
-      if (antIcInp) antIcInp.value = state.ant.ic || "";
-
-      const areasIM = c.areasIM || {};
-      AREAS_EDM.forEach(a => {
-        let imVal = areasIM[a.key];
-        if (imVal === undefined && c.grid && c.grid[a.key]) {
-          let sum = 0;
-          AGES_EDM.forEach(age => {
-            if (c.grid[a.key][age]) sum += Number(c.grid[a.key][age]);
-          });
-          imVal = Math.round(12 + sum * 12);
-        }
-        state.ant.areas[a.key] = imVal !== undefined ? imVal : null;
-        const el = document.getElementById(`comp-ant-${a.key}`);
-        if (el) el.value = state.ant.areas[a.key] ?? "";
-      });
-
+      aplicarRegistroComoLinhaDeBase(c, state.nasc, false);
       updateCalculations();
       showToast(`Avaliação anterior de "${c.nome}" carregada na linha de base!`);
     }
@@ -2417,6 +2704,20 @@
         activeSec.classList.remove("hidden");
 
         if (activeSec === secComp) {
+          /* [Item 3] Ao abrir o comparativo, preenche automaticamente a avaliação anterior se houver histórico para a mesma criança */
+          const temAntPreenchido = Boolean(state.ant.data) || state.ant.ic !== null || AREAS_EDM.some(a => state.ant.areas[a.key] !== null && state.ant.areas[a.key] !== undefined);
+          if (!temAntPreenchido && (state.nome || "").trim()) {
+            const list = getSavedChildren();
+            const selMain = document.getElementById("select-criancas-salvas");
+            const currentId = selMain ? selMain.value : "";
+            const registroAtualRef = { id: currentId, nome: state.nome, aval: state.aval, nasc: state.nasc };
+            const anteriorAuto = buscarAvaliacaoAnteriorAutomatica(registroAtualRef, list);
+            if (anteriorAuto) {
+              aplicarRegistroComoLinhaDeBase(anteriorAuto, state.nasc, true);
+              updateCalculations();
+            }
+          }
+
           setTimeout(() => {
             if (chartCompBarInstance) chartCompBarInstance.resize();
             if (chartCompRadarInstance) chartCompRadarInstance.resize();
@@ -2452,6 +2753,21 @@
 
       const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
       if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
+
+      const btnExportBackup = document.getElementById("btn-exportar-backup");
+      if (btnExportBackup) btnExportBackup.addEventListener("click", exportarBackupJSON);
+
+      const btnImportBackup = document.getElementById("btn-importar-backup");
+      const inputArqBackup = document.getElementById("input-arquivo-backup");
+      if (btnImportBackup && inputArqBackup) {
+        btnImportBackup.addEventListener("click", () => inputArqBackup.click());
+        inputArqBackup.addEventListener("change", (e) => {
+          if (e.target.files && e.target.files[0]) {
+            importarBackupJSON(e.target.files[0]);
+            e.target.value = "";
+          }
+        });
+      }
 
       const selCriancas = document.getElementById("select-criancas-salvas");
       if (selCriancas) {
