@@ -2420,34 +2420,29 @@
     </button>
   </div>
 </div>
+// 1. Controle por criança (começa falso toda vez que abre ou inicia nova criança)
+let avisoPdfExibidoNestaCrianca = false;
 
-<script>
-  (function() {
-    const CHAVE_STORAGE = 'avisoPdfVisto_escalapardal';
-    let modalExibidoNestaSessao = false;
+// 2. Dispara o aviso ao chegar no final da página (apenas 1x por criança)
+window.addEventListener('scroll', function() {
+  if (avisoPdfExibidoNestaCrianca) return;
 
-    function verificarRolagem() {
-      if (modalExibidoNestaSessao || localStorage.getItem(CHAVE_STORAGE) === 'true') {
-        return;
-      }
+  const chegouNoFinal = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 40);
 
-      const scrollAtual = window.innerHeight + window.scrollY;
-      const alturaTotal = document.documentElement.scrollHeight;
-
-      if (scrollAtual >= alturaTotal - 50) {
-        modalExibidoNestaSessao = true;
-        localStorage.setItem(CHAVE_STORAGE, 'true');
-        document.getElementById('modal-aviso-pdf').style.display = 'flex';
-        window.removeEventListener('scroll', verificarRolagem);
-      }
+  if (chegouNoFinal) {
+    avisoPdfExibidoNestaCrianca = true;
+    // Substitua 'modalAvisoPdf' pelo ID exato do seu modal/aviso no HTML
+    const modal = document.getElementById('modalAvisoPdf');
+    if (modal) {
+      modal.style.display = 'flex'; // ou 'block', conforme seu CSS
     }
+  }
+});
 
-    document.getElementById('btn-fechar-aviso-pdf').addEventListener('click', function() {
-      document.getElementById('modal-aviso-pdf').style.display = 'none';
-    });
-
-    window.addEventListener('scroll', verificarRolagem);
-  })();
+// 3. Chame esta função dentro do botão de "Nova Criança" / "Limpar Campos"
+function resetarAvisoParaNovaCrianca() {
+  avisoPdfExibidoNestaCrianca = false;
+}
 </script>
 </body>
 </html>
