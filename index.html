@@ -62,7 +62,7 @@
       [id^="print-val-lat-"] { display: inline-block !important; }
 
       /* Formatação de campos de texto na impressão */
-      #input-obs, #comp-input-obs {
+      #input-obs, #comp-input-obs, #devolutiva-familia-texto {
         height: 65px !important;
         min-height: 55px !important;
         font-size: 8.5pt !important;
@@ -116,7 +116,8 @@
     body.pdf-export-mode [id^="group-lat-"] { display: none !important; }
     body.pdf-export-mode [id^="print-val-lat-"] { display: inline-block !important; }
     body.pdf-export-mode #print-signature-block { display: block !important; }
-    body.pdf-export-mode #comp-input-obs {
+    body.pdf-export-mode #comp-input-obs,
+    body.pdf-export-mode #devolutiva-familia-texto {
       height: 65px !important;
       min-height: 55px !important;
       font-size: 8.5pt !important;
@@ -132,7 +133,7 @@
       padding: 0 !important;
     }
 
-    /* [Item 2] Destaque visual da coluna correspondente à Idade Cronológica (IC) */
+    /* Destaque visual da coluna correspondente à Idade Cronológica (IC) */
     th.ic-guide-col,
     td.ic-guide-col {
       background-color: #eef2ff !important;
@@ -532,21 +533,21 @@
               </div>
             </div>
 
-            <!-- Card de Observações da Avaliação Atual + Bloco de Atividades (Item 1 em ressalva) -->
+            <!-- Card de Observações da Avaliação Atual + Bloco de Atividades -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 print-shadow-none page-break-avoid space-y-3">
               <label for="input-obs" class="block text-xs font-bold text-slate-800">
                 Observações e Parecer Técnico do Profissional
               </label>
               <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
 
-              <!-- [Item 1 - Em ressalva] Sugestões de Atividades — Educação Física e Psicomotricidade -->
+              <!-- Sugestões de Atividades — Educação Física e Psicomotricidade (inserção manual ao clicar) -->
               <div id="bloco-sugestoes-atividades" class="pt-3 border-t border-slate-100 space-y-2 no-print">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <span class="text-[11px] font-bold text-slate-700">
-                    Sugestões de Atividades — Educação Física e Psicomotricidade <span class="text-slate-400 font-normal">(clique para inserir no texto acima)</span>
+                    Sugestões de Atividades — Educação Física e Psicomotricidade
                   </span>
-                  <span class="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-semibold">
-                    Em ressalva • Destaque automático para QM &lt; 80
+                  <span class="text-[10px] text-slate-500">
+                    Clique para inserir no texto acima
                   </span>
                 </div>
                 <div id="botoes-sugestoes-areas" class="flex flex-wrap gap-1.5">
@@ -554,17 +555,20 @@
               </div>
             </div>
 
-            <!-- [Item 5] Devolutiva Didática para Família e Escola -->
+            <!-- Devolutiva Didática para Família e Escola (editável / pronto para ditar) -->
             <div id="bloco-devolutiva-familia" class="bg-blue-50/50 rounded-xl shadow-xs border border-blue-200/80 p-5 print-shadow-none page-break-avoid space-y-2">
-              <div class="flex items-center justify-between gap-2">
-                <h3 class="text-xs font-black text-blue-950 uppercase tracking-wide">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label for="devolutiva-familia-texto" class="text-xs font-black text-blue-950 uppercase tracking-wide">
                   Devolutiva Didática para Família e Escola
-                </h3>
-                <span class="text-[10px] font-semibold text-blue-700">Leitura acessível</span>
+                </label>
+                <div class="flex items-center gap-2 no-print">
+                  <button type="button" id="btn-regenerar-devolutiva" class="text-[10px] font-bold text-blue-700 hover:text-blue-900 underline">
+                    Regerar texto automático
+                  </button>
+                  <span class="text-[10px] font-semibold text-blue-700">Leitura acessível • Editável</span>
+                </div>
               </div>
-              <p id="devolutiva-familia-texto" class="text-xs text-slate-700 leading-relaxed">
-                Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara de como o desempenho motor atual se reflete no dia a dia em casa e na escola.
-              </p>
+              <textarea id="devolutiva-familia-texto" rows="3" placeholder="Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara, ou digite/dite aqui a devolutiva para a família e a escola..." class="w-full p-3 text-xs text-slate-800 bg-white rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"></textarea>
             </div>
           </div>
         </div>
@@ -960,7 +964,6 @@
       { key: "ot", name: "Organização Temporal", sigla: "OT", num: 6 }
     ];
 
-    /* [Item 1 - Em ressalva] Sugestões de atividades práticas (Educação Física e Psicomotricidade) */
     const SUGESTOES_ATIVIDADES_EDM = {
       mf: "Atividades práticas de coordenação óculo-manual e destreza: pinças, encaixes, recortes, alinhavos, desenhos com contornos e manipulação de pequenos objetos com variação de pressão.",
       mg: "Vivências motoras amplas e coordenação dinâmica geral: circuitos com deslocamentos variados, saltos, arremessos, recepções, rastejar e transposição de obstáculos.",
@@ -979,6 +982,8 @@
       nasc: "",
       aval: new Date().toISOString().split("T")[0],
       obs: "",
+      devolutiva: "",
+      devolutivaEditadaManualmente: false,
       grid: { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} },
       lat: { mao: "D", olho: "D", pe: "D" },
       ant: {
@@ -1219,7 +1224,6 @@
       atualizarDestaqueColunaIC();
     }
 
-    /* [Item 2] Destaca a coluna correspondente à Idade Cronológica (IC) na grade */
     function atualizarDestaqueColunaIC() {
       const icData = calculateIC(state.nasc, state.aval);
       const guiaBadge = document.getElementById("guia-ic-coluna");
@@ -1367,7 +1371,6 @@
       return Math.round(12 + (sumPoints * 12));
     }
 
-    /* [Item 1 - Em ressalva] Renderiza botões de sugestões práticas de Educação Física e Psicomotricidade */
     function renderBotoesSugestoesAtividades(areasAtencaoKeys) {
       const container = document.getElementById("botoes-sugestoes-areas");
       if (!container) return;
@@ -1406,16 +1409,11 @@
       });
     }
 
-    /* [Item 5] Atualiza texto didático para família e escola */
-    function atualizarDevolutivaFamilia(nomeCrianca, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList) {
-      const el = document.getElementById("devolutiva-familia-texto");
-      if (!el) return;
-
+    function montarTextoDevolutivaAutomatica(nomeCrianca, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList) {
       const nomeExibicao = (nomeCrianca || "").trim() || "A criança";
 
       if (!hasIC || evaluatedAreasList.length === 0) {
-        el.textContent = "Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara de como o desempenho motor atual se reflete no dia a dia em casa e na escola.";
-        return;
+        return "";
       }
 
       const sortedByQM = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
@@ -1436,7 +1434,27 @@
         frasePratica = ` Na rotina em casa e na escola, recomenda-se manter propostas variadas de movimento e exploração corporal para consolidar as habilidades já adquiridas, dando atenção especial a ${foco.area.name.toLowerCase()} como próximo passo de estímulo.`;
       }
 
-      el.textContent = fraseGeral + frasePratica;
+      return fraseGeral + frasePratica;
+    }
+
+    function atualizarDevolutivaFamilia(nomeCrianca, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList, forcarRegerar = false) {
+      const el = document.getElementById("devolutiva-familia-texto");
+      if (!el) return;
+
+      const textoAuto = montarTextoDevolutivaAutomatica(
+        nomeCrianca, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList
+      );
+
+      if (forcarRegerar) {
+        state.devolutivaEditadaManualmente = false;
+      }
+
+      if (!state.devolutivaEditadaManualmente) {
+        state.devolutiva = textoAuto;
+        el.value = textoAuto;
+      } else if (el.value !== state.devolutiva) {
+        el.value = state.devolutiva;
+      }
     }
 
     function updateCalculations() {
@@ -1744,7 +1762,7 @@
       });
 
       renderBotoesSugestoesAtividades(attentionAreasList.map(item => item.area.key));
-      atualizarDevolutivaFamilia(state.nome, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList);
+      atualizarDevolutivaFamilia(state.nome, hasIC, icAtual, imgAtual, qmgAtual, overallClass, attentionAreasList, evaluatedAreasList, false);
 
       if (clinBannerElem) {
         if (imgAtual && hasIC) {
@@ -2199,7 +2217,6 @@
       } catch (e) {}
     }
 
-    /* [Item 4] Exportar backup completo em .json */
     function exportarBackupJSON() {
       const list = getSavedChildren();
       if (!list.length) {
@@ -2225,7 +2242,6 @@
       showToast(`Backup exportado com ${list.length} registro(s).`);
     }
 
-    /* [Item 4] Restaurar backup .json mesclando com registros existentes */
     function importarBackupJSON(file) {
       if (!file) return;
       const reader = new FileReader();
@@ -2271,7 +2287,6 @@
       reader.readAsText(file);
     }
 
-    /* [Item 3] Busca avaliação anterior da mesma criança quando existem 2 ou mais registros */
     function buscarAvaliacaoAnteriorAutomatica(registroAtual, list) {
       if (!registroAtual || !registroAtual.nome || !Array.isArray(list)) return null;
       const nomeNorm = registroAtual.nome.trim().toLowerCase();
@@ -2342,6 +2357,9 @@
       const inObs = document.getElementById("input-obs");
       if (inObs) state.obs = inObs.value;
 
+      const devElem = document.getElementById("devolutiva-familia-texto");
+      if (devElem) state.devolutiva = devElem.value;
+
       const compInObs = document.getElementById("comp-input-obs");
       if (compInObs) state.ant.obs = compInObs.value;
 
@@ -2381,6 +2399,8 @@
         nasc: state.nasc,
         aval: state.aval,
         obs: state.obs,
+        devolutiva: state.devolutiva,
+        devolutivaEditadaManualmente: state.devolutivaEditadaManualmente,
         lat: { ...state.lat },
         grid: JSON.parse(JSON.stringify(state.grid)),
         areasIM: ims,
@@ -2438,6 +2458,8 @@
       state.nasc = c.nasc || "";
       state.aval = c.aval || new Date().toISOString().split("T")[0];
       state.obs = c.obs || "";
+      state.devolutiva = c.devolutiva || "";
+      state.devolutivaEditadaManualmente = Boolean(c.devolutivaEditadaManualmente && c.devolutiva);
       state.lat = c.lat ? { ...c.lat } : { mao: "D", olho: "D", pe: "D" };
       
       state.grid = { mf: {}, mg: {}, e: {}, ec: {}, oe: {}, ot: {} };
@@ -2488,7 +2510,6 @@
         if (el) el.value = (state.ant.areas && state.ant.areas[a.key] !== null && state.ant.areas[a.key] !== undefined) ? state.ant.areas[a.key] : "";
       });
 
-      /* [Item 3] Se houver outra avaliação salva para a mesma criança sem linha de base preenchida, carrega automaticamente */
       const anteriorAuto = buscarAvaliacaoAnteriorAutomatica(c, list);
       const semAntPreenchido = !state.ant.data && !state.ant.ic && AREAS_EDM.every(a => state.ant.areas[a.key] === null || state.ant.areas[a.key] === undefined);
       if (anteriorAuto && semAntPreenchido) {
@@ -2499,11 +2520,13 @@
       const inNasc = document.getElementById("input-nasc");
       const inAval = document.getElementById("input-aval");
       const inObs = document.getElementById("input-obs");
+      const devElem = document.getElementById("devolutiva-familia-texto");
 
       if (inNome) inNome.value = state.nome;
       if (inNasc) inNasc.value = state.nasc;
       if (inAval) inAval.value = state.aval;
       if (inObs) inObs.value = state.obs;
+      if (devElem) devElem.value = state.devolutiva;
 
       setupLatButtons("mao", "mao");
       setupLatButtons("olho", "olho");
@@ -2547,18 +2570,22 @@
       const inNasc = document.getElementById("input-nasc");
       const inAval = document.getElementById("input-aval");
       const inObs = document.getElementById("input-obs");
+      const devElem = document.getElementById("devolutiva-familia-texto");
       const selCriancas = document.getElementById("select-criancas-salvas");
 
       state.nome = "";
       state.nasc = "";
       state.aval = new Date().toISOString().split("T")[0];
       state.obs = "";
+      state.devolutiva = "";
+      state.devolutivaEditadaManualmente = false;
       state.lat = { mao: "D", olho: "D", pe: "D" };
 
       if (inNome) inNome.value = "";
       if (inNasc) inNasc.value = "";
       if (inAval) inAval.value = state.aval;
       if (inObs) inObs.value = "";
+      if (devElem) devElem.value = "";
       if (selCriancas) selCriancas.value = "";
 
       setupLatButtons("mao", "mao");
@@ -2616,6 +2643,8 @@
       const inNasc = document.getElementById("input-nasc");
       const inAval = document.getElementById("input-aval");
       const inObs = document.getElementById("input-obs");
+      const devElem = document.getElementById("devolutiva-familia-texto");
+      const btnRegerarDev = document.getElementById("btn-regenerar-devolutiva");
       const compInObs = document.getElementById("comp-input-obs");
 
       inNome.value = state.nome;
@@ -2634,6 +2663,22 @@
       inNasc.addEventListener("change", e => { state.nasc = e.target.value; updateCalculations(); });
       inAval.addEventListener("change", e => { state.aval = e.target.value; updateCalculations(); });
       inObs.addEventListener("input", e => { state.obs = e.target.value; });
+
+      if (devElem) {
+        devElem.addEventListener("input", e => {
+          state.devolutiva = e.target.value;
+          state.devolutivaEditadaManualmente = true;
+        });
+      }
+
+      if (btnRegerarDev) {
+        btnRegerarDev.addEventListener("click", () => {
+          state.devolutivaEditadaManualmente = false;
+          updateCalculations();
+          showToast("Devolutiva atualizada automaticamente.");
+        });
+      }
+
       if (compInObs) {
         compInObs.addEventListener("input", e => { state.ant.obs = e.target.value; });
       }
@@ -2704,7 +2749,6 @@
         activeSec.classList.remove("hidden");
 
         if (activeSec === secComp) {
-          /* [Item 3] Ao abrir o comparativo, preenche automaticamente a avaliação anterior se houver histórico para a mesma criança */
           const temAntPreenchido = Boolean(state.ant.data) || state.ant.ic !== null || AREAS_EDM.some(a => state.ant.areas[a.key] !== null && state.ant.areas[a.key] !== undefined);
           if (!temAntPreenchido && (state.nome || "").trim()) {
             const list = getSavedChildren();
