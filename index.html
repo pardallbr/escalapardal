@@ -16,7 +16,7 @@
 
       .no-print { display: none !important; }
 
-      body {
+      html, body {
         background: white !important;
         color: #0f172a !important;
         font-size: 8.5pt !important;
@@ -24,11 +24,20 @@
         print-color-adjust: exact !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      #app-content {
+        display: block !important;
+        width: 100% !important;
       }
 
       main {
         padding: 0 !important;
         max-width: 100% !important;
+        width: 100% !important;
         margin: 0 !important;
       }
 
@@ -61,21 +70,33 @@
       [id^="group-lat-"] { display: none !important; }
       [id^="print-val-lat-"] { display: inline-block !important; }
 
-      /* Formatação de campos de texto na impressão */
+      /* Oculta textareas na impressão e exibe os blocos expansíveis completos */
       #input-obs, #comp-input-obs, #devolutiva-familia-texto {
-        height: 65px !important;
-        min-height: 55px !important;
+        display: none !important;
+      }
+      #print-obs-mirror, #print-comp-obs-mirror, #print-devolutiva-mirror {
+        display: block !important;
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
         font-size: 8.5pt !important;
-        padding: 6px !important;
-        resize: none !important;
+        line-height: 1.45 !important;
+        color: #1e293b !important;
+        padding: 4px 0 !important;
+        min-height: 24px !important;
       }
 
-      .relative.h-72, [class*="h-72"] {
-        height: 240px !important;
+      /* Garante que o gráfico caiba 100% na largura da folha A4 sem cortar */
+      .chart-print-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 215px !important;
+        overflow: hidden !important;
       }
       #chart-perfil-motor, #chart-comp-bar, #chart-comp-radar {
-        max-height: 240px !important;
-        height: 240px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 215px !important;
+        height: 215px !important;
       }
 
       #print-signature-block, #print-signature-block-comp {
@@ -116,13 +137,20 @@
     body.pdf-export-mode [id^="group-lat-"] { display: none !important; }
     body.pdf-export-mode [id^="print-val-lat-"] { display: inline-block !important; }
     body.pdf-export-mode #print-signature-block { display: block !important; }
+    body.pdf-export-mode #input-obs,
     body.pdf-export-mode #comp-input-obs,
     body.pdf-export-mode #devolutiva-familia-texto {
-      height: 65px !important;
-      min-height: 55px !important;
+      display: none !important;
+    }
+    body.pdf-export-mode #print-obs-mirror,
+    body.pdf-export-mode #print-comp-obs-mirror,
+    body.pdf-export-mode #print-devolutiva-mirror {
+      display: block !important;
+      white-space: pre-wrap !important;
+      word-wrap: break-word !important;
       font-size: 8.5pt !important;
-      padding: 6px !important;
-      resize: none !important;
+      line-height: 1.45 !important;
+      color: #1e293b !important;
     }
     body.pdf-export-mode .print-page-break {
       page-break-before: always !important;
@@ -152,7 +180,7 @@
 <body class="bg-slate-50 text-slate-800 min-h-screen font-sans flex flex-col antialiased">
 
   <!-- TELA DE LOGIN (ACESSO RESTRITO) -->
-  <div id="screen-login" class="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="screen-login" class="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 no-print">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 sm:p-8 space-y-6">
       
       <div class="text-center space-y-1">
@@ -283,7 +311,7 @@
             <div>
               <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-blue-600 no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-1. Dados do Avaliado
+                1. Dados do Avaliado
               </h2>
               <p class="text-xs text-slate-500 no-print">Preencha o nome e a data de nascimento para calcular a Idade Cronológica.</p>
             </div>
@@ -340,7 +368,7 @@
             <div>
               <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-indigo-600 no-print" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-2. Testes de Níveis Motores (EDM)
+                2. Testes de Níveis Motores (EDM)
               </h2>
               <p class="text-xs text-slate-600 mt-0.5">
                 <strong>1</strong> = fez sozinho • <strong>0,5</strong> = fez com ajuda • <strong>0</strong> = ainda não fez. Ao marcar, os níveis vizinhos se preenchem sozinhos.
@@ -528,7 +556,7 @@
                   Ver Análise Comparativa Completa &rarr;
                 </button>
               </div>
-              <div class="relative h-72">
+              <div class="relative h-72 chart-print-container">
                 <canvas id="chart-perfil-motor"></canvas>
               </div>
             </div>
@@ -538,7 +566,8 @@
               <label for="input-obs" class="block text-xs font-bold text-slate-800">
                 Observações e Parecer Técnico do Profissional
               </label>
-              <textarea id="input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+              <textarea id="input-obs" rows="4" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+              <div id="print-obs-mirror" class="hidden"></div>
 
               <!-- Sugestões de Atividades — Educação Física e Psicomotricidade (inserção manual ao clicar) -->
               <div id="bloco-sugestoes-atividades" class="pt-3 border-t border-slate-100 space-y-2 no-print">
@@ -559,7 +588,7 @@
             <div id="bloco-devolutiva-familia" class="bg-blue-50/50 rounded-xl shadow-xs border border-blue-200/80 p-5 print-shadow-none page-break-avoid space-y-2">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <label for="devolutiva-familia-texto" class="text-xs font-black text-blue-950 uppercase tracking-wide">
-                  Devolutiva Didática.
+                  Devolutiva Didática
                 </label>
                 <div class="flex items-center gap-2 no-print">
                   <button type="button" id="btn-regenerar-devolutiva" class="text-[10px] font-bold text-blue-700 hover:text-blue-900 underline">
@@ -568,7 +597,8 @@
                   <span class="text-[10px] font-semibold text-blue-700">Leitura acessível • Editável</span>
                 </div>
               </div>
-              <textarea id="devolutiva-familia-texto" rows="3" placeholder="Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara, ou digite/dite aqui a devolutiva para a família e a escola..." class="w-full p-3 text-xs text-slate-800 bg-white rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"></textarea>
+              <textarea id="devolutiva-familia-texto" rows="4" placeholder="Preencha a data de nascimento e registre os testes na grade para gerar uma síntese clara, ou digite/dite aqui a devolutiva para a família e a escola..." class="w-full p-3 text-xs text-slate-800 bg-white rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"></textarea>
+              <div id="print-devolutiva-mirror" class="hidden"></div>
             </div>
           </div>
         </div>
@@ -751,7 +781,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-indigo-200">
               <div class="flex items-center gap-2">
                 <span class="px-2.5 py-1 rounded-md text-xs font-extrabold bg-indigo-600 text-white shadow-sm">
-1. Entrada de Dados Antigos
+                  1. Entrada de Dados Antigos
                 </span>
                 <h3 class="text-sm font-extrabold text-indigo-950">Digite a Avaliação Anterior da Criança (Linha de Base)</h3>
               </div>
@@ -863,7 +893,7 @@
                 <span>1. Comparativo: Avaliação Anterior vs Atual (Idades Motoras)</span>
                 <span class="text-[10px] text-slate-400 font-normal">Meses</span>
               </h3>
-              <div class="relative h-72">
+              <div class="relative h-72 chart-print-container">
                 <canvas id="chart-comp-bar"></canvas>
               </div>
             </div>
@@ -872,7 +902,7 @@
                 <span>2. Perfil Psicomotor de Evolução (Radar Comparativo)</span>
                 <span class="text-[10px] text-slate-400 font-normal">Radar</span>
               </h3>
-              <div class="relative h-72">
+              <div class="relative h-72 chart-print-container">
                 <canvas id="chart-comp-radar"></canvas>
               </div>
             </div>
@@ -908,7 +938,8 @@
             <label for="comp-input-obs" class="block text-xs font-bold text-slate-800 mb-2">
               Observações e Parecer Técnico do Profissional
             </label>
-            <textarea id="comp-input-obs" rows="3" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            <textarea id="comp-input-obs" rows="4" placeholder="Insira observações qualitativas, facilidades, dificuldades ou plano de estimulação psicomotora..." class="w-full p-3 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            <div id="print-comp-obs-mirror" class="hidden"></div>
           </div>
 
           <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3 no-print">
@@ -998,12 +1029,31 @@
     let chartCompBarInstance = null;
     let chartCompRadarInstance = null;
 
-    // Controle do aviso de PDF (dispara 1x por criança iniciada ao chegar no final da página)
     let avisoPdfExibidoNestaCrianca = false;
 
     function resetarAvisoParaNovaCrianca() {
       window.scrollTo({ top: 0, behavior: "instant" });
       avisoPdfExibidoNestaCrianca = false;
+    }
+
+    function syncPrintTextMirrors() {
+      const inObs = document.getElementById("input-obs");
+      const mirrorObs = document.getElementById("print-obs-mirror");
+      if (inObs && mirrorObs) {
+        mirrorObs.textContent = inObs.value.trim() || "Nenhuma observação registrada.";
+      }
+
+      const devElem = document.getElementById("devolutiva-familia-texto");
+      const mirrorDev = document.getElementById("print-devolutiva-mirror");
+      if (devElem && mirrorDev) {
+        mirrorDev.textContent = devElem.value.trim() || "Devolutiva não preenchida.";
+      }
+
+      const compInObs = document.getElementById("comp-input-obs");
+      const mirrorCompObs = document.getElementById("print-comp-obs-mirror");
+      if (compInObs && mirrorCompObs) {
+        mirrorCompObs.textContent = compInObs.value.trim() || "Nenhuma observação registrada.";
+      }
     }
 
     function checkSession() {
@@ -1404,6 +1454,7 @@
             inObs.value = novoTexto;
             inObs.focus();
           }
+          syncPrintTextMirrors();
           showToast("Sugestão inserida nas observações.");
         };
       });
@@ -1455,6 +1506,7 @@
       } else if (el.value !== state.devolutiva) {
         el.value = state.devolutiva;
       }
+      syncPrintTextMirrors();
     }
 
     function updateCalculations() {
@@ -1915,7 +1967,7 @@
         if (qmgAtual !== null) {
           if (qmgAtual < 80) qmgColor = "text-red-600 font-bold";
           else if (qmgAtual < 90) qmgColor = "text-amber-600 font-bold";
-          else qmColor = "text-emerald-700 font-bold";
+          else qmgColor = "text-emerald-700 font-bold";
         }
         qRows.push(`
           <tr class="border-t-2 border-slate-200 font-black bg-slate-50/70">
@@ -2114,6 +2166,8 @@
     }
 
     function syncPrintHeaderInfo() {
+      syncPrintTextMirrors();
+
       const pDate = document.getElementById("print-date");
       const pDate2 = document.getElementById("print-date-p2");
       const pDate3 = document.getElementById("print-date-p3");
@@ -2139,9 +2193,15 @@
 
       const nomeLimpo = (state.nome || "Crianca_Avaliada").trim().replace(/\s+/g, "_");
       document.title = `Relatorio_EDM_${nomeLimpo}`;
+
+      if (chartCalcInstance) {
+        chartCalcInstance.resize(680, 215);
+      }
     }
 
     function syncPrintCompHeaderInfo() {
+      syncPrintTextMirrors();
+
       const pDate = document.getElementById("print-comp-date");
       const pNome = document.getElementById("print-comp-nome");
       const pNasc = document.getElementById("print-comp-nasc");
@@ -2164,6 +2224,9 @@
 
       const nomeLimpo = (state.nome || "Crianca_Avaliada").trim().replace(/\s+/g, "_");
       document.title = `Comparativo_EDM_${nomeLimpo}`;
+
+      if (chartCompBarInstance) chartCompBarInstance.resize(680, 215);
+      if (chartCompRadarInstance) chartCompRadarInstance.resize(680, 215);
     }
 
     window.addEventListener("beforeprint", () => {
@@ -2176,21 +2239,27 @@
       }
     });
 
+    window.addEventListener("afterprint", () => {
+      if (chartCalcInstance) chartCalcInstance.resize();
+      if (chartCompBarInstance) chartCompBarInstance.resize();
+      if (chartCompRadarInstance) chartCompRadarInstance.resize();
+    });
+
     function exportarComparativoPDF() {
       syncPrintCompHeaderInfo();
       showToast("Abrindo comparativo... Selecione 'Salvar como PDF' na impressora.");
-      setTimeout(() => { window.print(); }, 200);
+      setTimeout(() => { window.print(); }, 250);
     }
 
     function imprimirComparativo() {
       syncPrintCompHeaderInfo();
-      window.print();
+      setTimeout(() => { window.print(); }, 250);
     }
 
     function exportarParaPDF() {
       syncPrintHeaderInfo();
       showToast("Abrindo relatório... Selecione 'Salvar como PDF' na impressora.");
-      setTimeout(() => { window.print(); }, 200);
+      setTimeout(() => { window.print(); }, 250);
     }
 
     function exportarParaDrive() {
@@ -2199,7 +2268,7 @@
       setTimeout(() => {
         window.open("https://drive.google.com/drive/my-drive", "_blank");
         window.print();
-      }, 200);
+      }, 250);
     }
 
     function getSavedChildren() {
@@ -2534,6 +2603,7 @@
 
       renderEdmGrid();
       updateCalculations();
+      syncPrintTextMirrors();
       showToast(`Avaliação de "${c.nome}" carregada com sucesso!`);
     }
 
@@ -2600,7 +2670,6 @@
       updateCalculations();
     }
 
-    // Dispara o aviso 1x por criança ao rolar até o final da página
     window.addEventListener("scroll", function() {
       if (avisoPdfExibidoNestaCrianca) return;
 
@@ -2662,12 +2731,13 @@
       });
       inNasc.addEventListener("change", e => { state.nasc = e.target.value; updateCalculations(); });
       inAval.addEventListener("change", e => { state.aval = e.target.value; updateCalculations(); });
-      inObs.addEventListener("input", e => { state.obs = e.target.value; });
+      inObs.addEventListener("input", e => { state.obs = e.target.value; syncPrintTextMirrors(); });
 
       if (devElem) {
         devElem.addEventListener("input", e => {
           state.devolutiva = e.target.value;
           state.devolutivaEditadaManualmente = true;
+          syncPrintTextMirrors();
         });
       }
 
@@ -2680,7 +2750,7 @@
       }
 
       if (compInObs) {
-        compInObs.addEventListener("input", e => { state.ant.obs = e.target.value; });
+        compInObs.addEventListener("input", e => { state.ant.obs = e.target.value; syncPrintTextMirrors(); });
       }
 
       const antDataInp = document.getElementById("comp-ant-data");
@@ -2725,6 +2795,7 @@
           if (antDataInp) antDataInp.value = "";
           if (antIcInp) antIcInp.value = "";
           if (compInObs) compInObs.value = "";
+          syncPrintTextMirrors();
           showToast("Dados anteriores limpos com sucesso.");
           updateCalculations();
         });
@@ -2793,7 +2864,10 @@
       const btnSalvarDriveCard = document.getElementById("btn-salvar-drive-card");
       if (btnSalvarDriveCard) btnSalvarDriveCard.addEventListener("click", exportarParaDrive);
 
-      document.getElementById("btn-imprimir-card").addEventListener("click", () => window.print());
+      document.getElementById("btn-imprimir-card").addEventListener("click", () => {
+        syncPrintHeaderInfo();
+        setTimeout(() => { window.print(); }, 250);
+      });
 
       const btnSalvarCriancaCard = document.getElementById("btn-salvar-crianca-card");
       if (btnSalvarCriancaCard) btnSalvarCriancaCard.addEventListener("click", salvarCriancaAtual);
