@@ -559,7 +559,7 @@
             <div id="bloco-devolutiva-familia" class="bg-blue-50/50 rounded-xl shadow-xs border border-blue-200/80 p-5 print-shadow-none page-break-avoid space-y-2">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <label for="devolutiva-familia-texto" class="text-xs font-black text-blue-950 uppercase tracking-wide">
-                  Devolutiva Didática para Família e Escola
+                  Devolutiva Didática.
                 </label>
                 <div class="flex items-center gap-2 no-print">
                   <button type="button" id="btn-regenerar-devolutiva" class="text-[10px] font-bold text-blue-700 hover:text-blue-900 underline">
@@ -1429,9 +1429,9 @@
       let frasePratica = "";
       if (attentionAreasList.length > 0) {
         const nomesAtencao = attentionAreasList.map(item => item.area.name.toLowerCase()).join(" e ");
-        frasePratica = ` Na rotina escolar e familiar, vale oferecer vivências lúdicas e graduadas com foco principal em ${nomesAtencao}, acompanhando o ritmo da criança sem pressa e valorizando cada avanço conquistado.`;
+        frasePratica = ` No dia a dia, vale oferecer vivências lúdicas e graduadas com foco principal em ${nomesAtencao}, acompanhando o ritmo da criança sem pressa e valorizando cada avanço conquistado.`;
       } else {
-        frasePratica = ` Na rotina em casa e na escola, recomenda-se manter propostas variadas de movimento e exploração corporal para consolidar as habilidades já adquiridas, dando atenção especial a ${foco.area.name.toLowerCase()} como próximo passo de estímulo.`;
+        frasePratica = `No dia a dia, recomenda-se manter propostas variadas de movimento e exploração corporal para consolidar as habilidades já adquiridas, dando atenção especial a ${foco.area.name.toLowerCase()} como próximo passo de estímulo.`;
       }
 
       return fraseGeral + frasePratica;
