@@ -1894,11 +1894,36 @@
         }
       }
 
-      if (clinPontoForteElem && clinProximoFocoElem) {
+     if (clinPontoForteElem && clinProximoFocoElem) {
         if (evaluatedAreasList.length > 0) {
-          const sortedByQM = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
-          const forte = sortedByQM[0];
-          const foco = sortedByQM[sortedByQM.length - 1];
+          const sortedDesc = [...evaluatedAreasList].sort((x, y) => y.qm - x.qm);
+          const maiorQM = sortedDesc[0].qm;
+          const pontosFortes = sortedDesc.filter(item => item.qm === maiorQM);
+
+          const sortedAsc = [...evaluatedAreasList].sort((x, y) => x.qm - y.qm);
+          const menorQM = sortedAsc[0].qm;
+          const proximosFocos = sortedAsc.filter(item => item.qm === menorQM);
+
+          clinPontoForteElem.innerHTML = pontosFortes.map(item => `
+            <div class="mb-1 last:mb-0">
+              <span class="font-bold text-slate-900">${item.area.name}</span>
+              <span class="text-slate-600 font-semibold ml-1">— IM ${item.im} meses</span>
+              <span class="${item.diff >= 0 ? 'text-emerald-700' : 'text-red-600'} font-bold ml-1">(${item.diff >= 0 ? '+' : ''}${item.diff} meses)</span>
+            </div>
+          `).join("");
+
+          clinProximoFocoElem.innerHTML = proximosFocos.map(item => `
+            <div class="mb-1 last:mb-0">
+              <span class="font-bold text-slate-900">${item.area.name}</span>
+              <span class="text-slate-600 font-semibold ml-1">— IM ${item.im} meses</span>
+              <span class="${item.diff >= 0 ? 'text-emerald-700' : 'text-red-600'} font-bold ml-1">(${item.diff >= 0 ? '+' : ''}${item.diff} meses)</span>
+            </div>
+          `).join("");
+        } else {
+          clinPontoForteElem.textContent = "Aguardando dados";
+          clinProximoFocoElem.textContent = "Aguardando dados";
+        }
+      }
 
           clinPontoForteElem.innerHTML = `
             <span class="font-bold text-slate-900">${forte.area.name}</span>
@@ -2914,3 +2939,4 @@
   </script>
 </body>
 </html>
+
